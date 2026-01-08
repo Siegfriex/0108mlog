@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, Book, BarChart2, Layers, User } from 'lucide-react';
+import { useTouchGestures } from '../../hooks/useTouchGestures';
+import { useHaptics } from '../../hooks/useHaptics';
 
 /**
  * TabBar 컴포넌트
  * 
  * 하단 네비게이션 탭 바
  * PRD의 5개 주요 탭 (채팅, 기록, 리포트, 콘텐츠, 프로필) 지원
+ * 키보드 네비게이션 지원: 화살표 키, Home/End, Enter/Space
  */
 export interface TabBarProps {
   activeTab: string;
@@ -20,17 +23,76 @@ export const TabBar: React.FC<TabBarProps> = ({
   mode = 'day' 
 }) => {
   const allTabs = [
-    { id: 'chat', label: 'Chat', icon: <MessageCircle size={22} strokeWidth={2.5} /> },
-    { id: 'journal', label: 'Log', icon: <Book size={22} strokeWidth={2.5} /> },
-    { id: 'reports', label: 'Stats', icon: <BarChart2 size={22} strokeWidth={2.5} /> },
-    { id: 'content', label: 'Feed', icon: <Layers size={22} strokeWidth={2.5} /> },
-    { id: 'profile', label: 'Me', icon: <User size={22} strokeWidth={2.5} /> },
+    { id: 'chat', label: '채팅', icon: <MessageCircle size={22} strokeWidth={2.5} /> },
+    { id: 'journal', label: '기록', icon: <Book size={22} strokeWidth={2.5} /> },
+    { id: 'reports', label: '통계', icon: <BarChart2 size={22} strokeWidth={2.5} /> },
+    { id: 'content', label: '피드', icon: <Layers size={22} strokeWidth={2.5} /> },
+    { id: 'profile', label: '나', icon: <User size={22} strokeWidth={2.5} /> },
   ];
+
+  const activeIndex = allTabs.findIndex(tab => tab.id === activeTab);
+  const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const { triggerHaptic } = useHaptics();
+
+  // 터치 제스처 핸들러
+  const handleSwipeLeft = () => {
+    const nextIndex = activeIndex < allTabs.length - 1 ? activeIndex + 1 : 0;
+    onTabChange(allTabs[nextIndex].id);
+    triggerHaptic('light');
+  };
+
+  const handleSwipeRight = () => {
+    const prevIndex = activeIndex > 0 ? activeIndex - 1 : allTabs.length - 1;
+    onTabChange(allTabs[prevIndex].id);
+    triggerHaptic('light');
+  };
+
+  // 터치 제스처 통합
+  const touchGestures = useTouchGestures({
+    onSwipeLeft: handleSwipeLeft,
+    onSwipeRight: handleSwipeRight,
+  });
+
+  // 키보드 네비게이션 핸들러
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    let newIndex = index;
+
+    switch (e.key) {
+      case 'ArrowLeft':
+        e.preventDefault();
+        newIndex = index > 0 ? index - 1 : allTabs.length - 1;
+        break;
+      case 'ArrowRight':
+        e.preventDefault();
+        newIndex = index < allTabs.length - 1 ? index + 1 : 0;
+        break;
+      case 'Home':
+        e.preventDefault();
+        newIndex = 0;
+        break;
+      case 'End':
+        e.preventDefault();
+        newIndex = allTabs.length - 1;
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        onTabChange(allTabs[index].id);
+        return;
+      default:
+        return;
+    }
+
+    // 포커스 이동
+    buttonRefs.current[newIndex]?.focus();
+    onTabChange(allTabs[newIndex].id);
+  };
 
   return (
     <nav 
+      {...touchGestures}
       className={`
-        flex items-center justify-between px-6 py-3 gap-2
+        relative flex items-center justify-between px-6 py-3 gap-2 pb-safe-bottom
         backdrop-blur-2xl border
         rounded-xl shadow-2xl
         w-auto min-w-[320px] max-w-full transition-colors duration-500
@@ -42,22 +104,58 @@ export const TabBar: React.FC<TabBarProps> = ({
       role="navigation"
       aria-label="메인 네비게이션"
     >
-      {allTabs.map(tab => {
+      {/* 유동적 배경 (젤리처럼 이동) */}
+      {allTabs.map((tab, index) => {
+        const isActive = activeTab === tab.id;
+        if (!isActive) return null;
+        
+        return (
+          <motion.div
+            key={`background-${tab.id}`}
+            layoutId="activeTabBackground"
+            className={`
+              absolute inset-0 rounded-xl
+              ${mode === 'day' 
+                ? 'bg-brand-light/50' 
+                : 'bg-white/10'
+              }
+            `}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 30,
+            }}
+            style={{
+              left: `${index * (100 / allTabs.length)}%`,
+              width: `${100 / allTabs.length}%`,
+            }}
+          />
+        );
+      })}
+      
+      {allTabs.map((tab, index) => {
         const isActive = activeTab === tab.id;
         
         return (
           <motion.button
             key={tab.id}
-            onClick={() => onTabChange(tab.id)}
+            ref={(el) => { buttonRefs.current[index] = el; }}
+            onClick={() => {
+              onTabChange(tab.id);
+              triggerHaptic('light');
+            }}
+            onKeyDown={(e) => handleKeyDown(e, index)}
             whileTap={{ scale: 0.9 }}
+            tabIndex={isActive ? 0 : -1}
             className={`
-              relative group flex flex-col items-center justify-center
+              relative z-10 group flex flex-col items-center justify-center
               w-10 h-10 rounded-xl
               transition-all duration-300
+              focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2
               ${isActive 
                 ? mode === 'day' 
-                  ? 'text-brand-primary bg-brand-light shadow-sm' 
-                  : 'text-brand-secondary bg-white/20'
+                  ? 'text-brand-primary shadow-sm' 
+                  : 'text-brand-secondary'
                 : mode === 'day' 
                   ? 'text-slate-400 hover:text-brand-dark' 
                   : 'text-slate-500 hover:text-slate-300'
@@ -65,10 +163,13 @@ export const TabBar: React.FC<TabBarProps> = ({
             `}
             aria-label={tab.label}
             aria-current={isActive ? 'page' : undefined}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
           >
             {tab.icon}
             
-            {/* Active Indicator Dot */}
+            {/* 활성 탭 표시 점 */}
             {isActive && (
               <motion.div 
                 layoutId="activeTabDot"

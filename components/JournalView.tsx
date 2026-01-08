@@ -1,11 +1,13 @@
 
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { 
   History, Map as MapIcon, ChevronRight, X, Brain, 
   Wind, PenTool, Activity, Sparkles, HeartPulse, ArrowRight, Search, Filter
 } from 'lucide-react';
 import { TimelineView } from './TimelineView';
+import { EmotionCalendar } from './EmotionCalendar';
 // 감정 여정 시각화 컴포넌트 import: FEAT-015
 import { JourneyView } from '../src/components/journal/JourneyView';
 import { TimelineEntry, TherapyTool, EmotionType } from '../types';
@@ -23,24 +25,24 @@ import { RESILIENCE_DATA } from '../src/mock/data';
 const SUGGESTED_TOOLS: TherapyTool[] = [
     {
         id: 'cbt-1',
-        title: 'Thought Challenge',
-        description: 'Identify and reframe negative thought patterns.',
+        title: '생각 도전하기',
+        description: '부정적인 생각 패턴을 식별하고 재구성하세요.',
         icon: <Brain size={20} />,
         duration: '5 min',
         category: 'CBT'
     },
     {
         id: 'breath-1',
-        title: 'Box Breathing',
-        description: 'Regulate your nervous system instantly.',
+        title: '박스 호흡법',
+        description: '신경계를 즉시 조절하세요.',
         icon: <Wind size={20} />,
         duration: '2 min',
         category: 'Breathwork'
     },
     {
         id: 'journal-1',
-        title: 'Gratitude Log',
-        description: 'Shift focus to positive aspects of your day.',
+        title: '감사 일지',
+        description: '하루의 긍정적인 측면에 집중하세요.',
         icon: <PenTool size={20} />,
         duration: '3 min',
         category: 'Mindfulness'
@@ -48,6 +50,7 @@ const SUGGESTED_TOOLS: TherapyTool[] = [
 ];
 
 export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
+  const navigate = useNavigate();
   const [showMemoryLane, setShowMemoryLane] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEmotionFilter, setSelectedEmotionFilter] = useState<EmotionType | null>(null);
@@ -64,11 +67,11 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
           {/* Header */}
           <div className="flex justify-between items-start mb-8">
               <div>
-                  <h1 className="text-2xl font-serif font-bold text-slate-800 flex items-center gap-2">
+                  <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
                       <Sparkles className="text-brand-primary" size={24} />
                       Emotional Growth
                   </h1>
-                  <p className="text-slate-500 text-sm mt-1">Your journey to resilience.</p>
+                  <p className="text-slate-500 text-sm mt-1">A journey toward resilience.</p>
               </div>
               
               {/* Sidebar Trigger (The "Pickup" Button) */}
@@ -94,10 +97,8 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => {
-                  // 검색 입력 포커스 시 검색 페이지로 이동
-                  if (typeof window !== 'undefined' && window.location.pathname === '/journal') {
-                    window.location.href = '/journal/search';
-                  }
+                  // 검색 입력 포커스 시 검색 페이지로 이동 (SPA 네비게이션)
+                  navigate('/journal/search');
                 }}
                 placeholder="대화 내용 검색..."
                 className="w-full pl-11 pr-4 py-3 bg-white/60 border border-white/60 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-primary/50 text-slate-700 placeholder-slate-400 cursor-pointer"
@@ -220,6 +221,28 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
                       ))}
                   </div>
               </div>
+
+              {/* 4. Calendar Section - 스크롤하면 나타남 */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="mt-12"
+              >
+                  <div className="mb-6 px-2">
+                      <h3 className="text-xl font-bold text-slate-800 mb-2">Calendar</h3>
+                      <p className="text-sm text-slate-500">Your emotional journey over time</p>
+                  </div>
+                  
+                  <GlassCard className="p-6" intensity="medium" enableSpotlight={true}>
+                      <EmotionCalendar 
+                        data={timelineData} 
+                        selectedDate={null}
+                        onSelectDate={() => {}}
+                      />
+                  </GlassCard>
+              </motion.div>
           </div>
        </motion.div>
 

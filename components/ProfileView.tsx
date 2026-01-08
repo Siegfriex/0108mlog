@@ -29,10 +29,10 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
   const [view, setView] = useState<ProfileSubView>('main');
 
   const menuItems = [
-    { id: 'persona', label: 'AI Persona Setup', icon: <UserCog size={20} />, description: 'Customize your AI companion' },
-    { id: 'settings', label: 'App Settings', icon: <Settings size={20} />, description: 'Notifications, Theme' },
-    { id: 'privacy', label: 'Privacy & Data', icon: <Shield size={20} />, description: 'Manage your data & export' },
-    { id: 'conversations', label: 'Manage Conversations', icon: <MessageSquare size={20} />, description: 'View history, delete logs' },
+    { id: 'persona', label: 'AI 페르소나 설정', icon: <UserCog size={20} />, description: 'AI 동반자 커스터마이징' },
+    { id: 'settings', label: '앱 설정', icon: <Settings size={20} />, description: '알림, 테마' },
+    { id: 'privacy', label: '개인정보 및 데이터', icon: <Shield size={20} />, description: '데이터 관리 및 내보내기' },
+    { id: 'conversations', label: '대화 관리', icon: <MessageSquare size={20} />, description: '기록 보기, 삭제' },
   ];
 
   const renderContent = () => {
@@ -44,15 +44,15 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     <button onClick={() => setView('main')} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
                         <ArrowLeft size={20} className="text-slate-600" />
                     </button>
-                    <h3 className="font-bold text-slate-800">Back to Profile</h3>
+                    <h3 className="font-bold text-slate-800">프로필로 돌아가기</h3>
                 </div>
                 <PersonaEditor persona={persona} onUpdate={onUpdatePersona} />
             </div>
         );
       case 'settings':
-        return <PlaceholderView title="App Settings" onBack={() => setView('main')} />;
+        return <PlaceholderView title="앱 설정" onBack={() => setView('main')} />;
       case 'privacy':
-        return <PlaceholderView title="Privacy & Data" onBack={() => setView('main')} />;
+        return <PlaceholderView title="개인정보 및 데이터" onBack={() => setView('main')} />;
       case 'conversations':
         return (
           <div className="h-full flex flex-col">
@@ -71,7 +71,8 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
         );
       default:
         return (
-          <div className="px-4 py-6 max-w-xl mx-auto w-full h-full overflow-y-auto scrollbar-hide">
+          <div className="px-4 py-6 max-w-xl mx-auto w-full h-full flex flex-col overflow-hidden">
+            <div className="flex-1 overflow-y-auto scrollbar-hide min-h-0">
             <header className="mb-8 text-center pt-4">
                 <div className="w-24 h-24 bg-gradient-to-br from-brand-secondary to-brand-primary rounded-full mx-auto mb-4 flex items-center justify-center text-white shadow-lg shadow-brand-primary/30">
                     <User size={40} strokeWidth={1.5} />
@@ -103,13 +104,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                     </GlassCard>
                 ))}
             </div>
+            </div>
           </div>
         );
     }
   };
 
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full flex flex-col overflow-hidden">
         <AnimatePresence mode="wait">
             <motion.div
                 key={view}
@@ -117,7 +119,7 @@ export const ProfileView: React.FC<ProfileViewProps> = ({
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.2 }}
-                className="h-full"
+                className="h-full flex flex-col overflow-hidden"
             >
                 {renderContent()}
             </motion.div>

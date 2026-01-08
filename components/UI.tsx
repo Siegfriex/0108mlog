@@ -60,13 +60,13 @@ export const Button: React.FC<ButtonProps> = ({
   ...props 
 }) => {
   const variants = {
-    // Primary: Solid Brand Teal with soft shadow
+    // 기본: 부드러운 그림자가 있는 브랜드 틸 색상
     primary: 'bg-brand-primary text-white shadow-xl shadow-brand-primary/20 border border-transparent hover:bg-brand-dark hover:scale-[1.02] active:scale-[0.98]',
-    // Secondary: Outline / Stroke Brand Teal (Matches the "Counselor Intro" button style from benchmark)
+    // 보조: 브랜드 틸 외곽선 (벤치마크의 "상담사 소개" 버튼 스타일과 일치)
     secondary: 'bg-transparent text-brand-primary border border-brand-primary hover:bg-brand-light',
-    // Ghost: Subtle
+    // 고스트: 미묘한 스타일
     ghost: 'bg-transparent text-slate-500 hover:bg-brand-light/50 hover:text-brand-primary',
-    // Glass: White glass with Teal border hint
+    // 글래스: 틸 테두리 힌트가 있는 흰색 글래스
     glass: 'bg-white/40 backdrop-blur-xl border border-white/60 text-slate-800 hover:bg-white/60 shadow-glass hover:border-brand-primary/30'
   };
 
@@ -103,11 +103,11 @@ interface TabBarProps {
 
 export const TabBar: React.FC<TabBarProps> = ({ activeTab, onTabChange, mode = 'day' }) => {
   const allTabs = [
-    { id: 'chat', label: 'Chat', icon: <MessageCircle size={22} strokeWidth={2.5} /> },
-    { id: 'journal', label: 'Log', icon: <Book size={22} strokeWidth={2.5} /> },
-    { id: 'reports', label: 'Stats', icon: <BarChart2 size={22} strokeWidth={2.5} /> },
-    { id: 'content', label: 'Feed', icon: <Layers size={22} strokeWidth={2.5} /> },
-    { id: 'profile', label: 'Me', icon: <User size={22} strokeWidth={2.5} /> },
+    { id: 'chat', label: '채팅', icon: <MessageCircle size={22} strokeWidth={2.5} /> },
+    { id: 'journal', label: '기록', icon: <Book size={22} strokeWidth={2.5} /> },
+    { id: 'reports', label: '통계', icon: <BarChart2 size={22} strokeWidth={2.5} /> },
+    { id: 'content', label: '피드', icon: <Layers size={22} strokeWidth={2.5} /> },
+    { id: 'profile', label: '나', icon: <User size={22} strokeWidth={2.5} /> },
   ];
 
   return (

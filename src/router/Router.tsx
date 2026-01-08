@@ -11,6 +11,7 @@ import { MainLayout } from '../components/layout/MainLayout';
 import { OnboardingLayout } from '../components/layout/OnboardingLayout';
 import { routes } from './routes';
 import { OnboardingGuard } from './guards';
+import { ErrorBoundary } from '../components/ui';
 
 /**
  * 메인 라우터 컴포넌트
@@ -20,22 +21,24 @@ import { OnboardingGuard } from './guards';
  */
 export const AppRouter: React.FC = () => {
   return (
-    <BrowserRouter>
-      <OnboardingGuard>
-        <Routes>
-          {/* 온보딩 라우트 */}
-          <Route path="/onboarding" element={<OnboardingLayout />} />
-          
-          {/* 메인 앱 라우트 */}
-          <Route path="/*" element={<MainLayout />}>
-            {/* 중첩 라우트는 routes.tsx에서 정의 */}
-            {routes}
-          </Route>
-          
-          {/* 기본 리다이렉트 */}
-          <Route path="/" element={<Navigate to="/chat" replace />} />
-        </Routes>
-      </OnboardingGuard>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <OnboardingGuard>
+          <Routes>
+            {/* 온보딩 라우트 */}
+            <Route path="/onboarding" element={<OnboardingLayout />} />
+            
+            {/* 메인 앱 라우트 */}
+            <Route path="/*" element={<MainLayout />}>
+              {/* 중첩 라우트는 routes.tsx에서 정의 */}
+              {routes}
+            </Route>
+            
+            {/* 기본 리다이렉트 */}
+            <Route path="/" element={<Navigate to="/chat" replace />} />
+          </Routes>
+        </OnboardingGuard>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 };

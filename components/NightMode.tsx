@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Sparkles, CheckCircle, ArrowRight, Smile, Meh, Frown, CloudRain, Flame } from 'lucide-react';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
-import { GlassCard, Button } from '../src/components/ui';
+import { GlassCard, Button, CelestialBackground } from '../src/components/ui';
 import { VoicePlayer } from './VoicePlayer';
 import { generateNightModeLetter } from '../services/geminiService';
 import { CoachPersona, TimelineEntry, EmotionType } from '../types';
@@ -11,18 +11,19 @@ import { saveDiaryEntry } from '../src/services/firestore';
 interface NightModeProps {
   persona: CoachPersona;
   onSave: (entry: TimelineEntry) => void;
+  onEmotionChange?: (emotion: EmotionType | null) => void;
 }
 
-// Emotions with Lucide Icons for Night Mode (White/Light style)
+// 밤 모드용 감정 설정 (흰색/밝은 스타일)
 const NIGHT_EMOTIONS = [
-    { id: EmotionType.JOY, label: 'Joy', icon: <Smile size={40} strokeWidth={1.5} />, color: 'joy' },
-    { id: EmotionType.PEACE, label: 'Peace', icon: <Meh size={40} strokeWidth={1.5} />, color: 'peace' },
-    { id: EmotionType.ANXIETY, label: 'Anxiety', icon: <Frown size={40} strokeWidth={1.5} />, color: 'anxiety' },
-    { id: EmotionType.SADNESS, label: 'Sadness', icon: <CloudRain size={40} strokeWidth={1.5} />, color: 'sadness' },
-    { id: EmotionType.ANGER, label: 'Anger', icon: <Flame size={40} strokeWidth={1.5} />, color: 'anger' },
+    { id: EmotionType.JOY, label: '기쁨', icon: <Smile size={40} strokeWidth={1.5} />, color: 'joy' },
+    { id: EmotionType.PEACE, label: '평온', icon: <Meh size={40} strokeWidth={1.5} />, color: 'peace' },
+    { id: EmotionType.ANXIETY, label: '불안', icon: <Frown size={40} strokeWidth={1.5} />, color: 'anxiety' },
+    { id: EmotionType.SADNESS, label: '슬픔', icon: <CloudRain size={40} strokeWidth={1.5} />, color: 'sadness' },
+    { id: EmotionType.ANGER, label: '분노', icon: <Flame size={40} strokeWidth={1.5} />, color: 'anger' },
 ];
 
-export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
+export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotionChange }) => {
   const [step, setStep] = useState<'emotion' | 'diary' | 'letter'>('emotion');
   const [selectedEmotion, setSelectedEmotion] = useState<EmotionType | null>(null);
   const [intensity, setIntensity] = useState<number>(5);
@@ -66,7 +67,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
         letterContent: result,
       });
     } catch (error) {
-      console.error('Error saving diary entry:', error);
+      console.error('일기 저장 오류:', error);
       // 에러가 발생해도 로컬 상태는 저장
     }
 
@@ -85,17 +86,20 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto h-full flex flex-col px-4 text-white">
+    <div className="w-full max-w-4xl mx-auto h-full flex flex-col px-4 text-white relative overflow-hidden">
+      {/* 천체 배경 */}
+      <CelestialBackground intensity="medium" />
+      
       {/* Title */}
       <div className="py-6 shrink-0 text-center">
           <h2 className="text-2xl font-serif font-bold flex items-center justify-center gap-2 mb-2 drop-shadow-md">
             <span className="text-purple-300"><Star size={20} fill="currentColor" /></span>
-            {step === 'emotion' ? 'Evening Reflection' : step === 'diary' ? 'Your Story' : 'A Letter for You'}
+            {step === 'emotion' ? '저녁 성찰' : step === 'diary' ? '나의 이야기' : '당신을 위한 편지'}
           </h2>
           <p className="text-white/60 text-sm font-medium">
-             {step === 'emotion' ? 'How was your day feeling?' : 
-              step === 'diary' ? 'Let it all out. The night is listening.' : 
-              `A message from ${persona.name}`}
+             {step === 'emotion' ? '오늘 하루 기분은 어떠셨나요?' : 
+              step === 'diary' ? '모두 털어놓으세요. 밤이 듣고 있어요.' : 
+              `${persona.name}의 메시지`}
           </p>
       </div>
 
@@ -112,7 +116,10 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                     {NIGHT_EMOTIONS.map((emotion) => (
                         <button
                             key={emotion.id}
-                            onClick={() => setSelectedEmotion(emotion.id)}
+                            onClick={() => {
+                              setSelectedEmotion(emotion.id);
+                              onEmotionChange?.(emotion.id);
+                            }}
                             className={`
                                 aspect-square p-6 rounded-[32px] backdrop-blur-md border text-left transition-all duration-300 flex flex-col justify-center items-center gap-4 group
                                 ${selectedEmotion === emotion.id 
@@ -134,7 +141,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                         className="bg-white/5 backdrop-blur-xl rounded-[32px] p-8 border border-white/10 w-full"
                     >
                          <div className="flex justify-between text-white font-bold mb-6">
-                             <span className="text-xs uppercase tracking-wider text-purple-200">Depth of Feeling</span>
+                             <span className="text-xs uppercase tracking-wider text-purple-200">감정 깊이</span>
                              <span className="text-xl">{intensity}</span>
                          </div>
                          <input 
@@ -146,7 +153,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                             className="w-full h-2 bg-white/20 rounded-full appearance-none cursor-pointer accent-purple-300"
                         />
                         <Button onClick={handleNextStep} className="w-full mt-8 py-4 bg-purple-500 hover:bg-purple-600 border-none text-white font-bold text-lg shadow-xl shadow-purple-900/40">
-                            Continue <ArrowRight size={20} />
+                            계속하기 <ArrowRight size={20} />
                         </Button>
                     </motion.div>
                 )}
@@ -165,7 +172,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                     <textarea
                     value={diary}
                     onChange={(e) => setDiary(e.target.value)}
-                    placeholder="Write about your day..."
+                    placeholder="오늘 하루를 기록해보세요..."
                     className="w-full h-full bg-transparent resize-none focus:outline-none text-white placeholder:text-white/20 text-xl leading-relaxed p-4 font-serif"
                     autoFocus
                     />
@@ -177,7 +184,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                     className="w-full py-5 bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg border-none text-lg font-bold rounded-[24px]"
                 >
                     <Sparkles className="w-5 h-5 mr-2" />
-                    Send to Stars
+                    별에게 보내기
                 </Button>
             </motion.div>
         )}
@@ -196,8 +203,8 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                                 <Sparkles size={24} className="text-purple-200" />
                             </div>
                             <div>
-                                <h3 className="text-white font-bold text-lg">From. {persona.name}</h3>
-                                <span className="text-indigo-300 text-xs font-medium uppercase tracking-wider">AI {persona.role}</span>
+                                <h3 className="text-white font-bold text-lg">보낸이. {persona.name}</h3>
+                                <span className="text-indigo-300 text-xs font-medium uppercase tracking-wider">인공지능 {persona.role}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -217,7 +224,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                             onClick={reset}
                             className="w-full text-indigo-300 hover:text-white hover:bg-white/5 py-4 text-base"
                         >
-                            Start New Entry
+                            새 기록 시작하기
                         </Button>
                     </div>
                 </GlassCard>
@@ -234,7 +241,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                 className="fixed top-24 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-3 bg-emerald-500/90 backdrop-blur-xl text-white rounded-full shadow-2xl border border-white/20"
              >
                  <CheckCircle size={20} />
-                 <span className="font-bold text-sm">Saved successfully</span>
+                 <span className="font-bold text-sm">저장되었습니다</span>
              </motion.div>
         )}
       </AnimatePresence>

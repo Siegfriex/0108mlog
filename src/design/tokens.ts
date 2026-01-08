@@ -7,7 +7,19 @@
 
 // 브랜드 색상 (현재 구현: Teal 기반)
 export const brandColors = {
-  // 현재 구현 색상 (Teal 기반)
+  // 현재 구현 색상 (Teal 기반) - 50-900 단계 확장
+  50: '#F0FDFA',   // Teal 50 - 매우 밝은 배경
+  100: '#CCFBF1',  // Teal 100
+  200: '#99F6E4',  // Teal 200 - 현재 secondary
+  300: '#5EEAD4',  // Teal 300
+  400: '#2DD4BF',  // Teal 400
+  500: '#14B8A6',  // Teal 500
+  600: '#2A8E9E',  // Muted Teal - 현재 primary
+  700: '#0D9488',  // Teal 700
+  800: '#115E59',  // Teal 800 - 현재 dark
+  900: '#134E4A',  // Teal 900 - 매우 어두운 색상
+  
+  // 기본 별칭 (하위 호환성 유지)
   primary: '#2A8E9E',      // Muted Teal - 현재 사용 중
   secondary: '#99F6E4',    // Teal 200 - 현재 사용 중
   accent: '#FDA4AF',       // Soft Pink - 현재 사용 중
@@ -18,6 +30,25 @@ export const brandColors = {
   // primary: '#FF6B9D',   // 핑크, 벚꽃 컨셉 (PRD)
   // secondary: '#87CEEB', // 하늘색, 평온 (PRD)
   // accent: '#90EE90',    // 연두색, 성장 (PRD)
+} as const;
+
+// 밤 모드 전용 색상
+export const nightModeColors = {
+  background: {
+    primary: '#0F172A',    // Slate 900 - 매우 어두운 배경
+    secondary: '#1E293B',   // Slate 800
+    tertiary: '#334155',    // Slate 700
+  },
+  text: {
+    primary: '#F1F5F9',     // Slate 100 - 밝은 텍스트
+    secondary: '#CBD5E1',  // Slate 300
+    muted: '#94A3B8',      // Slate 400
+  },
+  accent: {
+    purple: '#A78BFA',     // Purple 400 - 밤 모드 액센트
+    indigo: '#818CF8',     // Indigo 400
+    cyan: '#22D3EE',       // Cyan 400
+  },
 } as const;
 
 // 감정별 색상 (PRD와 일치)
@@ -161,4 +192,67 @@ export const breakpoints = {
   lg: '1024px',
   xl: '1280px',
   '2xl': '1536px',
+} as const;
+
+// 감정별 그라디언트
+export const emotionGradients = {
+  joy: {
+    light: 'from-amber-100 via-yellow-50 to-orange-50',
+    medium: 'from-amber-200 via-yellow-100 to-orange-100',
+    dark: 'from-amber-400 via-yellow-300 to-orange-300',
+  },
+  peace: {
+    light: 'from-teal-50 via-cyan-50 to-blue-50',
+    medium: 'from-teal-100 via-cyan-100 to-blue-100',
+    dark: 'from-teal-300 via-cyan-300 to-blue-300',
+  },
+  anxiety: {
+    light: 'from-orange-50 via-red-50 to-amber-50',
+    medium: 'from-orange-100 via-red-100 to-amber-100',
+    dark: 'from-orange-300 via-red-300 to-amber-300',
+  },
+  sadness: {
+    light: 'from-indigo-50 via-purple-50 to-slate-50',
+    medium: 'from-indigo-100 via-purple-100 to-slate-100',
+    dark: 'from-indigo-300 via-purple-300 to-slate-300',
+  },
+  anger: {
+    light: 'from-rose-50 via-red-50 to-orange-50',
+    medium: 'from-rose-100 via-red-100 to-orange-100',
+    dark: 'from-rose-300 via-red-300 to-orange-300',
+  },
+} as const;
+
+// 시간대별 테마
+export const timeBasedThemes = {
+  dawn: {
+    // 새벽 (04:00-07:00)
+    background: 'from-purple-50 via-pink-50 to-orange-50',
+    accent: '#F472B6', // Pink 400
+    mood: 'peaceful',
+  },
+  morning: {
+    // 아침 (07:00-12:00)
+    background: 'from-blue-50 via-cyan-50 to-teal-50',
+    accent: '#2A8E9E', // Brand Primary
+    mood: 'energetic',
+  },
+  afternoon: {
+    // 오후 (12:00-17:00)
+    background: 'from-yellow-50 via-amber-50 to-orange-50',
+    accent: '#FCD34D', // Amber 300
+    mood: 'active',
+  },
+  evening: {
+    // 저녁 (17:00-20:00)
+    background: 'from-orange-50 via-rose-50 to-pink-50',
+    accent: '#FDA4AF', // Brand Accent
+    mood: 'calm',
+  },
+  night: {
+    // 밤 (20:00-04:00)
+    background: 'from-indigo-950 via-purple-950 to-slate-950',
+    accent: '#A78BFA', // Purple 400
+    mood: 'reflective',
+  },
 } as const;

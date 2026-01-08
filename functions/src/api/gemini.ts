@@ -15,7 +15,7 @@ import * as logger from "firebase-functions/logger";
 export const generateDayModeResponse = onCall(
   {
     region: "asia-northeast3",
-    timeoutSeconds: 30, // AI 응답 생성에는 더 긴 시간 필요
+    timeoutSeconds: 90, // 인사이트가 풍부한 응답을 위한 충분한 시간
     memory: "512MiB", // AI 모델 호출에는 더 많은 메모리 필요
     maxInstances: 10,
   },

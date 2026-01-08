@@ -6,7 +6,7 @@ import {
   PolarGrid, PolarAngleAxis, PolarRadiusAxis, AreaChart, Area, XAxis, YAxis, 
   CartesianGrid, Defs, LinearGradient, Stop 
 } from 'recharts';
-import { X, TrendingUp, BarChart2, Zap, ArrowRight, PieChart as PieChartIcon, Activity, Hexagon } from 'lucide-react';
+import { X, TrendingUp, BarChart2, Zap, ArrowRight, PieChart as PieChartIcon, Activity, Hexagon, Users, Heart, Sparkles } from 'lucide-react';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
 import { GlassCard, LoadingSpinner, Button } from '../src/components/ui';
 import { TimelineEntry, EmotionType } from '../types';
@@ -14,6 +14,7 @@ import { generateMonthlyNarrative } from '../services/geminiService';
 
 // 목업 데이터 import: 중앙화된 목업 데이터 사용
 import { RADAR_DATA, AREA_DATA } from '../src/mock/data';
+import { SADNESS_ACTIVITIES, COMMUNITY_INSIGHTS } from '../src/mock/insightData';
 
 interface ReportViewProps {
   timelineData: TimelineEntry[];
@@ -22,10 +23,11 @@ interface ReportViewProps {
 export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
   const [showModal, setShowModal] = useState(false);
   const [narrative, setNarrative] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // 초기 로딩을 false로 변경 (필요할 때만 로드)
   const [reportPeriod, setReportPeriod] = useState<'weekly' | 'monthly'>('monthly');
+  const [narrativeLoaded, setNarrativeLoaded] = useState(false);
 
-  // Dynamic Pie Data Calculation
+  // 동적 파이 차트 데이터 계산
   const pieData = useMemo(() => {
     const counts: Record<string, number> = {
       [EmotionType.JOY]: 0,
@@ -41,48 +43,57 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
       }
     });
 
-    // If no data, provide a placeholder to avoid empty chart
+    // 데이터가 없으면 빈 차트를 방지하기 위해 플레이스홀더 제공
     if (timelineData.length === 0) {
        return [
-         { name: 'Peace', value: 1, fill: '#2A8E9E' }, // Brand Primary
-         { name: 'Joy', value: 1, fill: '#FCD34D' }, // Amber
-         { name: 'Rest', value: 1, fill: '#E2E8F0' }, // Slate
+         { name: '평온', value: 1, fill: '#2A8E9E' }, // 브랜드 기본 색상
+         { name: '기쁨', value: 1, fill: '#FCD34D' }, // 앰버 색상
+         { name: '휴식', value: 1, fill: '#E2E8F0' }, // 슬레이트 색상
        ];
     }
 
-    // Map to chart format
+    // 차트 형식으로 매핑
     return Object.entries(counts)
       .filter(([_, value]) => value > 0)
       .map(([key, value]) => {
         let fill = '#CBD5E1';
         let name = key;
         switch(key) {
-           case EmotionType.JOY: fill = '#FCD34D'; name = 'Joy'; break; // Amber 300
-           case EmotionType.PEACE: fill = '#2A8E9E'; name = 'Peace'; break; // Brand Primary
-           case EmotionType.ANXIETY: fill = '#FDA4AF'; name = 'Anxiety'; break; // Brand Accent (Pink)
-           case EmotionType.SADNESS: fill = '#94A3B8'; name = 'Sadness'; break; // Slate 400
-           case EmotionType.ANGER: fill = '#F87171'; name = 'Anger'; break; // Red 400
+           case EmotionType.JOY: fill = '#FCD34D'; name = '기쁨'; break; // 앰버 300
+           case EmotionType.PEACE: fill = '#2A8E9E'; name = '평온'; break; // 브랜드 기본 색상
+           case EmotionType.ANXIETY: fill = '#FDA4AF'; name = '불안'; break; // 브랜드 액센트 (핑크)
+           case EmotionType.SADNESS: fill = '#94A3B8'; name = '슬픔'; break; // 슬레이트 400
+           case EmotionType.ANGER: fill = '#F87171'; name = '분노'; break; // 레드 400
         }
         return { name, value, fill };
       });
   }, [timelineData]);
 
-  useEffect(() => {
-    const fetchNarrative = async () => {
-      try {
-        const text = await generateMonthlyNarrative();
-        setNarrative(text);
-      } catch (error) {
-        console.error('Error fetching narrative:', error);
-        setNarrative('리포트를 불러오는 중 오류가 발생했습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchNarrative();
-  }, []);
+  // 서사는 모달이 열릴 때만 로드 (지연 로딩)
+  const loadNarrative = async () => {
+    if (narrativeLoaded) return; // 이미 로드된 경우 스킵
+    
+    setLoading(true);
+    try {
+      const text = await generateMonthlyNarrative();
+      setNarrative(text);
+      setNarrativeLoaded(true);
+    } catch (error) {
+      console.error('서사 가져오기 오류:', error);
+      setNarrative('리포트를 불러오는 중 오류가 발생했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Custom Tooltip for Recharts
+  // 모달이 열릴 때만 서사 로드
+  useEffect(() => {
+    if (showModal && !narrativeLoaded) {
+      loadNarrative();
+    }
+  }, [showModal]);
+
+  // Recharts용 커스텀 툴팁
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -100,7 +111,8 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 h-full flex flex-col">
+    <div className="w-full h-full flex flex-col overflow-hidden">
+      <div className="max-w-4xl mx-auto w-full h-full flex flex-col px-4 py-6">
         <header className="flex items-center justify-between mb-6 shrink-0">
              <div>
                 <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
@@ -128,7 +140,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
           </Button>
         </div>
 
-        <div className="flex-1 overflow-y-auto scrollbar-hide pb-24 space-y-6">
+        <div className="flex-1 overflow-y-auto scrollbar-hide pb-24 space-y-6 min-h-0">
             {/* Monthly Retrospective Card */}
             <div 
                 className="
@@ -318,6 +330,168 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
                     </div>
                 </GlassCard>
             </div>
+
+            {/* 인사이트 섹션 - 인스타 릴스 느낌 */}
+            <div className="mt-8">
+                <div className="flex items-center gap-2 mb-6">
+                    <Sparkles className="text-brand-primary" size={24} />
+                    <h2 className="text-xl font-bold text-slate-800">Personalized Insights</h2>
+                </div>
+
+                {/* 우울한 기분에 맞는 액티비티 카드 (인스타 릴스 스타일) */}
+                <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-slate-700 mb-4 px-2">
+                        우울한 기분에 가장 알맞는 활동
+                    </h3>
+                    <div className="flex gap-4 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory">
+                        {SADNESS_ACTIVITIES.map((activity, index) => (
+                            <motion.div
+                                key={activity.id}
+                                initial={{ opacity: 0, x: 50 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.1 }}
+                                className="flex-shrink-0 w-[320px] snap-center"
+                            >
+                                <GlassCard 
+                                    className="!p-6 h-[420px] flex flex-col relative overflow-hidden group cursor-pointer"
+                                    intensity="high"
+                                    enableSpotlight={true}
+                                >
+                                    {/* 배경 그라데이션 */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/50 via-purple-50/30 to-pink-50/50 opacity-60 group-hover:opacity-80 transition-opacity" />
+                                    
+                                    <div className="relative z-10 flex flex-col h-full">
+                                        {/* 카테고리 배지 */}
+                                        <div className="flex items-center justify-between mb-4">
+                                            <span className="px-3 py-1 bg-brand-primary/10 text-brand-primary rounded-full text-xs font-semibold">
+                                                {activity.category}
+                                            </span>
+                                            <div className="flex items-center gap-1 text-xs text-slate-500">
+                                                <Heart size={12} className="fill-red-400 text-red-400" />
+                                                <span>{activity.effectiveness}/10</span>
+                                            </div>
+                                        </div>
+
+                                        {/* 제목 */}
+                                        <h4 className="text-xl font-bold text-slate-800 mb-3 leading-tight">
+                                            {activity.title}
+                                        </h4>
+
+                                        {/* 설명 */}
+                                        <p className="text-sm text-slate-600 leading-relaxed mb-6 flex-1">
+                                            {activity.description}
+                                        </p>
+
+                                        {/* 태그 */}
+                                        <div className="flex flex-wrap gap-2 mb-4">
+                                            {activity.tags.map(tag => (
+                                                <span 
+                                                    key={tag}
+                                                    className="px-2 py-1 bg-white/60 backdrop-blur-sm rounded-full text-xs text-slate-600 border border-white/40"
+                                                >
+                                                    #{tag}
+                                                </span>
+                                            ))}
+                                        </div>
+
+                                        {/* 하단 정보 */}
+                                        <div className="flex items-center justify-between pt-4 border-t border-white/40">
+                                            <span className="text-xs text-slate-500 font-medium">
+                                                ⏱ {activity.duration}
+                                            </span>
+                                            <Button 
+                                                variant="primary" 
+                                                className="!px-4 !py-2 text-xs"
+                                                onClick={() => {}}
+                                            >
+                                                시작하기
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </GlassCard>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* 커뮤니티 인사이트 카드 */}
+                <div className="mb-8">
+                    <h3 className="text-lg font-semibold text-slate-700 mb-4 px-2 flex items-center gap-2">
+                        <Users size={20} className="text-brand-primary" />
+                        나와 같은 기분을 가진 사람들은 무엇을 할까?
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {COMMUNITY_INSIGHTS.map((insight, index) => (
+                            <motion.div
+                                key={insight.id}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: index * 0.1 }}
+                            >
+                                <GlassCard 
+                                    className="!p-6 relative overflow-hidden group"
+                                    intensity="medium"
+                                    enableSpotlight={true}
+                                >
+                                    {/* 배경 효과 */}
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 rounded-full blur-2xl opacity-50 group-hover:opacity-70 transition-opacity" />
+                                    
+                                    <div className="relative z-10">
+                                        {/* 헤더 */}
+                                        <div className="flex items-center justify-between mb-4">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center text-white font-bold text-sm">
+                                                    {insight.percentage}%
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-bold text-slate-800">{insight.emotion}</h4>
+                                                    <p className="text-xs text-slate-500">이번 주</p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* 제목 */}
+                                        <h5 className="text-base font-bold text-slate-800 mb-2">
+                                            {insight.title}
+                                        </h5>
+
+                                        {/* 설명 */}
+                                        <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                                            {insight.description}
+                                        </p>
+
+                                        {/* 활동 리스트 */}
+                                        <div className="space-y-2">
+                                            {insight.activities.map((activity, i) => (
+                                                <motion.div
+                                                    key={i}
+                                                    initial={{ opacity: 0, x: -10 }}
+                                                    whileInView={{ opacity: 1, x: 0 }}
+                                                    viewport={{ once: true }}
+                                                    transition={{ delay: i * 0.05 }}
+                                                    className="flex items-center gap-3 p-3 bg-white/60 backdrop-blur-sm rounded-xl border border-white/40"
+                                                >
+                                                    <div className="w-6 h-6 rounded-full bg-brand-primary/10 flex items-center justify-center text-brand-primary text-xs font-bold flex-shrink-0">
+                                                        {i + 1}
+                                                    </div>
+                                                    <span className="text-sm text-slate-700 font-medium flex-1">
+                                                        {activity.split(' (')[0]}
+                                                    </span>
+                                                    <span className="text-xs text-brand-primary font-semibold">
+                                                        {activity.match(/\((\d+%)\)/)?.[1]}
+                                                    </span>
+                                                </motion.div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </GlassCard>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
 
         {/* Narrative Modal */}
@@ -378,6 +552,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
                 </motion.div>
             )}
         </AnimatePresence>
+      </div>
     </div>
   );
 };

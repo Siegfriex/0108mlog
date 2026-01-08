@@ -20,8 +20,10 @@ import {
   FirestoreEmotionData,
   FirestoreDiaryData,
   FirestoreMicroActionLog,
+  FirestoreUserProfile,
 } from '../types/firestore';
 import { EmotionType, CoachPersona } from '../../../types';
+import { getDoc, updateDoc } from 'firebase/firestore';
 
 /**
  * 현재 사용자 ID 가져오기
@@ -217,6 +219,87 @@ export async function saveMicroActionLog(
     return docRef.id;
   } catch (error) {
     console.error('Error saving micro action log:', error);
+    throw error;
+  }
+}
+
+/**
+ * 사용자 설정 저장/업데이트
+ * 
+ * @param settings 사용자 설정 데이터
+ * @returns {Promise<void>}
+ */
+export async function saveUserSettings(settings: {
+  reminderEnabled?: boolean;
+  reminderTime?: string; // HH:mm 형식
+  reminderFrequency?: 'daily' | 'twice' | 'none'; // 하루 1회, 하루 2회, 없음
+  language?: 'ko' | 'en';
+  autoDayNightMode?: boolean;
+  predictiveNudgeEnabled?: boolean;
+  snoozeUntil?: Date;
+}): Promise<void> {
+  try {
+    const userId = getCurrentUserId();
+    const userProfileRef = doc(db, FIRESTORE_COLLECTIONS.USER_PROFILES, userId);
+
+    // 기존 프로필 확인
+    const userProfileSnap = await getDoc(userProfileRef);
+    
+    const updateData: Partial<FirestoreUserProfile> = {
+      updatedAt: serverTimestamp() as Timestamp,
+      preferences: {
+        ...(userProfileSnap.exists() ? userProfileSnap.data().preferences : {}),
+        reminderEnabled: settings.reminderEnabled ?? userProfileSnap.data()?.preferences?.reminderEnabled ?? true,
+        reminderTime: settings.reminderTime ?? userProfileSnap.data()?.preferences?.reminderTime ?? '09:00',
+        language: settings.language ?? userProfileSnap.data()?.preferences?.language ?? 'ko',
+        ...(settings.reminderFrequency && { reminderFrequency: settings.reminderFrequency }),
+        ...(settings.autoDayNightMode !== undefined && { autoDayNightMode: settings.autoDayNightMode }),
+        ...(settings.predictiveNudgeEnabled !== undefined && { predictiveNudgeEnabled: settings.predictiveNudgeEnabled }),
+        ...(settings.snoozeUntil && { snoozeUntil: Timestamp.fromDate(settings.snoozeUntil) }),
+      },
+    };
+
+    if (userProfileSnap.exists()) {
+      await updateDoc(userProfileRef, updateData);
+    } else {
+      // 프로필이 없으면 생성
+      await setDoc(userProfileRef, {
+        userId,
+        persona: {
+          name: 'AI 동반자',
+          mbti: 'INFJ',
+          tone: 'warm',
+          traits: [],
+        },
+        createdAt: serverTimestamp() as Timestamp,
+        onboardingCompleted: false,
+        ...updateData,
+      });
+    }
+  } catch (error) {
+    console.error('Error saving user settings:', error);
+    throw error;
+  }
+}
+
+/**
+ * 사용자 설정 불러오기
+ * 
+ * @returns {Promise<FirestoreUserProfile['preferences'] | null>} 사용자 설정 또는 null
+ */
+export async function getUserSettings(): Promise<FirestoreUserProfile['preferences'] | null> {
+  try {
+    const userId = getCurrentUserId();
+    const userProfileRef = doc(db, FIRESTORE_COLLECTIONS.USER_PROFILES, userId);
+    const userProfileSnap = await getDoc(userProfileRef);
+
+    if (userProfileSnap.exists()) {
+      return userProfileSnap.data().preferences || null;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error getting user settings:', error);
     throw error;
   }
 }

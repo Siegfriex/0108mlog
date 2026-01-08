@@ -10,7 +10,7 @@ import { ContentGallery } from './components/ContentGallery';
 import { AIChatbot } from './components/AIChatbot';
 import { SafetyLayer } from './components/SafetyLayer';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
-import { TabBar, NoiseOverlay } from './src/components/ui';
+import { TabBar, NoiseOverlay, AmbientBackground, CelestialBackground, ErrorBoundary } from './src/components/ui';
 // 온보딩 플로우 import: FEAT-011
 import { OnboardingFlow } from './src/components/onboarding';
 import type { OnboardingData } from './src/components/onboarding';
@@ -18,6 +18,8 @@ import { CoachPersona, TimelineEntry, EmotionType } from './types';
 import { ShieldAlert, Moon, Sun, Bot } from 'lucide-react';
 // 목업 데이터 import: 중앙화된 목업 데이터 사용
 import { INITIAL_TIMELINE } from './src/mock/data';
+// 모바일 최적화 훅
+import { useMobileOptimization } from './src/hooks/useMobileOptimization';
 
 /**
  * 기본 AI 페르소나 설정
@@ -31,6 +33,9 @@ const DEFAULT_PERSONA: CoachPersona = {
 };
 
 const App: React.FC = () => {
+  // 모바일 최적화 훅
+  const { isMobile, shouldReduceAnimations } = useMobileOptimization();
+  
   // 온보딩 완료 여부 확인 (FEAT-011)
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean>(() => {
     return localStorage.getItem('onboarding_completed') === 'true';
@@ -43,6 +48,7 @@ const App: React.FC = () => {
   const [showSafetyLayer, setShowSafetyLayer] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
   const [isImmersive, setIsImmersive] = useState(false);
+  const [currentEmotion, setCurrentEmotion] = useState<EmotionType | null>(null);
 
   /**
    * 온보딩 완료 핸들러
@@ -69,11 +75,12 @@ const App: React.FC = () => {
           ? <DayMode 
               persona={persona} 
               onSave={handleSaveEntry} 
-              setImmersive={setIsImmersive}
+              setImmersive={setImmersive}
               onNavigateToReports={() => setActiveTab('reports')}
               onOpenSafety={() => setShowSafetyLayer(true)}
+              onEmotionChange={setCurrentEmotion}
             /> 
-          : <NightMode persona={persona} onSave={handleSaveEntry} />;
+          : <NightMode persona={persona} onSave={handleSaveEntry} onEmotionChange={setCurrentEmotion} />;
       case 'journal': return <JournalView timelineData={timelineData} />;
       case 'content': return <ContentGallery persona={persona} />;
       case 'reports': return <ReportView timelineData={timelineData} />;
@@ -108,25 +115,22 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className={`
-      relative w-full h-[100dvh] overflow-hidden font-sans transition-colors duration-700 flex flex-col items-center
-      ${mode === 'day' ? 'text-slate-900 bg-[#F5F9FA]' : 'text-white bg-[#050505]'}
-    `}>
+    <ErrorBoundary>
+      <div className={`
+        relative w-full h-[100dvh] overflow-hidden font-sans transition-colors duration-700 flex flex-col items-center pt-safe-top
+        ${mode === 'day' ? 'text-slate-900 bg-[#F5F9FA]' : 'text-white bg-[#050505]'}
+      `}>
       <NoiseOverlay />
 
-      {/* 1. Background Atmosphere (Stable & Subtle - Teal Theme) */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-          {/* Main Top Gradient */}
-          <div className={`
-            absolute top-[-10%] left-1/2 -translate-x-1/2 w-[120vw] h-[60vh] rounded-[100%] blur-[100px] opacity-40 transition-colors duration-1000 
-            ${mode === 'day' ? 'bg-gradient-to-b from-brand-secondary to-transparent' : 'bg-gradient-to-b from-brand-dark to-transparent'}
-          `} />
-          {/* Bottom Floating Orb - Complimentary Color (Soft Pink/Peach) */}
-          <div className={`
-            absolute bottom-[-20%] left-[-10%] w-[80vw] h-[80vw] rounded-full filter blur-[120px] mix-blend-multiply opacity-30 animate-float 
-            ${mode === 'day' ? 'bg-brand-accent' : 'bg-brand-primary/20'}
-          `} />
-      </div>
+      {/* Ambient 배경: 감정 반응 구체 시스템 (낮 모드) */}
+      {mode === 'day' && (
+        <AmbientBackground emotion={currentEmotion || undefined} intensity={5} mode={mode} />
+      )}
+
+      {/* 천체 배경: 별, 달, 오로라 효과 (밤 모드) */}
+      {mode === 'night' && (
+        <CelestialBackground intensity="medium" />
+      )}
 
       {/* 2. Global Navigation Bar (GNB) - Strictly Constrained Width */}
       <div className={`
@@ -208,7 +212,8 @@ const App: React.FC = () => {
         {showChatbot && <AIChatbot persona={persona} onClose={() => setShowChatbot(false)} />}
         {showSafetyLayer && <SafetyLayer onClose={() => setShowSafetyLayer(false)} />}
       </AnimatePresence>
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 };
 

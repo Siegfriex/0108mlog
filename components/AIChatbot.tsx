@@ -16,7 +16,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ persona, onClose }) => {
     {
       id: 'welcome',
       role: 'assistant',
-      content: `Hello! I'm ${persona.name}. How can I support you today?`,
+      content: `안녕하세요! 저는 ${persona.name}입니다. 오늘 어떻게 도와드릴까요?`,
       timestamp: new Date()
     }
   ]);
@@ -57,7 +57,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ persona, onClose }) => {
 
       setMessages(prev => [...prev, aiMsg]);
     } catch (error) {
-      console.error('Chatbot response error:', error);
+      console.error('챗봇 응답 오류:', error);
       const errorMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
@@ -86,9 +86,9 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ persona, onClose }) => {
           </div>
           <div>
             <h2 className="font-bold text-slate-800 text-base flex items-center gap-1.5">
-              AI Counselor <Sparkles size={12} className="text-amber-500" fill="currentColor" />
+              AI 상담사 <Sparkles size={12} className="text-amber-500" fill="currentColor" />
             </h2>
-            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Powered by Gemini 3.0</p>
+            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Gemini 3.0 기반</p>
           </div>
         </div>
         <button 
@@ -144,7 +144,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ persona, onClose }) => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="Type your message..."
+              placeholder="메시지를 입력하세요..."
               className="w-full bg-slate-50 border border-slate-200 rounded-full pl-6 pr-14 py-3.5 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:bg-white transition-all text-sm text-slate-700 placeholder:text-slate-400"
               disabled={isLoading}
               autoFocus

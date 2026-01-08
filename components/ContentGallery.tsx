@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, XAxis, Tooltip as RechartsTooltip } from 'recharts';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
-import { Button } from '../src/components/ui';
+import { Button, PullToRefresh } from '../src/components/ui';
 import { VoicePlayer } from './VoicePlayer';
 import { ContentData, CoachPersona } from '../types';
 import { generateHealingContent } from '../services/geminiService';
@@ -28,7 +28,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedMood, setSelectedMood] = useState<string>('지친 하루');
   
-  // Infinite Scroll Refs
+  // 무한 스크롤 참조
   const loaderRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -44,7 +44,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
         if (!append) setSelectedId(newContent.id);
       }
     } catch (error) {
-      console.error('Error generating content:', error);
+      console.error('콘텐츠 생성 오류:', error);
       // 사용자에게 알림 표시 (선택적)
     } finally {
       setIsGenerating(false);
@@ -101,18 +101,24 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
     }
   };
 
-  // Get current month name
+  // 현재 월 이름 가져오기
   const monthName = new Date().toLocaleString('default', { month: 'long' });
 
+  const handleRefresh = async () => {
+    await fetchContent(false);
+  };
+
   return (
-    <div className="h-full flex flex-col max-w-full mx-auto relative bg-[#FDFDFD]" ref={scrollContainerRef}>
-      <div className="flex-1 overflow-y-auto scrollbar-hide py-6 px-4">
+    <div className="h-full w-full flex flex-col overflow-hidden relative">
+      <div className="h-full flex flex-col max-w-full mx-auto relative bg-[#FDFDFD]" ref={scrollContainerRef}>
+        <PullToRefresh onRefresh={handleRefresh}>
+          <div className="flex-1 overflow-y-auto scrollbar-hide py-6 px-4 min-h-0">
         
         {/* 1. Header & Insight Section (MindDoc Style) */}
         <div className="mb-10 relative">
             <div className="flex items-center justify-between mb-6 px-2">
                  <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                    Insight
+                    인사이트
                  </h2>
                  <span className="text-sm font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full flex items-center gap-2">
                     <Calendar size={14} /> {monthName} 2024
@@ -129,7 +135,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                     className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#FF8E6E] text-white px-5 py-2.5 rounded-2xl shadow-lg shadow-orange-300/40 z-20 flex items-center gap-2"
                  >
                     <span className="text-xl">🙂</span>
-                    <span className="text-sm font-bold">Your mood is improving</span>
+                    <span className="text-sm font-bold">기분이 좋아지고 있어요</span>
                     {/* Speech Bubble Arrow */}
                     <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#FF8E6E] rotate-45" />
                  </motion.div>
@@ -169,17 +175,17 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                  
                  <div className="mt-4 flex justify-between items-end">
                     <div>
-                        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Weekly Pattern</p>
-                        <h3 className="text-slate-700 font-bold text-lg">Stable Flow</h3>
+                        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">주간 패턴</p>
+                        <h3 className="text-slate-700 font-bold text-lg">안정적인 흐름</h3>
                     </div>
                     <div className="flex gap-4 text-center">
                         <div>
                             <span className="block text-xl font-bold text-slate-800">21</span>
-                            <span className="text-[10px] text-slate-400 font-bold uppercase">Answers</span>
+                            <span className="text-[10px] text-slate-400 font-bold uppercase">답변</span>
                         </div>
                         <div>
                             <span className="block text-xl font-bold text-slate-800">5</span>
-                            <span className="text-[10px] text-slate-400 font-bold uppercase">Notes</span>
+                            <span className="text-[10px] text-slate-400 font-bold uppercase">메모</span>
                         </div>
                     </div>
                  </div>
@@ -192,7 +198,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                     <span className="flex items-center gap-1.5 text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">
                          <Globe size={12} /> Grounded AI
                     </span>
-                    <h4 className="font-bold text-slate-700 text-sm">Discover Healing Content</h4>
+                    <h4 className="font-bold text-slate-700 text-sm">치유 콘텐츠 발견하기</h4>
                 </div>
                 <div className="relative z-10 pr-2">
                      <Button 
@@ -202,7 +208,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                         className="!rounded-2xl !py-3 !px-5 bg-slate-900 text-white shadow-md text-xs"
                     >
                         {isGenerating ? <RefreshCw size={14} className="animate-spin" /> : <Search size={14} />}
-                        <span className="ml-2">Generate</span>
+                        <span className="ml-2">생성</span>
                     </Button>
                 </div>
             </div>
@@ -229,13 +235,13 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
         {/* 2. Content Feed (Asymmetrical Grid) */}
         <div>
             <div className="flex items-center justify-between mb-4 px-2">
-                <h3 className="font-bold text-slate-800">For You</h3>
-                <button className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors">See All</button>
+                <h3 className="font-bold text-slate-800">당신을 위해</h3>
+                <button className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors">전체 보기</button>
             </div>
             
             <div className="grid grid-cols-2 gap-4 pb-24">
                 {contents.map((content, idx) => {
-                    // Feature the first item visually
+                    // 첫 번째 항목을 시각적으로 강조
                     const isFeatured = idx === 0;
                     return (
                         <GalleryItem 
@@ -262,7 +268,8 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                      )}
                 </div>
             </div>
-        </div>
+          </div>
+        </PullToRefresh>
       </div>
 
       {/* Expanded Modal */}
@@ -284,7 +291,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
               if (!selectedContent) return null;
               
               const colorClasses = getColor(selectedContent.type); // e.g., 'from-orange-100 to-rose-100 text-rose-600'
-              // Extract bg-gradient part approx for the header
+              // 헤더용 배경 그라디언트 부분 추출
               const bgGradient = colorClasses.split(' ').slice(0, 2).join(' '); // 'from-orange-100 to-rose-100'
 
               return (
@@ -318,7 +325,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                                 {selectedContent.title}
                             </motion.h2>
                             <p className="text-slate-600/80 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                                By {selectedContent.author} <span className="w-1 h-1 rounded-full bg-slate-400" /> {selectedContent.tags[0]}
+                                {selectedContent.author} <span className="w-1 h-1 rounded-full bg-slate-400" /> {selectedContent.tags[0]}
                             </p>
                        </div>
                    </motion.div>
@@ -339,7 +346,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                                     <MessageSquareQuote size={20} />
                                 </div>
                                 <div>
-                                    <h4 className="text-xs font-bold text-indigo-900 uppercase tracking-widest mb-1">Curator's Note</h4>
+                                    <h4 className="text-xs font-bold text-indigo-900 uppercase tracking-widest mb-1">큐레이터 노트</h4>
                                     <p className="text-sm text-slate-600 italic leading-relaxed">{selectedContent.commentary}</p>
                                 </div>
                             </div>
@@ -383,7 +390,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
   );
 };
 
-// Sub-component for individual items (MindDoc Card Style)
+// 개별 항목용 서브 컴포넌트 (MindDoc 카드 스타일)
 const GalleryItem: React.FC<{ 
     content: ContentData; 
     getColor: (t: string) => string; 
@@ -392,8 +399,8 @@ const GalleryItem: React.FC<{
     isFeatured?: boolean;
 }> = ({ content, getColor, getIcon, onClick, isFeatured }) => {
     const colorClasses = getColor(content.type); // "from-x to-y text-z"
-    // We need to parse this string to apply different classes to bg and text
-    // Simple heuristic: Background is gradient, Text is text color class
+    // 배경과 텍스트에 다른 클래스를 적용하기 위해 이 문자열을 파싱해야 함
+    // 간단한 휴리스틱: 배경은 그라디언트, 텍스트는 텍스트 색상 클래스
     const bgGradient = colorClasses.split(' ').slice(0, 2).join(' '); // 'from-orange-100 to-rose-100'
     const textColor = colorClasses.split(' ').pop(); // 'text-rose-600'
 

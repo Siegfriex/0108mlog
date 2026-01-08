@@ -73,14 +73,20 @@ export const EmotionCalendar: React.FC<EmotionCalendarProps> = ({ data, selected
   return (
     <div className="w-full flex flex-col items-center">
         {/* Calendar Header */}
-        <div className="flex items-center gap-4 mb-6">
-            <button onClick={prevMonth} className="p-2 rounded-full hover:bg-slate-100 text-slate-400">
+        <div className="flex items-center justify-between w-full mb-6 px-2">
+            <button 
+                onClick={prevMonth} 
+                className="p-2 rounded-xl hover:bg-white/60 backdrop-blur-sm text-slate-500 hover:text-brand-primary transition-all"
+            >
                 <ChevronLeft size={20} />
             </button>
             <h2 className="text-xl font-bold text-slate-800">
                 {year}.{String(month + 1).padStart(2, '0')}
             </h2>
-            <button onClick={nextMonth} className="p-2 rounded-full hover:bg-slate-100 text-slate-400">
+            <button 
+                onClick={nextMonth} 
+                className="p-2 rounded-xl hover:bg-white/60 backdrop-blur-sm text-slate-500 hover:text-brand-primary transition-all"
+            >
                 <ChevronRight size={20} />
             </button>
         </div>
@@ -117,16 +123,20 @@ export const EmotionCalendar: React.FC<EmotionCalendarProps> = ({ data, selected
                              </span>
                         </div>
                         
-                        <div className={`
-                            w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300
-                            ${selected ? 'bg-slate-100 ring-2 ring-indigo-200 ring-offset-2' : ''}
-                        `}>
+                        <motion.div 
+                            className={`
+                                w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300
+                                ${selected ? 'ring-2 ring-brand-primary ring-offset-2 ring-offset-white' : ''}
+                            `}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                        >
                             {entry ? (
                                 <EmotionBlob type={entry.emotion} size="md" />
                             ) : (
-                                <div className="w-10 h-10 rounded-full bg-slate-50 border border-dashed border-slate-200" />
+                                <div className="w-10 h-10 rounded-full bg-slate-50/50 border border-dashed border-slate-200/50" />
                             )}
-                        </div>
+                        </motion.div>
                     </div>
                 );
             })}

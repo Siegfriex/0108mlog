@@ -54,21 +54,20 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onSkip }) 
         </p>
       </motion.div>
 
-      {/* 슬로건 */}
+      {/* 히어로 메시지 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="space-y-2"
+        className="space-y-4"
       >
-        <p className="text-lg text-slate-700 font-medium leading-relaxed">
-          30초 대화로 정리하고,
-        </p>
-        <p className="text-lg text-slate-700 font-medium leading-relaxed">
-          바로 오늘 1개 실천으로
-        </p>
-        <p className="text-lg text-slate-700 font-medium leading-relaxed">
-          연결하는 자가관리 코치
+        <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-tight">
+          당신의 마음을<br />
+          <span className="text-brand-primary">이해하는</span> 대화
+        </h2>
+        <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-sm mx-auto">
+          매일의 감정을 기록하고,<br />
+          지금 이 순간 필요한 인사이트를 받아보세요
         </p>
       </motion.div>
 
@@ -82,9 +81,9 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onSkip }) 
         <Button
           onClick={onNext}
           variant="primary"
-          className="w-full max-w-[200px] h-14 text-lg font-bold shadow-xl shadow-brand-primary/30"
+          className="w-full max-w-[240px] h-14 text-lg font-semibold shadow-xl shadow-brand-primary/30 hover:shadow-brand-primary/40 transition-all"
         >
-          시작하기
+          대화 시작하기
           <ArrowRight size={20} className="ml-2" />
         </Button>
       </motion.div>
@@ -98,7 +97,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onSkip }) 
           onClick={onSkip}
           className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
         >
-          나중에 하기
+          건너뛰기
         </motion.button>
       )}
     </div>

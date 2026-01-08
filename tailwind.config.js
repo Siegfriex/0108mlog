@@ -35,7 +35,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Noto Sans KR', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'sans-serif'],
         mono: ['Consolas', 'Monaco', 'monospace'],
       },
       fontSize: {
@@ -53,6 +53,23 @@ export default {
         lg: '24px',
         xl: '32px',
         xxl: '48px',
+        'touch-target': '44px', // 최소 터치 타겟 크기
+        'safe-top': 'env(safe-area-inset-top)',
+        'safe-bottom': 'env(safe-area-inset-bottom)',
+        'safe-left': 'env(safe-area-inset-left)',
+        'safe-right': 'env(safe-area-inset-right)',
+      },
+      screens: {
+        'xs': '375px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+      },
+      gridTemplateColumns: {
+        'auto-fit': 'repeat(auto-fit, minmax(250px, 1fr))',
+        'auto-fill': 'repeat(auto-fill, minmax(200px, 1fr))',
       },
       boxShadow: {
         'glass': '0 20px 40px -10px rgba(42, 142, 158, 0.15)',

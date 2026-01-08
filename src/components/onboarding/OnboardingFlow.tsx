@@ -144,20 +144,38 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSk
 
   return (
     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
-      {/* 진행률 표시 */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10">
-        <div className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-md rounded-full shadow-sm border border-white/60">
-          <span className="text-xs font-bold text-brand-primary">{stepNumber}/6</span>
-          <div className="w-24 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+      {/* 진행률 표시 (개선) */}
+      <motion.div 
+        className="absolute top-8 left-1/2 -translate-x-1/2 z-10"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <div className="flex items-center gap-3 px-5 py-2.5 bg-white/90 backdrop-blur-xl rounded-full shadow-lg border border-white/80">
+          <span className="text-sm font-bold text-brand-primary min-w-[2rem]">{stepNumber}/6</span>
+          <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-brand-primary rounded-full"
+              className="h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${(stepNumber / 6) * 100}%` }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             />
           </div>
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5, 6].map((step) => (
+              <motion.div
+                key={step}
+                className={`w-1.5 h-1.5 rounded-full ${
+                  step <= stepNumber ? 'bg-brand-primary' : 'bg-slate-300'
+                }`}
+                initial={{ scale: 0 }}
+                animate={{ scale: step <= stepNumber ? 1 : 0.8 }}
+                transition={{ delay: step * 0.05, duration: 0.3 }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* 단계별 컴포넌트 렌더링 */}
       <AnimatePresence mode="wait">

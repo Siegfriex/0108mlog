@@ -141,10 +141,13 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
               </h3>
             </div>
             <div className="grid grid-cols-5 gap-3">
-              {EMOTION_OPTIONS.map(option => (
+              {EMOTION_OPTIONS.map((option, index) => (
                 <motion.button
                   key={option.value}
                   onClick={() => handleQuestion1Complete(option.value)}
+                  initial={{ opacity: 0, y: 20, scale: 0.8 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: index * 0.1, duration: 0.3, ease: "easeOut" }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={`
@@ -182,10 +185,13 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
               <p className="text-sm text-slate-500">여러 개 선택 가능해요</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              {HELP_OPTIONS.map(option => (
+              {HELP_OPTIONS.map((option, index) => (
                 <motion.button
                   key={option}
                   onClick={() => handleQuestion2Toggle(option)}
+                  initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: index * 0.08, duration: 0.3, ease: "easeOut" }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className={`
@@ -228,10 +234,13 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
               </h3>
             </div>
             <div className="space-y-3">
-              {GOAL_OPTIONS.map(goal => (
+              {GOAL_OPTIONS.map((goal, index) => (
                 <motion.button
                   key={goal}
                   onClick={() => handleQuestion3Select(goal)}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1, duration: 0.3, ease: "easeOut" }}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className={`
