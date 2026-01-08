@@ -1,16 +1,17 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Sun, CheckCircle, Zap, ArrowRight, X } from 'lucide-react';
+import { Send, Zap, ArrowRight, X, Sparkles, Sliders, Smile, Frown, Meh, CloudRain, Flame } from 'lucide-react';
 import { GlassCard, Button, LoadingSpinner } from './UI';
-import { EmotionType, EmotionData, ChatMessage, CoachPersona, TimelineEntry, MicroAction } from '../types';
+import { EmotionType, ChatMessage, CoachPersona, TimelineEntry, MicroAction } from '../types';
 import { generateDayModeResponse, generateMicroAction } from '../services/geminiService';
 
-const EMOTIONS: EmotionData[] = [
-  { id: EmotionType.JOY, label: '기쁨', icon: '😊', color: 'joy', desc: '활력이 넘치는' },
-  { id: EmotionType.PEACE, label: '평온', icon: '😌', color: 'peace', desc: '차분하고 안정된' },
-  { id: EmotionType.ANXIETY, label: '불안', icon: '😰', color: 'anxiety', desc: '걱정이 많은' },
-  { id: EmotionType.SADNESS, label: '슬픔', icon: '😢', color: 'sadness', desc: '가라앉은' },
-  { id: EmotionType.ANGER, label: '분노', icon: '😡', color: 'anger', desc: '짜증나는' },
+// Updated Emotions using Lucide Icons
+const EMOTIONS_CONFIG = [
+  { id: EmotionType.JOY, label: 'Super Awesome', icon: <Smile size={32} strokeWidth={1.5} />, color: 'joy' },
+  { id: EmotionType.PEACE, label: 'Pretty Good', icon: <Meh size={32} strokeWidth={1.5} />, color: 'peace' },
+  { id: EmotionType.ANXIETY, label: 'A bit Anxious', icon: <Frown size={32} strokeWidth={1.5} />, color: 'anxiety' },
+  { id: EmotionType.SADNESS, label: 'Feeling Blue', icon: <CloudRain size={32} strokeWidth={1.5} />, color: 'sadness' },
+  { id: EmotionType.ANGER, label: 'Frustrated', icon: <Flame size={32} strokeWidth={1.5} />, color: 'anger' },
 ];
 
 interface DayModeProps {
@@ -19,20 +20,15 @@ interface DayModeProps {
 }
 
 export const DayMode: React.FC<DayModeProps> = ({ persona, onSave }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: '0',
-      role: 'assistant',
-      content: `좋은 아침이에요! 저는 ${persona.name}입니다. 오늘 지금 이 순간, 기분이 어떠신가요?`,
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [selectedEmotion, setSelectedEmotion] = useState<EmotionType | null>(null);
   const [intensity, setIntensity] = useState<number>(5);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [actionCard, setActionCard] = useState<MicroAction | null>(null);
   const [isActionLoading, setIsActionLoading] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -41,13 +37,25 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave }) => {
 
   useEffect(scrollToBottom, [messages]);
 
+  const startCheckIn = () => {
+    if(!selectedEmotion) return;
+    setHasStarted(true);
+    const initialMsg: ChatMessage = {
+        id: 'init',
+        role: 'assistant',
+        content: `I noticed you're feeling ${EMOTIONS_CONFIG.find(e => e.id === selectedEmotion)?.label} today. What's on your mind?`,
+        timestamp: new Date()
+    };
+    setMessages([initialMsg]);
+  };
+
   const handleSend = async () => {
-    if (!input.trim() && !selectedEmotion) return;
+    if (!input.trim()) return;
 
     const userMsg: ChatMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: input || (selectedEmotion ? `${EMOTIONS.find(e => e.id === selectedEmotion)?.label} (강도: ${intensity})` : ''),
+      content: input,
       timestamp: new Date()
     };
 
@@ -71,9 +79,8 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave }) => {
 
   const handleFinishAndSave = async () => {
     const emotionToSave = selectedEmotion || EmotionType.PEACE;
-    const firstUserMsg = messages.find(m => m.role === 'user');
-    const summaryText = firstUserMsg ? firstUserMsg.content.slice(0, 30) : '오늘의 대화';
-    const detailText = messages.map(m => `[${m.role === 'user' ? '나' : persona.name}]: ${m.content}`).join('\n\n');
+    const summaryText = messages.length > 1 ? messages[1].content.slice(0, 30) : 'Check-in';
+    const detailText = messages.map(m => `[${m.role === 'user' ? 'Me' : persona.name}]: ${m.content}`).join('\n\n');
 
     const entry: TimelineEntry = {
       id: Date.now().toString(),
@@ -99,186 +106,216 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave }) => {
 
   const closeActionCard = () => {
     setActionCard(null);
-    setMessages([{
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: `기록이 저장되었습니다. 또 다른 이야기가 있으신가요?`,
-        timestamp: new Date()
-    }]);
+    setHasStarted(false);
+    setMessages([]);
     setSelectedEmotion(null);
     setIntensity(5);
   };
 
+  if (!hasStarted) {
+      // Dashboard / Initial Selection View
+      return (
+          <div className="flex flex-col items-center justify-center h-full w-full max-w-xl mx-auto py-6">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center mb-8"
+              >
+                  <div className="w-16 h-16 bg-white/50 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/60 shadow-sm">
+                     <Smile size={32} strokeWidth={1.5} className="text-slate-700" />
+                  </div>
+                  <h1 className="text-2xl font-bold text-slate-800 mb-1">How are you?</h1>
+                  <p className="text-slate-500 text-sm">Check in with yourself today.</p>
+              </motion.div>
+
+              {/* Central Emotion Card */}
+              <GlassCard className="w-full !p-8 flex flex-col items-center gap-8 shadow-2xl">
+                  <div className="w-full text-center">
+                      <div className={`text-slate-800 mb-4 transition-transform duration-300 transform ${selectedEmotion ? 'scale-110' : ''} flex justify-center`}>
+                          {selectedEmotion ? EMOTIONS_CONFIG.find(e => e.id === selectedEmotion)?.icon : <div className="w-8 h-8 rounded-full border-2 border-slate-300 border-dashed animate-spin-slow" />}
+                      </div>
+                      <h2 className="text-xl font-bold text-slate-800">
+                          {selectedEmotion ? EMOTIONS_CONFIG.find(e => e.id === selectedEmotion)?.label : 'Select Mood'}
+                      </h2>
+                      {selectedEmotion && (
+                          <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full">
+                              <span className="text-xs font-bold text-slate-500 uppercase tracking-wide">Intensity</span>
+                              <span className="text-xs font-bold text-slate-800">{intensity}</span>
+                          </div>
+                      )}
+                  </div>
+
+                  {/* Slider UI */}
+                  <div className="w-full px-4">
+                      {/* Emotion Slider */}
+                      <input 
+                          type="range" 
+                          min="0" 
+                          max="4" 
+                          step="1"
+                          value={selectedEmotion ? EMOTIONS_CONFIG.findIndex(e => e.id === selectedEmotion) : 2}
+                          onChange={(e) => setSelectedEmotion(EMOTIONS_CONFIG[Number(e.target.value)].id)}
+                          className="w-full h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-slate-800 mb-8"
+                      />
+                      
+                      {selectedEmotion && (
+                          <div className="space-y-3 animate-fadeIn">
+                              <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                                  <span>Mild</span>
+                                  <span>Intense</span>
+                              </div>
+                              <input 
+                                  type="range" 
+                                  min="1" 
+                                  max="10" 
+                                  value={intensity} 
+                                  onChange={(e) => setIntensity(Number(e.target.value))}
+                                  className="w-full h-1.5 bg-slate-800 rounded-full appearance-none cursor-pointer"
+                              />
+                          </div>
+                      )}
+                  </div>
+
+                  <Button 
+                      onClick={startCheckIn} 
+                      disabled={!selectedEmotion}
+                      className="w-full !rounded-xl !py-4"
+                  >
+                      CONTINUE
+                  </Button>
+              </GlassCard>
+          </div>
+      )
+  }
+
+  // Chat Interface
   return (
-    <div className="flex flex-col h-[calc(100vh-140px)] max-w-2xl mx-auto relative">
-      <header className="flex items-center justify-between mb-6 px-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <Sun className="text-amber-500" /> 오늘의 마음
-          </h1>
-          <p className="text-slate-500 text-sm">감정을 체크하고 실용적인 조언을 얻으세요.</p>
-        </div>
-        <div className="flex items-center gap-2">
-            {messages.length > 2 && !actionCard && !isActionLoading && (
-                <motion.button
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    onClick={handleFinishAndSave}
-                    className="px-3 py-1 bg-peace-100 text-peace-700 rounded-full text-xs font-bold hover:bg-peace-200 transition-colors"
+    <div className="h-full flex flex-col items-center w-full max-w-3xl mx-auto">
+      <GlassCard className="flex-1 w-full flex flex-col !p-0 overflow-hidden shadow-2xl relative bg-white/80">
+          
+          {/* Header */}
+          <div className="px-6 py-4 bg-white/80 backdrop-blur-md border-b border-slate-100 flex justify-between items-center shrink-0 z-10">
+             <button onClick={() => setHasStarted(false)} className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-colors">
+                 <X size={20} className="text-slate-500" />
+             </button>
+             <div className="text-center">
+                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Reflection</span>
+                 <h3 className="text-sm font-bold text-slate-800">{EMOTIONS_CONFIG.find(e => e.id === selectedEmotion)?.label}</h3>
+             </div>
+             {messages.length > 2 ? (
+                 <button onClick={handleFinishAndSave} className="text-xs font-bold text-white bg-slate-900 px-4 py-1.5 rounded-full hover:bg-slate-800 transition-colors">
+                     DONE
+                 </button>
+             ) : <div className="w-8" />}
+          </div>
+
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 scrollbar-hide bg-slate-50/50">
+            {messages.map((msg) => (
+              <motion.div
+                key={msg.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex flex-col gap-1.5 ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
+              >
+                <div
+                  className={`
+                    max-w-[80%] px-5 py-3.5 text-[15px] leading-relaxed shadow-sm
+                    ${msg.role === 'user'
+                      ? 'bg-slate-800 text-white rounded-[20px] rounded-br-sm shadow-lg shadow-slate-200'
+                      : 'bg-white text-slate-700 rounded-[20px] rounded-tl-sm border border-slate-200/60'
+                    }
+                  `}
                 >
-                    기록 완료
-                </motion.button>
-            )}
-            <div className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">
-            DAY
-            </div>
-        </div>
-      </header>
-
-      <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4 scrollbar-hide">
-        {messages.map((msg) => (
-          <motion.div
-            key={msg.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={`
-                max-w-[85%] px-5 py-3 rounded-2xl text-base leading-relaxed shadow-sm
-                ${msg.role === 'user'
-                  ? 'bg-gradient-to-r from-peace-400 to-peace-500 text-white rounded-tr-sm'
-                  : 'bg-white/80 backdrop-blur-md text-slate-700 rounded-tl-sm border border-white/50'
-                }
-              `}
-            >
-              <div className="text-xs opacity-50 mb-1">{msg.role === 'assistant' ? persona.name : '나'}</div>
-              {msg.content}
-            </div>
-          </motion.div>
-        ))}
-        {isLoading && (
-          <div className="flex justify-start">
-             <div className="bg-white/60 px-4 py-2 rounded-2xl rounded-tl-sm text-sm text-slate-500 animate-pulse">
-               {persona.name}님이 생각하는 중...
-             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </div>
-
-      {/* Action Card Overlay */}
-      <AnimatePresence>
-        {(actionCard || isActionLoading) && (
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-50 flex items-center justify-center p-4 bg-white/60 backdrop-blur-md"
-            >
-                {isActionLoading ? (
-                    <div className="bg-white p-8 rounded-3xl shadow-xl flex flex-col items-center">
-                        <LoadingSpinner />
-                        <p className="text-slate-600 font-medium mt-4">맞춤형 처방을 생성하고 있어요...</p>
-                    </div>
-                ) : actionCard ? (
-                    <motion.div 
-                        initial={{ y: 50, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: 50, opacity: 0 }}
-                        className="bg-white w-full max-w-sm rounded-[32px] shadow-2xl overflow-hidden border border-slate-100"
-                    >
-                        <div className="p-6 bg-gradient-to-br from-indigo-500 to-purple-600 text-white relative">
-                            <button onClick={closeActionCard} className="absolute top-4 right-4 text-white/70 hover:text-white">
-                                <X size={20} />
-                            </button>
-                            <div className="flex items-center gap-2 mb-2 text-indigo-100 text-sm font-bold uppercase tracking-wider">
-                                <Zap size={16} /> Micro Action
-                            </div>
-                            <h3 className="text-2xl font-bold">{actionCard.title}</h3>
-                            <div className="mt-2 inline-block px-2 py-1 bg-white/20 rounded text-xs">
-                                ⏱ {actionCard.duration}
-                            </div>
-                        </div>
-                        <div className="p-6">
-                            <p className="text-slate-600 leading-relaxed mb-6">
-                                {actionCard.description}
-                            </p>
-                            <button 
-                                onClick={closeActionCard}
-                                className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 flex items-center justify-center gap-2"
-                            >
-                                시작하기 <ArrowRight size={16} />
-                            </button>
-                        </div>
-                    </motion.div>
-                ) : null}
-            </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Controls Container */}
-      <div className="px-4 pb-2 space-y-4">
-         {/* Intensity Slider */}
-         {selectedEmotion && (
-             <div className="bg-white/60 backdrop-blur-md rounded-2xl p-4 border border-white/40">
-                 <div className="flex justify-between text-xs font-bold text-slate-500 mb-2">
-                     <span>Intensity</span>
-                     <span className="text-peace-600 text-lg">{intensity}</span>
+                  {msg.content}
+                </div>
+                {msg.role === 'assistant' && (
+                    <span className="text-[10px] text-slate-400 font-bold px-2 flex items-center gap-1">
+                        <Sparkles size={10} /> {persona.name}
+                    </span>
+                )}
+              </motion.div>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                 <div className="bg-white px-4 py-3 rounded-[20px] rounded-tl-sm shadow-sm flex gap-1.5 border border-slate-100">
+                   <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce" />
+                   <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-100" />
+                   <div className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-200" />
                  </div>
-                 <input 
-                    type="range" 
-                    min="1" 
-                    max="10" 
-                    value={intensity} 
-                    onChange={(e) => setIntensity(Number(e.target.value))}
-                    className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-peace-500"
-                 />
-             </div>
-         )}
-
-         {/* Emotion Chips */}
-         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-          {EMOTIONS.map((emotion) => (
-            <button
-              key={emotion.id}
-              onClick={() => setSelectedEmotion(emotion.id)}
-              className={`
-                flex items-center gap-2 px-4 py-2 rounded-full border transition-all whitespace-nowrap
-                ${selectedEmotion === emotion.id
-                  ? `bg-${emotion.color}-100 border-${emotion.color}-400 text-slate-800 shadow-md transform scale-105`
-                  : 'bg-white/40 border-white/60 hover:bg-white/60 text-slate-600'
-                }
-              `}
-            >
-              <span>{emotion.icon}</span>
-              <span className="text-sm font-medium">{emotion.label}</span>
-            </button>
-          ))}
-         </div>
-
-         {/* Input */}
-         <GlassCard className="!p-2 !rounded-[24px]">
-          <div className="flex items-center gap-2">
-            <input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              placeholder="감정을 자유롭게 표현하세요..."
-              className="flex-1 bg-transparent px-4 py-2 focus:outline-none text-slate-700 placeholder:text-slate-400"
-            />
-            <Button 
-                variant="primary" 
-                onClick={handleSend} 
-                disabled={isLoading}
-                className="!rounded-full !w-10 !h-10 !p-0"
-            >
-              <Send size={18} />
-            </Button>
+              </div>
+            )}
+            <div ref={messagesEndRef} className="h-4" />
           </div>
-         </GlassCard>
-      </div>
+
+          {/* Input Area (Pill Shape) */}
+          <div className="p-4 bg-white border-t border-slate-100">
+             <div className="relative group">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                  placeholder="Share your thoughts..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-full pl-6 pr-12 py-3.5 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:bg-white transition-all text-sm text-slate-700 placeholder:text-slate-400"
+                  autoFocus
+                />
+                <button 
+                    onClick={handleSend}
+                    disabled={isLoading || !input.trim()}
+                    className="absolute right-2 top-2 w-9 h-9 bg-slate-900 rounded-full text-white shadow-sm flex items-center justify-center hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 transition-all"
+                >
+                  <Send size={16} />
+                </button>
+             </div>
+          </div>
+
+          {/* Action Card Overlay */}
+          <AnimatePresence>
+            {(actionCard || isActionLoading) && (
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="absolute inset-0 z-50 flex items-center justify-center p-6 bg-white/90 backdrop-blur-md"
+                >
+                    {isActionLoading ? (
+                        <div className="flex flex-col items-center">
+                            <LoadingSpinner />
+                            <p className="text-slate-500 text-sm font-medium mt-4 animate-pulse">Designing your ritual...</p>
+                        </div>
+                    ) : actionCard ? (
+                        <motion.div 
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 20, opacity: 0 }}
+                            className="bg-white w-full max-w-sm rounded-[32px] shadow-2xl border border-slate-100 overflow-hidden"
+                        >
+                            <div className="h-28 bg-slate-900 relative p-6 flex flex-col justify-end">
+                                <button onClick={closeActionCard} className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors">
+                                    <X size={20} />
+                                </button>
+                                <div className="text-white/60 text-[10px] font-bold uppercase tracking-widest mb-1">Micro Action</div>
+                                <h3 className="text-white text-xl font-bold">{actionCard.title}</h3>
+                            </div>
+                            <div className="p-8">
+                                <div className="flex gap-2 mb-6">
+                                    <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[10px] font-bold uppercase tracking-wide">{actionCard.type}</span>
+                                    <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-bold uppercase tracking-wide">{actionCard.duration}</span>
+                                </div>
+                                <p className="text-slate-600 leading-relaxed mb-8 text-sm font-medium">
+                                    {actionCard.description}
+                                </p>
+                                <Button onClick={closeActionCard} className="w-full">
+                                    Start Now <ArrowRight size={16} />
+                                </Button>
+                            </div>
+                        </motion.div>
+                    ) : null}
+                </motion.div>
+            )}
+          </AnimatePresence>
+      </GlassCard>
     </div>
   );
 };

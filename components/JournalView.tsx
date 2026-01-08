@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { TimelineView } from './TimelineView';
 import { TimelineEntry, EmotionType } from '../types';
-import { Search, Filter, X } from 'lucide-react';
+import { Search, History, SlidersHorizontal, SearchX, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface JournalViewProps {
@@ -16,46 +16,56 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
 
   const filteredData = useMemo(() => {
     return timelineData.filter(entry => {
-      // Search Logic
-      const matchesSearch = 
-        entry.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        entry.detail.toLowerCase().includes(searchQuery.toLowerCase());
+      const query = searchQuery.toLowerCase();
+      const dateString = entry.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toLowerCase();
       
-      // Filter Logic
+      const matchesSearch = 
+        entry.summary.toLowerCase().includes(query) ||
+        entry.detail.toLowerCase().includes(query) ||
+        dateString.includes(query);
+      
       const matchesFilter = filterEmotion === 'ALL' || entry.emotion === filterEmotion;
 
       return matchesSearch && matchesFilter;
     });
   }, [timelineData, searchQuery, filterEmotion]);
 
+  const hasActiveFilters = searchQuery.length > 0 || filterEmotion !== 'ALL';
+
   return (
-    <div className="h-full flex flex-col max-w-4xl mx-auto px-4 py-6">
-      <header className="mb-4 flex flex-col gap-4 shrink-0">
-        <div className="flex justify-between items-center">
+    <div className="h-full flex flex-col w-full max-w-3xl mx-auto px-4 md:px-0 py-4 md:py-6">
+      <header className="mb-6 flex flex-col gap-4 shrink-0">
+        <div className="flex justify-between items-end px-2">
             <div>
                 <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                    <span className="text-2xl">📖</span> Memory Lane
+                    <History size={28} className="text-indigo-500" strokeWidth={1.5} /> Memory Lane
                 </h2>
-                <p className="text-slate-500 text-sm">당신의 감정 여정을 되돌아보세요.</p>
+                <p className="text-slate-500 text-sm mt-1 ml-1">Your emotional journey.</p>
             </div>
             <div className="flex gap-2">
                 <button 
                     onClick={() => {
                         setIsSearchOpen(!isSearchOpen);
-                        setIsFilterOpen(false);
+                        if (!isSearchOpen) setIsFilterOpen(false);
                     }}
-                    className={`p-2 rounded-full transition-colors ${isSearchOpen ? 'bg-peace-100 text-peace-600' : 'bg-white/50 hover:bg-white text-slate-600'}`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm border
+                        ${isSearchOpen 
+                            ? 'bg-slate-800 text-white border-slate-800' 
+                            : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}
                 >
-                    <Search size={20} />
+                    <Search size={18} />
                 </button>
                 <button 
                     onClick={() => {
                         setIsFilterOpen(!isFilterOpen);
-                        setIsSearchOpen(false);
+                        if (!isFilterOpen) setIsSearchOpen(false);
                     }}
-                    className={`p-2 rounded-full transition-colors ${isFilterOpen ? 'bg-indigo-100 text-indigo-600' : 'bg-white/50 hover:bg-white text-slate-600'}`}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all shadow-sm border
+                        ${isFilterOpen 
+                            ? 'bg-indigo-500 text-white border-indigo-500' 
+                            : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'}`}
                 >
-                    <Filter size={20} />
+                    <SlidersHorizontal size={18} />
                 </button>
             </div>
         </div>
@@ -67,24 +77,24 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
+                    className="overflow-hidden px-1"
                 >
                     <div className="relative">
                         <input
                             type="text"
-                            placeholder="기억 검색 (키워드 입력)..."
+                            placeholder="Search memories (e.g. 'joy', 'work')..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white/80 border border-slate-200 rounded-xl px-4 py-3 pl-10 focus:outline-none focus:ring-2 focus:ring-peace-300 transition-all"
+                            className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 pl-11 focus:outline-none focus:ring-2 focus:ring-slate-200 text-sm shadow-sm transition-all"
                             autoFocus
                         />
-                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                         {searchQuery && (
                             <button 
                                 onClick={() => setSearchQuery('')}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 hover:bg-slate-200"
                             >
-                                <X size={16} />
+                                <X size={14} />
                             </button>
                         )}
                     </div>
@@ -99,13 +109,15 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: 'auto', opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
+                    className="overflow-hidden px-1"
                 >
                     <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                         <button
                             onClick={() => setFilterEmotion('ALL')}
-                            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors whitespace-nowrap
-                                ${filterEmotion === 'ALL' ? 'bg-slate-700 text-white' : 'bg-white border border-slate-200 text-slate-600'}`}
+                            className={`px-4 py-2 rounded-full text-xs font-bold transition-all whitespace-nowrap border
+                                ${filterEmotion === 'ALL' 
+                                    ? 'bg-slate-800 text-white border-slate-800 shadow-md' 
+                                    : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
                         >
                             All
                         </button>
@@ -113,10 +125,10 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
                             <button
                                 key={emotion}
                                 onClick={() => setFilterEmotion(emotion)}
-                                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors capitalize whitespace-nowrap
+                                className={`px-4 py-2 rounded-full text-xs font-bold transition-all capitalize whitespace-nowrap border
                                     ${filterEmotion === emotion 
-                                        ? 'bg-indigo-500 text-white shadow-md' 
-                                        : 'bg-white border border-slate-200 text-slate-600'}`}
+                                        ? 'bg-indigo-500 text-white border-indigo-500 shadow-md' 
+                                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
                             >
                                 {emotion}
                             </button>
@@ -127,8 +139,25 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
         </AnimatePresence>
       </header>
       
-      <div className="flex-1 overflow-y-auto scrollbar-hide pb-24">
-         <TimelineView data={filteredData} />
+      <div className="flex-1 overflow-y-auto scrollbar-hide pb-24 -mx-2 px-2">
+         {filteredData.length > 0 ? (
+             <TimelineView data={filteredData} />
+         ) : hasActiveFilters ? (
+             <div className="flex flex-col items-center justify-center h-64 text-slate-400">
+                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                    <SearchX size={32} strokeWidth={1.5} className="text-slate-300"/>
+                 </div>
+                 <p className="text-sm font-medium text-slate-600">No memories found.</p>
+                 <button
+                    onClick={() => {setSearchQuery(''); setFilterEmotion('ALL');}}
+                    className="mt-4 px-4 py-2 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors shadow-sm"
+                 >
+                    Clear filters
+                 </button>
+             </div>
+         ) : (
+             <TimelineView data={[]} />
+         )}
       </div>
     </div>
   );

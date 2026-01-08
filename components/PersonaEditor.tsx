@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Save, User, Sparkles, Brain, Heart, MessageSquare } from 'lucide-react';
-import { GlassCard, Button } from './UI';
+import { User, Sparkles, Brain, Heart, MessageSquare, GraduationCap, HeartHandshake, UserCog } from 'lucide-react';
+import { GlassCard } from './UI';
 import { CoachPersona } from '../types';
 
 interface PersonaEditorProps {
@@ -29,68 +29,94 @@ export const PersonaEditor: React.FC<PersonaEditorProps> = ({ persona, onUpdate 
     });
   };
 
+  const getRoleIcon = () => {
+      switch(persona.role) {
+          case 'mentor': return <GraduationCap size={40} strokeWidth={1.5} />;
+          case 'counselor': return <HeartHandshake size={40} strokeWidth={1.5} />;
+          default: return <Sparkles size={40} strokeWidth={1.5} />; // Friend
+      }
+  };
+
   return (
-    <div className="h-full flex flex-col max-w-2xl mx-auto px-4 py-6 overflow-y-auto scrollbar-hide">
-      <header className="mb-6">
+    <div className="h-full flex flex-col max-w-xl mx-auto px-4 py-6 overflow-y-auto scrollbar-hide">
+      <header className="mb-8">
         <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-          <User className="text-peace-500" /> AI Persona Setup
+          <UserCog size={28} className="text-indigo-500" strokeWidth={1.5} /> Persona Setup
         </h2>
-        <p className="text-slate-500 text-sm">나만의 AI 동반자를 설정하세요.</p>
+        <p className="text-slate-500 text-sm mt-1 ml-1">Customize your AI companion.</p>
       </header>
 
       <div className="space-y-6 pb-20">
         {/* Identity Card */}
         <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-peace-200 to-indigo-200 rounded-[32px] blur-xl opacity-50 animate-pulse" />
-            <GlassCard className="!bg-white/60 relative z-10 flex flex-col items-center text-center">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-peace-400 to-indigo-500 flex items-center justify-center text-4xl shadow-xl mb-4">
-                    {persona.role === 'mentor' ? '🧙‍♂️' : persona.role === 'friend' ? '😺' : '👩‍⚕️'}
-                </div>
-                <div className="w-full space-y-4">
+            <div className="absolute inset-0 bg-gradient-to-r from-indigo-200 to-purple-200 rounded-[32px] blur-2xl opacity-40" />
+            <div className="relative z-10 bg-white/70 backdrop-blur-xl border border-white/60 shadow-xl rounded-[32px] p-8 flex flex-col items-center text-center">
+                <motion.div 
+                    key={persona.role}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="w-24 h-24 rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-xl shadow-indigo-200 mb-6"
+                >
+                    {getRoleIcon()}
+                </motion.div>
+                
+                <div className="w-full space-y-6">
                     <div>
-                        <label className="text-xs font-bold text-slate-400 uppercase tracking-wider">Name</label>
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block">Name</label>
                         <input 
                             type="text" 
                             value={persona.name}
                             onChange={(e) => handleChange('name', e.target.value)}
-                            className="block w-full text-center text-2xl font-bold text-slate-800 bg-transparent border-b border-transparent focus:border-peace-400 focus:outline-none transition-colors"
+                            className="block w-full text-center text-3xl font-bold text-slate-800 bg-transparent border-b-2 border-transparent focus:border-indigo-200 focus:outline-none transition-colors pb-2 placeholder:text-slate-300"
                         />
                     </div>
-                    <div className="flex justify-center gap-4">
-                        <select 
-                            value={persona.role}
-                            onChange={(e) => handleChange('role', e.target.value)}
-                            className="bg-white/50 px-3 py-1 rounded-full text-sm text-slate-600 border-none focus:ring-2 focus:ring-peace-400 cursor-pointer"
-                        >
-                            <option value="friend">Friend</option>
-                            <option value="mentor">Mentor</option>
-                            <option value="counselor">Counselor</option>
-                        </select>
-                        <select 
-                             value={persona.mbti}
-                             onChange={(e) => handleChange('mbti', e.target.value)}
-                             className="bg-white/50 px-3 py-1 rounded-full text-sm text-slate-600 border-none focus:ring-2 focus:ring-peace-400 cursor-pointer"
-                        >
-                            {MBTI_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
-                        </select>
+                    
+                    <div className="flex justify-center gap-3">
+                        <div className="relative group">
+                            <select 
+                                value={persona.role}
+                                onChange={(e) => handleChange('role', e.target.value)}
+                                className="appearance-none bg-white border border-slate-200 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-100 cursor-pointer shadow-sm hover:border-indigo-300 transition-all pr-8 capitalize"
+                            >
+                                <option value="friend">Friend</option>
+                                <option value="mentor">Mentor</option>
+                                <option value="counselor">Counselor</option>
+                            </select>
+                            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <User size={14} />
+                            </div>
+                        </div>
+
+                        <div className="relative group">
+                            <select 
+                                value={persona.mbti}
+                                onChange={(e) => handleChange('mbti', e.target.value)}
+                                className="appearance-none bg-white border border-slate-200 px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-100 cursor-pointer shadow-sm hover:border-indigo-300 transition-all pr-8"
+                            >
+                                {MBTI_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                            </select>
+                             <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                <Brain size={14} />
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </GlassCard>
+            </div>
         </div>
 
         {/* Traits Sliders */}
-        <GlassCard>
-            <h3 className="text-lg font-bold text-slate-700 mb-6 flex items-center gap-2">
-                <Brain size={20} className="text-slate-400" /> Personality Traits
+        <GlassCard className="!p-8">
+            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-8 flex items-center gap-2">
+                Personality Traits
             </h3>
             
-            <div className="space-y-8">
+            <div className="space-y-10">
                 {/* Warmth */}
-                <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span className="text-slate-500 flex items-center gap-1"><Brain size={14}/> Logical</span>
-                        <span className="font-semibold text-peace-600">Warmth: {persona.traits.warmth}%</span>
-                        <span className="text-slate-500 flex items-center gap-1">Emotional <Heart size={14}/></span>
+                <div className="space-y-3">
+                    <div className="flex justify-between text-xs font-bold text-slate-500 uppercase tracking-wide">
+                        <span className="flex items-center gap-1"><Brain size={12}/> Logical</span>
+                        <span className="text-indigo-500">{persona.traits.warmth}%</span>
+                        <span className="flex items-center gap-1">Emotional <Heart size={12}/></span>
                     </div>
                     <input 
                         type="range" 
@@ -98,16 +124,16 @@ export const PersonaEditor: React.FC<PersonaEditorProps> = ({ persona, onUpdate 
                         max="100" 
                         value={persona.traits.warmth}
                         onChange={(e) => handleTraitChange('warmth', Number(e.target.value))}
-                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-peace-500"
+                        className="w-full h-1.5 bg-slate-100 rounded-full appearance-none cursor-pointer accent-indigo-500"
                     />
                 </div>
 
                 {/* Directness */}
-                <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                        <span className="text-slate-500 flex items-center gap-1">Gentle</span>
-                        <span className="font-semibold text-indigo-600">Directness: {persona.traits.directness}%</span>
-                        <span className="text-slate-500 flex items-center gap-1">Blunt <MessageSquare size={14}/></span>
+                <div className="space-y-3">
+                    <div className="flex justify-between text-xs font-bold text-slate-500 uppercase tracking-wide">
+                        <span className="flex items-center gap-1">Gentle</span>
+                        <span className="text-purple-500">{persona.traits.directness}%</span>
+                        <span className="flex items-center gap-1">Direct <MessageSquare size={12}/></span>
                     </div>
                     <input 
                         type="range" 
@@ -115,15 +141,15 @@ export const PersonaEditor: React.FC<PersonaEditorProps> = ({ persona, onUpdate 
                         max="100" 
                         value={persona.traits.directness}
                         onChange={(e) => handleTraitChange('directness', Number(e.target.value))}
-                        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                        className="w-full h-1.5 bg-slate-100 rounded-full appearance-none cursor-pointer accent-purple-500"
                     />
                 </div>
             </div>
         </GlassCard>
 
         {/* Preview Context */}
-        <div className="p-4 bg-slate-100/50 rounded-2xl text-xs text-slate-500 text-center">
-            설정하신 페르소나는 Day Mode 대화와 Night Mode 편지에 즉시 적용됩니다.
+        <div className="p-4 bg-indigo-50/50 border border-indigo-100/50 rounded-2xl text-[11px] text-indigo-400 text-center font-medium leading-relaxed">
+            Changes are applied immediately to all future conversations and letters.
         </div>
       </div>
     </div>

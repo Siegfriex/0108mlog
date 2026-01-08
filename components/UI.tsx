@@ -1,6 +1,6 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { motion, HTMLMotionProps } from 'framer-motion';
+import { Loader2, MessageCircle, Book, BarChart2, Layers, User } from 'lucide-react';
 
 interface GlassCardProps {
   children: React.ReactNode;
@@ -11,26 +11,26 @@ interface GlassCardProps {
 export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', onClick }) => {
   return (
     <motion.div
-      whileHover={{ scale: onClick ? 1.02 : 1 }}
+      whileHover={{ scale: onClick ? 1.01 : 1 }}
       className={`
         relative overflow-hidden
-        bg-glass-surface backdrop-blur-xl
-        border border-glass-border
+        bg-white/70 backdrop-blur-2xl
+        border border-white/50
         shadow-glass rounded-[32px] p-8
         transition-all duration-300
         ${className}
       `}
       onClick={onClick}
     >
-      <div className="absolute -top-20 -right-20 w-40 h-40 bg-white/30 rounded-full blur-3xl pointer-events-none opacity-50" />
       {children}
     </motion.div>
   );
 };
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends HTMLMotionProps<"button"> {
   variant?: 'primary' | 'secondary' | 'ghost';
   isLoading?: boolean;
+  children?: React.ReactNode;
 }
 
 export const Button: React.FC<ButtonProps> = ({ 
@@ -41,16 +41,16 @@ export const Button: React.FC<ButtonProps> = ({
   ...props 
 }) => {
   const variants = {
-    primary: 'bg-gradient-to-r from-peace-400 to-peace-600 text-white shadow-lg shadow-peace-400/30',
-    secondary: 'bg-white/60 text-slate-700 border border-white/40 hover:bg-white/80',
-    ghost: 'bg-transparent text-slate-600 hover:bg-white/20'
+    primary: 'bg-slate-900 text-white shadow-lg shadow-slate-900/20 border-none hover:bg-slate-800',
+    secondary: 'bg-white text-slate-900 border border-slate-200 hover:bg-slate-50',
+    ghost: 'bg-transparent text-slate-500 hover:bg-slate-100'
   };
 
   return (
     <motion.button
-      whileTap={{ scale: 0.98 }}
+      whileTap={{ scale: 0.95 }}
       className={`
-        px-6 py-3 rounded-2xl font-semibold
+        px-6 py-3.5 rounded-2xl font-semibold text-sm
         flex items-center justify-center gap-2
         transition-all duration-300
         disabled:opacity-50 disabled:cursor-not-allowed
@@ -60,7 +60,7 @@ export const Button: React.FC<ButtonProps> = ({
       disabled={isLoading || props.disabled}
       {...props}
     >
-      {isLoading && <Loader2 className="w-5 h-5 animate-spin" />}
+      {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
       {children}
     </motion.button>
   );
@@ -70,12 +70,12 @@ export const LoadingSpinner = () => (
   <div className="flex items-center justify-center p-8">
     <div className="relative">
       <motion.div
-        className="w-12 h-12 border-4 border-peace-100 rounded-full"
+        className="w-10 h-10 border-4 border-slate-100 rounded-full"
         animate={{ rotate: 360 }}
         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
       />
       <motion.div
-        className="absolute inset-0 w-12 h-12 border-4 border-transparent border-t-peace-400 rounded-full"
+        className="absolute inset-0 w-10 h-10 border-4 border-transparent border-t-slate-800 rounded-full"
         animate={{ rotate: 360 }}
         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
       />
@@ -89,55 +89,49 @@ interface TabBarProps {
 }
 
 export const TabBar: React.FC<TabBarProps> = ({ activeTab, onTabChange }) => {
-  // Sitemap: Chat, Journal, Reports, Content, Profile
   const tabs = [
-    { id: 'chat', label: 'Chat', icon: '💬' },
-    { id: 'journal', label: 'Journal', icon: '📖' },
-    { id: 'reports', label: 'Reports', icon: '📊' },
-    { id: 'content', label: 'Content', icon: '🌿' },
-    { id: 'profile', label: 'Profile', icon: '👤' },
+    { id: 'chat', label: 'Chat', icon: <MessageCircle size={22} strokeWidth={2.5} /> },
+    { id: 'journal', label: 'Log', icon: <Book size={22} strokeWidth={2.5} /> },
+    { id: 'reports', label: 'Stats', icon: <BarChart2 size={22} strokeWidth={2.5} /> },
+    { id: 'content', label: 'Feed', icon: <Layers size={22} strokeWidth={2.5} /> },
+    { id: 'profile', label: 'Me', icon: <User size={22} strokeWidth={2.5} /> },
   ];
 
   return (
-    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 max-w-[95vw]">
-      <div className="
-        flex items-center gap-1 sm:gap-2 p-2
-        bg-white/80 backdrop-blur-2xl
-        border border-white/50
-        shadow-2xl shadow-indigo-900/10
-        rounded-full
-      ">
-        {tabs.map(tab => (
+    <nav className="
+      flex items-center justify-between px-2 py-2
+      bg-white/80 backdrop-blur-2xl
+      border border-white/50
+      rounded-[32px] shadow-floating
+      w-full
+    ">
+      {tabs.map(tab => {
+        const isActive = activeTab === tab.id;
+        return (
           <button
             key={tab.id}
             onClick={() => onTabChange(tab.id)}
-            className={`
-              relative px-3 sm:px-5 py-3 rounded-full
-              transition-all duration-300
-              flex items-center gap-2
-              ${activeTab === tab.id ? 'text-peace-600 font-bold' : 'text-slate-400'}
-            `}
+            className="relative group flex-1 flex flex-col items-center justify-center py-3 min-h-[64px]"
           >
-            <span className="text-lg sm:text-xl">{tab.icon}</span>
-            {activeTab === tab.id && (
-              <motion.span
-                initial={{ opacity: 0, width: 0 }}
-                animate={{ opacity: 1, width: 'auto' }}
-                className="text-xs sm:text-sm whitespace-nowrap hidden sm:inline"
-              >
-                {tab.label}
-              </motion.span>
-            )}
-            {activeTab === tab.id && (
+            <div className={`
+              flex items-center justify-center transition-all duration-300
+              ${isActive 
+                ? 'text-slate-900 scale-100' 
+                : 'text-slate-400 hover:text-slate-600'
+              }
+            `}>
+              {tab.icon}
+            </div>
+            
+            {isActive && (
               <motion.div
-                layoutId="activeTab"
-                className="absolute inset-0 bg-white shadow-sm rounded-full -z-10 border border-slate-100"
-                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                layoutId="activeTabIndicator"
+                className="absolute -bottom-1 w-1 h-1 bg-slate-900 rounded-full"
               />
             )}
           </button>
-        ))}
-      </div>
+        );
+      })}
     </nav>
   );
 };

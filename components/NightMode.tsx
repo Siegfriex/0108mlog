@@ -1,22 +1,23 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Moon, Star, Sparkles, CheckCircle, ArrowRight } from 'lucide-react';
+import { Star, Sparkles, CheckCircle, ArrowRight, Smile, Meh, Frown, CloudRain, Flame } from 'lucide-react';
 import { GlassCard, Button } from './UI';
 import { VoicePlayer } from './VoicePlayer';
 import { generateNightModeLetter } from '../services/geminiService';
-import { CoachPersona, TimelineEntry, EmotionType, EmotionData } from '../types';
+import { CoachPersona, TimelineEntry, EmotionType } from '../types';
 
 interface NightModeProps {
   persona: CoachPersona;
   onSave: (entry: TimelineEntry) => void;
 }
 
-const EMOTIONS: EmotionData[] = [
-    { id: EmotionType.JOY, label: '기쁨', icon: '😊', color: 'joy', desc: '활력이 넘치는' },
-    { id: EmotionType.PEACE, label: '평온', icon: '😌', color: 'peace', desc: '차분하고 안정된' },
-    { id: EmotionType.ANXIETY, label: '불안', icon: '😰', color: 'anxiety', desc: '걱정이 많은' },
-    { id: EmotionType.SADNESS, label: '슬픔', icon: '😢', color: 'sadness', desc: '가라앉은' },
-    { id: EmotionType.ANGER, label: '분노', icon: '😡', color: 'anger', desc: '짜증나는' },
+// Emotions with Lucide Icons for Night Mode (White/Light style)
+const NIGHT_EMOTIONS = [
+    { id: EmotionType.JOY, label: 'Joy', icon: <Smile size={40} strokeWidth={1.5} />, color: 'joy' },
+    { id: EmotionType.PEACE, label: 'Peace', icon: <Meh size={40} strokeWidth={1.5} />, color: 'peace' },
+    { id: EmotionType.ANXIETY, label: 'Anxiety', icon: <Frown size={40} strokeWidth={1.5} />, color: 'anxiety' },
+    { id: EmotionType.SADNESS, label: 'Sadness', icon: <CloudRain size={40} strokeWidth={1.5} />, color: 'sadness' },
+    { id: EmotionType.ANGER, label: 'Anger', icon: <Flame size={40} strokeWidth={1.5} />, color: 'anger' },
 ];
 
 export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
@@ -67,53 +68,57 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
   };
 
   return (
-    <div className="flex flex-col h-full max-w-2xl mx-auto px-4 pb-24 relative">
-      <header className="flex items-center justify-between mb-8 pt-4 shrink-0">
-        <div>
-          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Moon className="text-purple-300" /> The Starlight
-          </h1>
-          <p className="text-purple-200/70 text-sm mt-1">
-             {step === 'emotion' ? '오늘 하루, 어떤 감정이 가장 컸나요?' : 
-              step === 'diary' ? '그 감정에 대해 이야기해주세요.' : 
-              '당신을 위한 편지가 도착했습니다.'}
+    <div className="w-full max-w-4xl mx-auto h-full flex flex-col px-4 text-white">
+      {/* Title */}
+      <div className="py-6 shrink-0 text-center">
+          <h2 className="text-2xl font-serif font-bold flex items-center justify-center gap-2 mb-2 drop-shadow-md">
+            <span className="text-purple-300"><Star size={20} fill="currentColor" /></span>
+            {step === 'emotion' ? 'Evening Reflection' : step === 'diary' ? 'Your Story' : 'A Letter for You'}
+          </h2>
+          <p className="text-white/60 text-sm font-medium">
+             {step === 'emotion' ? 'How was your day feeling?' : 
+              step === 'diary' ? 'Let it all out. The night is listening.' : 
+              `A message from ${persona.name}`}
           </p>
-        </div>
-      </header>
+      </div>
 
       <AnimatePresence mode="wait">
         {step === 'emotion' && (
             <motion.div
                 key="step-emotion"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="flex-1 flex flex-col justify-center gap-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="flex-1 flex flex-col justify-center items-center gap-8 max-w-2xl mx-auto w-full"
             >
-                <div className="grid grid-cols-2 gap-4">
-                    {EMOTIONS.map((emotion) => (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
+                    {NIGHT_EMOTIONS.map((emotion) => (
                         <button
                             key={emotion.id}
                             onClick={() => setSelectedEmotion(emotion.id)}
                             className={`
-                                p-6 rounded-3xl backdrop-blur-md border text-left transition-all
+                                aspect-square p-6 rounded-[32px] backdrop-blur-md border text-left transition-all duration-300 flex flex-col justify-center items-center gap-4 group
                                 ${selectedEmotion === emotion.id 
-                                    ? 'bg-white/20 border-white/60 shadow-lg scale-105 ring-2 ring-purple-300' 
-                                    : 'bg-white/5 border-white/10 hover:bg-white/10'
+                                    ? 'bg-white/20 border-white/60 shadow-[0_0_40px_rgba(255,255,255,0.1)] scale-105 ring-1 ring-white/50' 
+                                    : 'bg-white/5 border-white/5 hover:bg-white/10'
                                 }
                             `}
                         >
-                            <span className="text-4xl mb-2 block">{emotion.icon}</span>
-                            <span className="text-white font-bold text-lg">{emotion.label}</span>
+                            <span className="text-white/80 group-hover:scale-110 transition-transform duration-300">{emotion.icon}</span>
+                            <span className="text-white/90 font-medium text-lg tracking-wide">{emotion.label}</span>
                         </button>
                     ))}
                 </div>
 
                 {selectedEmotion && (
-                    <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20">
-                         <div className="flex justify-between text-white font-bold mb-4">
-                             <span>강도 (Intensity)</span>
-                             <span>{intensity}</span>
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-white/5 backdrop-blur-xl rounded-[32px] p-8 border border-white/10 w-full"
+                    >
+                         <div className="flex justify-between text-white font-bold mb-6">
+                             <span className="text-xs uppercase tracking-wider text-purple-200">Depth of Feeling</span>
+                             <span className="text-xl">{intensity}</span>
                          </div>
                          <input 
                             type="range" 
@@ -121,12 +126,12 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                             max="10" 
                             value={intensity} 
                             onChange={(e) => setIntensity(Number(e.target.value))}
-                            className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-purple-400"
+                            className="w-full h-2 bg-white/20 rounded-full appearance-none cursor-pointer accent-purple-300"
                         />
-                        <Button onClick={handleNextStep} className="w-full mt-6 bg-purple-500 hover:bg-purple-600 border-none text-white">
-                            다음 <ArrowRight size={16} />
+                        <Button onClick={handleNextStep} className="w-full mt-8 py-4 bg-purple-500 hover:bg-purple-600 border-none text-white font-bold text-lg shadow-xl shadow-purple-900/40">
+                            Continue <ArrowRight size={20} />
                         </Button>
-                    </div>
+                    </motion.div>
                 )}
             </motion.div>
         )}
@@ -134,27 +139,28 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
         {step === 'diary' && (
              <motion.div
                 key="step-diary"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="flex-1 flex flex-col gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="flex-1 flex flex-col gap-6 w-full max-w-3xl mx-auto pb-10"
             >
-                <GlassCard className="flex-1 !bg-white/10 !border-white/20">
+                <GlassCard className="flex-1 !bg-black/20 !border-white/10 !rounded-[40px] overflow-hidden min-h-[400px] shadow-2xl backdrop-blur-md">
                     <textarea
                     value={diary}
                     onChange={(e) => setDiary(e.target.value)}
-                    placeholder="오늘 하루 어떤 일들이 있었나요? 감정을 자유롭게 표현해보세요..."
-                    className="w-full h-full bg-transparent resize-none focus:outline-none text-white placeholder:text-white/30 text-lg leading-relaxed"
+                    placeholder="Write about your day..."
+                    className="w-full h-full bg-transparent resize-none focus:outline-none text-white placeholder:text-white/20 text-xl leading-relaxed p-4 font-serif"
+                    autoFocus
                     />
                 </GlassCard>
 
                 <Button 
                     onClick={handleAnalyze} 
                     isLoading={isAnalyzing}
-                    className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 shadow-[0_0_30px_rgba(168,85,247,0.4)] border-none"
+                    className="w-full py-5 bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg border-none text-lg font-bold rounded-[24px]"
                 >
-                    <Sparkles className="w-5 h-5" />
-                    편지 받기
+                    <Sparkles className="w-5 h-5 mr-2" />
+                    Send to Stars
                 </Button>
             </motion.div>
         )}
@@ -164,17 +170,17 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                 key="step-letter"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex-1 flex flex-col h-full overflow-hidden"
+                className="flex-1 flex flex-col h-full overflow-hidden pb-10 w-full max-w-3xl mx-auto"
             >
-                <GlassCard className="h-full flex flex-col !bg-indigo-950/40 !border-indigo-400/30">
-                    <div className="flex justify-between items-start mb-6 shrink-0">
-                        <div className="flex items-center gap-2">
-                            <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-xl">
-                                {persona.role === 'mentor' ? '🧙‍♂️' : '🦋'}
+                <GlassCard className="h-full flex flex-col !bg-indigo-950/60 !border-white/10 !rounded-[40px] !p-8 shadow-2xl backdrop-blur-xl">
+                    <div className="flex justify-between items-start mb-8 shrink-0 pb-6 border-b border-white/5">
+                        <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 rounded-full bg-indigo-500/50 flex items-center justify-center shadow-lg border border-white/10">
+                                <Sparkles size={24} className="text-purple-200" />
                             </div>
                             <div>
-                                <h3 className="text-white font-bold">From. {persona.name}</h3>
-                                <span className="text-indigo-300 text-xs">AI {persona.role}</span>
+                                <h3 className="text-white font-bold text-lg">From. {persona.name}</h3>
+                                <span className="text-indigo-300 text-xs font-medium uppercase tracking-wider">AI {persona.role}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
@@ -182,19 +188,19 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                         </div>
                     </div>
                     
-                    <div className="flex-1 overflow-y-auto pr-2 scrollbar-hide">
-                        <div className="prose prose-invert prose-p:text-indigo-100 leading-8">
+                    <div className="flex-1 overflow-y-auto pr-4 scrollbar-hide">
+                        <div className="prose prose-lg prose-invert prose-p:text-indigo-100 prose-p:leading-loose prose-p:font-light font-serif">
                             <p className="whitespace-pre-wrap">{letter}</p>
                         </div>
                     </div>
 
-                    <div className="pt-4 mt-4 border-t border-white/10 shrink-0">
+                    <div className="pt-6 mt-6 border-t border-white/5 shrink-0">
                         <Button 
                             variant="ghost" 
                             onClick={reset}
-                            className="w-full text-indigo-300 hover:text-white hover:bg-white/10"
+                            className="w-full text-indigo-300 hover:text-white hover:bg-white/5 py-4 text-base"
                         >
-                            새로운 기록 시작하기
+                            Start New Entry
                         </Button>
                     </div>
                 </GlassCard>
@@ -208,10 +214,10 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
-                className="absolute top-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-6 py-3 bg-white/20 backdrop-blur-md border border-white/30 rounded-full shadow-xl"
+                className="fixed top-24 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-6 py-3 bg-emerald-500/90 backdrop-blur-xl text-white rounded-full shadow-2xl border border-white/20"
              >
-                 <CheckCircle className="text-green-400" size={20} />
-                 <span className="text-white font-semibold">저장 완료</span>
+                 <CheckCircle size={20} />
+                 <span className="font-bold text-sm">Saved successfully</span>
              </motion.div>
         )}
       </AnimatePresence>

@@ -7,7 +7,7 @@ export enum EmotionType {
 }
 
 export interface EmotionData {
-  id: string;
+  id: EmotionType;
   label: string;
   icon: string;
   color: string;

@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -24,29 +24,65 @@
           -ms-overflow-style: none;  /* IE and Edge */
           scrollbar-width: none;  /* Firefox */
       }
+      
+      /* Custom Range Slider Styling */
+      input[type=range] {
+        -webkit-appearance: none; 
+        background: transparent; 
+      }
+      
+      input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 24px;
+        width: 24px;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        cursor: pointer;
+        margin-top: -10px; 
+      }
+
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: rgba(255,255,255,0.4);
+        border-radius: 2px;
+      }
     </style>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
+              brand: {
+                primary: '#7C73E6',   /* Reflectly Purple */
+                secondary: '#8FA3FF', /* Soft Blue */
+                accent: '#FF8FAB',    /* Soft Pink */
+                dark: '#2D2B4A',
+                light: '#F4F6FD',
+              },
               joy: { 100: '#FFF9C4', 400: '#FFD700', 600: '#FFA000' },
               peace: { 100: '#E1F5FE', 400: '#4FC3F7', 600: '#039BE5' },
               anxiety: { 100: '#FBE9E7', 400: '#FF8A65', 600: '#F4511E' },
               sadness: { 100: '#F3E5F5', 400: '#BA68C8', 600: '#8E24AA' },
               anger: { 100: '#FFEBEE', 400: '#EF5350', 600: '#C62828' },
               glass: {
-                surface: 'rgba(255, 255, 255, 0.65)',
-                border: 'rgba(255, 255, 255, 0.4)',
+                surface: 'rgba(255, 255, 255, 0.75)',
+                border: 'rgba(255, 255, 255, 0.6)',
               }
             },
             boxShadow: {
-              'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.05)',
-              'glass-hover': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
+              'glass': '0 20px 40px -10px rgba(124, 115, 230, 0.15)',
+              'glass-hover': '0 25px 50px -12px rgba(124, 115, 230, 0.25)',
+              'glow': '0 0 20px rgba(124, 115, 230, 0.5)',
+              'floating': '0 10px 30px -5px rgba(0, 0, 0, 0.1)',
             },
             animation: {
               'float': 'float 6s ease-in-out infinite',
               'shimmer': 'shimmer 2s linear infinite',
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'blob': 'blob 7s infinite',
             },
             keyframes: {
               float: {
@@ -56,6 +92,12 @@
               shimmer: {
                 'from': { backgroundPosition: '0 0' },
                 'to': { backgroundPosition: '-200% 0' },
+              },
+              blob: {
+                '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                '100%': { transform: 'translate(0px, 0px) scale(1)' },
               }
             }
           },
