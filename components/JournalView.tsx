@@ -17,12 +17,16 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
   const filteredData = useMemo(() => {
     return timelineData.filter(entry => {
       const query = searchQuery.toLowerCase();
-      const dateString = entry.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toLowerCase();
+      
+      // Match against both English and Korean date formats to support diverse search inputs
+      const dateStringEn = entry.date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toLowerCase();
+      const dateStringKo = entry.date.toLocaleDateString('ko-KR', { weekday: 'short', month: 'short', day: 'numeric' }).toLowerCase();
       
       const matchesSearch = 
         entry.summary.toLowerCase().includes(query) ||
         entry.detail.toLowerCase().includes(query) ||
-        dateString.includes(query);
+        dateStringEn.includes(query) ||
+        dateStringKo.includes(query);
       
       const matchesFilter = filterEmotion === 'ALL' || entry.emotion === filterEmotion;
 
@@ -82,7 +86,7 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
                     <div className="relative">
                         <input
                             type="text"
-                            placeholder="Search memories (e.g. 'joy', 'work')..."
+                            placeholder="Search memories (e.g. 'joy', '월요일')..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 pl-11 focus:outline-none focus:ring-2 focus:ring-slate-200 text-sm shadow-sm transition-all"

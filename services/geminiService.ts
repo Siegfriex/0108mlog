@@ -128,29 +128,22 @@ export const generateHealingContent = async (
 ): Promise<ContentData | null> => {
   if (!process.env.API_KEY) return null;
 
-  // Derive tone from traits
-  const warmthTone = persona.traits.warmth > 60 
-    ? "감성적이고, 부드럽고, 위로가 되는 문체" 
-    : persona.traits.warmth < 40 
-      ? "분석적이고, 객관적이고, 차분한 문체" 
-      : "적당히 따뜻하면서 균형 잡힌 문체";
-
-  const directnessTone = persona.traits.directness > 60
-    ? "짧고, 강렬하고, 핵심을 찌르는 표현"
-    : "은유적이고, 서사적이고, 부드러운 흐름";
-
   const prompt = `
     당신은 ${persona.name}, 사용자의 ${persona.role}입니다.
-    MBTI: ${persona.mbti}.
-    현재 사용자의 기분/상태: '${emotionState}'
+    
+    [페르소나 설정]
+    - MBTI: ${persona.mbti}
+    - 따뜻함(Warmth): ${persona.traits.warmth}/100 
+      (높을수록 감성적/공감적, 낮을수록 이성적/분석적)
+    - 직설성(Directness): ${persona.traits.directness}/100
+      (높을수록 핵심만 전달, 낮을수록 은유적/서사적 표현)
+      
+    [사용자 상황]
+    - 현재 기분/상태: '${emotionState}'
     
     [목표]
     Google Search를 사용하여 현재 사용자의 감정 상태('${emotionState}')와 관련된 최신 뉴스, 예술 작품, 혹은 심리학적 발견을 찾아보세요.
-    반드시 **검색된 실제 정보**를 바탕으로 콘텐츠를 창작해야 합니다. 상상에만 의존하지 마세요.
-    
-    [톤앤매너 설정]
-    1. ${warmthTone}를 사용하세요.
-    2. ${directnessTone}을 사용하세요.
+    반드시 **검색된 실제 정보**를 바탕으로 페르소나의 성격에 맞는 콘텐츠를 창작해야 합니다.
     
     [콘텐츠 타입 선택 (랜덤)]
     1. poem: 검색된 자연 현상, 계절의 변화, 혹은 뉴스 속 미담을 소재로 한 시
@@ -163,7 +156,7 @@ export const generateHealingContent = async (
       "type": "poem" | "meditation" | "insight",
       "title": "제목 (감성적으로)",
       "body": "본문 내용 (줄바꿈은 \\n으로 표현)",
-      "commentary": "이 콘텐츠를 추천하는 이유 및 참고한 검색 정보 언급 (페르소나의 말투로)",
+      "commentary": "이 콘텐츠를 추천하는 이유 및 참고한 검색 정보 언급 (페르소나의 말투로, 예: '${persona.name}' 스타일)",
       "tags": ["태그1", "태그2", "테마키워드"]
     }
   `;

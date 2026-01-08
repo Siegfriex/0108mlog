@@ -137,7 +137,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                 isLoading={isGenerating}
                 className="w-full bg-slate-900 hover:bg-slate-800 text-white border-none shadow-lg shadow-slate-200 rounded-xl"
             >
-                {isGenerating ? 'Curating...' : <><RefreshCw size={16} /> Generate</>}
+                {isGenerating ? `Curating with ${persona.name}...` : <><RefreshCw size={16} /> Generate</>}
             </Button>
           </div>
         </div>

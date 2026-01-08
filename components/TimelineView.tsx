@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Sun, Moon, Archive, Clock, ArrowRight } from 'lucide-react';
+import { ChevronDown, Sun, Moon, Clock, ArrowRight, BookX } from 'lucide-react';
 import { TimelineEntry, EmotionType } from '../types';
 
 interface TimelineViewProps {
@@ -28,12 +28,12 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ data }) => {
   if (data.length === 0) {
     return (
         <div className="flex flex-col items-center justify-center h-full min-h-[400px] text-slate-400 p-8 text-center">
-            <div className="w-20 h-20 bg-white/50 rounded-3xl flex items-center justify-center mb-6 shadow-sm border border-white/60">
-                <Archive size={32} strokeWidth={1.5} className="text-slate-300" />
+            <div className="w-24 h-24 bg-slate-50/50 backdrop-blur-sm rounded-[32px] flex items-center justify-center mb-6 shadow-sm border border-slate-100">
+                <BookX size={40} strokeWidth={1.5} className="text-slate-300" />
             </div>
-            <h3 className="text-lg font-bold text-slate-600 mb-2">No entries yet</h3>
-            <p className="text-slate-500 max-w-xs text-sm">
-                Start your journey by logging your first emotion today.
+            <h3 className="text-xl font-bold text-slate-700 mb-2">No journal entries yet</h3>
+            <p className="text-slate-500 max-w-xs text-sm leading-relaxed">
+                Start by logging your first emotion!
             </p>
         </div>
     );
