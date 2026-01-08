@@ -28,6 +28,7 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave }) => {
   const [actionCard, setActionCard] = useState<MicroAction | null>(null);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -78,6 +79,9 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave }) => {
   };
 
   const handleFinishAndSave = async () => {
+    if (isSaved || isActionLoading) return;
+    setIsSaved(true);
+
     const emotionToSave = selectedEmotion || EmotionType.PEACE;
     const summaryText = messages.length > 1 ? messages[1].content.slice(0, 30) : 'Check-in';
     const detailText = messages.map(m => `[${m.role === 'user' ? 'Me' : persona.name}]: ${m.content}`).join('\n\n');
@@ -96,11 +100,19 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave }) => {
     
     // Generate Micro Action
     setIsActionLoading(true);
-    const action = await generateMicroAction(emotionToSave, intensity, detailText);
-    setIsActionLoading(false);
-    
-    if (action) {
-      setActionCard(action);
+    try {
+        const action = await generateMicroAction(emotionToSave, intensity, detailText);
+        if (action) {
+          setActionCard(action);
+        } else {
+          // Fallback if no action generated, just close
+          closeActionCard();
+        }
+    } catch (e) {
+        console.error("Failed to generate action", e);
+        closeActionCard();
+    } finally {
+        setIsActionLoading(false);
     }
   };
 
@@ -110,6 +122,7 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave }) => {
     setMessages([]);
     setSelectedEmotion(null);
     setIntensity(5);
+    setIsSaved(false);
   };
 
   if (!hasStarted) {
@@ -202,9 +215,13 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave }) => {
                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-0.5">Reflection</span>
                  <h3 className="text-sm font-bold text-slate-800">{EMOTIONS_CONFIG.find(e => e.id === selectedEmotion)?.label}</h3>
              </div>
-             {messages.length > 2 ? (
-                 <button onClick={handleFinishAndSave} className="text-xs font-bold text-white bg-slate-900 px-4 py-1.5 rounded-full hover:bg-slate-800 transition-colors">
-                     DONE
+             {messages.length > 0 ? (
+                 <button 
+                    onClick={handleFinishAndSave} 
+                    disabled={isSaved || isActionLoading}
+                    className="text-xs font-bold text-white bg-slate-900 px-4 py-1.5 rounded-full hover:bg-slate-800 transition-colors disabled:opacity-50"
+                 >
+                     {isActionLoading ? 'SAVING...' : 'DONE'}
                  </button>
              ) : <div className="w-8" />}
           </div>
