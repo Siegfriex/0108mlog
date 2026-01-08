@@ -1,7 +1,14 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Music, Quote, X, RefreshCw, MessageSquareQuote, Link2, Lightbulb, Search, Globe, ExternalLink, Palette, Feather, ArrowUpRight } from 'lucide-react';
-import { Button, LoadingSpinner } from './UI';
+import { 
+  Sparkles, Music, Quote, X, RefreshCw, MessageSquareQuote, 
+  Link2, Lightbulb, Search, Globe, ExternalLink, Palette, 
+  Feather, ArrowUpRight, Infinity as InfinityIcon, Activity,
+  TrendingUp, Calendar
+} from 'lucide-react';
+import { LineChart, Line, ResponsiveContainer, XAxis, Tooltip as RechartsTooltip } from 'recharts';
+import { Button } from './UI';
 import { VoicePlayer } from './VoicePlayer';
 import { ContentData, CoachPersona } from '../types';
 import { generateHealingContent } from '../services/geminiService';
@@ -58,139 +65,252 @@ const MOODS = [
   '사랑받고 싶어', '영감이 필요해', '잠이 오지 않아', '누군가 그리워'
 ];
 
+// Mock Data for the Insight Chart
+const TREND_DATA = [
+  { day: 'M', score: 3 },
+  { day: 'T', score: 4 },
+  { day: 'W', score: 3 },
+  { day: 'T', score: 6 },
+  { day: 'F', score: 5 },
+  { day: 'S', score: 8 },
+  { day: 'S', score: 7 },
+];
+
 export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
   const [contents, setContents] = useState<(ContentData & { commentary?: string })[]>(MOCK_CONTENTS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedMood, setSelectedMood] = useState<string>('지친 하루');
+  
+  // Infinite Scroll Refs
+  const loaderRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const handleGenerate = async () => {
+  const fetchContent = async (append: boolean = false) => {
+    if (isGenerating) return;
     setIsGenerating(true);
+    
     const newContent = await generateHealingContent(selectedMood, persona);
+    
     if (newContent) {
-      setContents(prev => [newContent, ...prev]);
-      setSelectedId(newContent.id);
+      setContents(prev => append ? [...prev, newContent] : [newContent, ...prev]);
+      if (!append) setSelectedId(newContent.id);
     }
     setIsGenerating(false);
   };
 
+  const handleManualGenerate = () => fetchContent(false);
+
+  const handleLoadMore = useCallback(() => {
+      fetchContent(true);
+  }, [isGenerating, selectedMood, persona]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (first.isIntersecting && !isGenerating) {
+          handleLoadMore();
+        }
+      },
+      { threshold: 0.1, rootMargin: '100px' }
+    );
+
+    const currentLoader = loaderRef.current;
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [handleLoadMore, isGenerating]);
+
+
   const getIcon = (type: string) => {
     switch (type) {
-      case 'poem': return <Feather size={24} strokeWidth={1.5} />;
-      case 'meditation': return <Music size={24} strokeWidth={1.5} />;
-      case 'quote': return <Quote size={24} strokeWidth={1.5} />;
-      case 'insight': return <Lightbulb size={24} strokeWidth={1.5} />;
-      default: return <Sparkles size={24} strokeWidth={1.5} />;
+      case 'poem': return <Feather size={20} strokeWidth={2} />;
+      case 'meditation': return <Music size={20} strokeWidth={2} />;
+      case 'quote': return <Quote size={20} strokeWidth={2} />;
+      case 'insight': return <Lightbulb size={20} strokeWidth={2} />;
+      default: return <Sparkles size={20} strokeWidth={2} />;
     }
   };
 
   const getColor = (type: string) => {
     switch (type) {
-      case 'poem': return 'from-rose-400 to-orange-400';
-      case 'meditation': return 'from-teal-400 to-emerald-500';
-      case 'quote': return 'from-indigo-400 to-blue-500';
-      case 'insight': return 'from-violet-400 to-purple-500';
-      default: return 'from-slate-400 to-gray-500';
+      case 'poem': return 'from-orange-100 to-rose-100 text-rose-600';
+      case 'meditation': return 'from-teal-100 to-emerald-100 text-teal-600';
+      case 'quote': return 'from-blue-100 to-indigo-100 text-indigo-600';
+      case 'insight': return 'from-violet-100 to-purple-100 text-purple-600';
+      default: return 'from-slate-100 to-gray-200 text-slate-600';
     }
   };
 
-  return (
-    <div className="h-full flex flex-col max-w-full mx-auto py-6 relative">
-      <header className="px-6 mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <Palette size={28} className="text-purple-500" strokeWidth={1.5} /> Art Gallery
-          </h2>
-          <p className="text-slate-500 text-sm mt-1 ml-1">Curated healing content for you.</p>
-        </div>
-      </header>
+  // Get current month name
+  const monthName = new Date().toLocaleString('default', { month: 'long' });
 
-      {/* Generator Section */}
-      <div className="px-6 mb-8">
-        <div className="bg-white/60 backdrop-blur-xl border border-white/60 rounded-[32px] p-6 relative overflow-hidden group shadow-lg transition-all hover:bg-white/80">
-          <div className="absolute top-0 right-0 p-3 opacity-[0.05] group-hover:opacity-[0.1] transition-opacity duration-500">
-             <Globe size={180} />
-          </div>
-          <div className="relative z-10">
-            <span className="text-[10px] font-bold text-indigo-500 flex items-center gap-1.5 mb-3 uppercase tracking-widest">
-                <Search size={12} /> Google Grounded
-            </span>
-            <h3 className="text-lg font-bold text-slate-800 mb-3">What do you need right now?</h3>
-            <div className="flex flex-wrap gap-2 mb-5">
-                {MOODS.map(mood => (
+  return (
+    <div className="h-full flex flex-col max-w-full mx-auto relative bg-[#FDFDFD]" ref={scrollContainerRef}>
+      <div className="flex-1 overflow-y-auto scrollbar-hide py-6 px-4">
+        
+        {/* 1. Header & Insight Section (MindDoc Style) */}
+        <div className="mb-10 relative">
+            <div className="flex items-center justify-between mb-6 px-2">
+                 <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    Insight
+                 </h2>
+                 <span className="text-sm font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full flex items-center gap-2">
+                    <Calendar size={14} /> {monthName} 2024
+                 </span>
+            </div>
+
+            {/* Main Insight Card with Chart */}
+            <div className="relative bg-[#FFFBF7] rounded-[40px] p-6 shadow-xl shadow-orange-100/50 border border-orange-50 overflow-visible mb-8">
+                 {/* Floating Bubble */}
+                 <motion.div 
+                    initial={{ scale: 0, y: 10, opacity: 0 }}
+                    animate={{ scale: 1, y: 0, opacity: 1 }}
+                    transition={{ delay: 0.5, type: "spring" }}
+                    className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#FF8E6E] text-white px-5 py-2.5 rounded-2xl shadow-lg shadow-orange-300/40 z-20 flex items-center gap-2"
+                 >
+                    <span className="text-xl">🙂</span>
+                    <span className="text-sm font-bold">Your mood is improving</span>
+                    {/* Speech Bubble Arrow */}
+                    <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#FF8E6E] rotate-45" />
+                 </motion.div>
+
+                 <div className="h-48 mt-4">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={TREND_DATA}>
+                            <defs>
+                                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="0%" stopColor="#818CF8" />
+                                    <stop offset="100%" stopColor="#F472B6" />
+                                </linearGradient>
+                            </defs>
+                            <XAxis 
+                                dataKey="day" 
+                                axisLine={false} 
+                                tickLine={false} 
+                                tick={{ fill: '#94A3B8', fontSize: 12, fontWeight: 'bold' }} 
+                                dy={10}
+                            />
+                            <RechartsTooltip 
+                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                                cursor={{ stroke: '#CBD5E1', strokeWidth: 1, strokeDasharray: '4 4' }}
+                            />
+                            <Line 
+                                type="monotone" 
+                                dataKey="score" 
+                                stroke="url(#lineGradient)" 
+                                strokeWidth={4} 
+                                dot={{ r: 0 }} 
+                                activeDot={{ r: 6, fill: '#F472B6', stroke: '#fff', strokeWidth: 2 }}
+                                animationDuration={1500}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                 </div>
+                 
+                 <div className="mt-4 flex justify-between items-end">
+                    <div>
+                        <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Weekly Pattern</p>
+                        <h3 className="text-slate-700 font-bold text-lg">Stable Flow</h3>
+                    </div>
+                    <div className="flex gap-4 text-center">
+                        <div>
+                            <span className="block text-xl font-bold text-slate-800">21</span>
+                            <span className="text-[10px] text-slate-400 font-bold uppercase">Answers</span>
+                        </div>
+                        <div>
+                            <span className="block text-xl font-bold text-slate-800">5</span>
+                            <span className="text-[10px] text-slate-400 font-bold uppercase">Notes</span>
+                        </div>
+                    </div>
+                 </div>
+            </div>
+
+            {/* Google Grounding Generator (Redesigned as 'Explore' Card) */}
+            <div className="bg-white rounded-[32px] p-1 shadow-lg border border-slate-100 flex items-center gap-1 overflow-hidden relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative z-10 p-4 flex-1">
+                    <span className="flex items-center gap-1.5 text-[10px] font-bold text-indigo-500 uppercase tracking-widest mb-1">
+                         <Globe size={12} /> Grounded AI
+                    </span>
+                    <h4 className="font-bold text-slate-700 text-sm">Discover Healing Content</h4>
+                </div>
+                <div className="relative z-10 pr-2">
+                     <Button 
+                        variant="primary" 
+                        onClick={handleManualGenerate} 
+                        isLoading={isGenerating}
+                        className="!rounded-2xl !py-3 !px-5 bg-slate-900 text-white shadow-md text-xs"
+                    >
+                        {isGenerating ? <RefreshCw size={14} className="animate-spin" /> : <Search size={14} />}
+                        <span className="ml-2">Generate</span>
+                    </Button>
+                </div>
+            </div>
+            
+            {/* Quick Mood Selector for Generator */}
+            <div className="flex overflow-x-auto gap-2 mt-4 pb-2 scrollbar-hide">
+                 {MOODS.map(mood => (
                     <button
-                    key={mood}
-                    onClick={() => setSelectedMood(mood)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-300 border
-                        ${selectedMood === mood 
-                            ? 'bg-slate-800 text-white border-slate-800 shadow-md' 
-                            : 'bg-white/80 border-slate-200 text-slate-500 hover:border-slate-300'}
-                    `}
+                        key={mood}
+                        onClick={() => setSelectedMood(mood)}
+                        className={`
+                            whitespace-nowrap px-4 py-2 rounded-full text-xs font-bold transition-all duration-300
+                            ${selectedMood === mood 
+                                ? 'bg-slate-800 text-white shadow-md' 
+                                : 'bg-white border border-slate-100 text-slate-400 hover:bg-slate-50'}
+                        `}
                     >
                         {mood}
                     </button>
-                ))}
+                 ))}
             </div>
-            <Button 
-                variant="primary" 
-                onClick={handleGenerate} 
-                isLoading={isGenerating}
-                className="w-full bg-slate-900 hover:bg-slate-800 text-white border-none shadow-lg shadow-slate-200 rounded-xl"
-            >
-                {isGenerating ? `Curating with ${persona.name}...` : <><RefreshCw size={16} /> Generate</>}
-            </Button>
-          </div>
         </div>
-      </div>
 
-      {/* Grid Layout */}
-      <div className="grid grid-cols-2 gap-4 px-4 pb-24">
-        {contents.map((content) => (
-            <motion.div
-              key={content.id}
-              layoutId={`card-container-${content.id}`}
-              onClick={() => setSelectedId(content.id)}
-              whileHover={{ scale: 0.98, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className={`
-                aspect-square relative cursor-pointer group
-                bg-white/80 backdrop-blur-md rounded-[32px] overflow-hidden
-                shadow-glass border border-white/50
-                flex flex-col
-              `}
-            >
-                {/* Background Gradient */}
-                <motion.div 
-                    layoutId={`card-bg-${content.id}`}
-                    className={`absolute inset-0 bg-gradient-to-br ${getColor(content.type)} opacity-10 group-hover:opacity-20 transition-opacity duration-500`} 
-                />
-                
-                <div className="relative z-10 flex-1 p-5 flex flex-col justify-between">
-                    <div className="flex justify-between items-start">
-                        <div className={`
-                            w-10 h-10 rounded-2xl flex items-center justify-center 
-                            bg-white/50 backdrop-blur-sm text-slate-700 shadow-sm
-                            border border-white/40
-                        `}>
-                            {getIcon(content.type)}
-                        </div>
-                        <ArrowUpRight size={20} className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                    </div>
+        {/* 2. Content Feed (Asymmetrical Grid) */}
+        <div>
+            <div className="flex items-center justify-between mb-4 px-2">
+                <h3 className="font-bold text-slate-800">For You</h3>
+                <button className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors">See All</button>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 pb-24">
+                {contents.map((content, idx) => {
+                    // Feature the first item visually
+                    const isFeatured = idx === 0;
+                    return (
+                        <GalleryItem 
+                            key={content.id} 
+                            content={content} 
+                            getColor={getColor} 
+                            getIcon={getIcon} 
+                            isFeatured={isFeatured}
+                            onClick={() => setSelectedId(content.id)} 
+                        />
+                    );
+                })}
 
-                    <div>
-                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 block">
-                            {content.type}
-                         </span>
-                         <motion.h3 
-                            layoutId={`card-title-${content.id}`}
-                            className="text-lg font-serif font-bold text-slate-800 leading-tight line-clamp-2"
-                         >
-                            {content.title}
-                         </motion.h3>
-                    </div>
+                {/* Loader */}
+                <div ref={loaderRef} className="col-span-2 flex justify-center py-8">
+                     {isGenerating ? (
+                         <div className="flex flex-col items-center gap-2">
+                             <div className="w-6 h-6 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+                         </div>
+                     ) : (
+                         <div className="flex flex-col items-center gap-1 opacity-40">
+                             <InfinityIcon size={16} className="text-slate-400" />
+                         </div>
+                     )}
                 </div>
-            </motion.div>
-        ))}
+            </div>
+        </div>
       </div>
 
       {/* Expanded Modal */}
@@ -202,7 +322,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-slate-900/80 backdrop-blur-md"
+                className="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
                 onClick={() => setSelectedId(null)}
             />
 
@@ -211,45 +331,49 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
               const selectedContent = contents.find(c => c.id === selectedId);
               if (!selectedContent) return null;
               
+              const colorClasses = getColor(selectedContent.type); // e.g., 'from-orange-100 to-rose-100 text-rose-600'
+              // Extract bg-gradient part approx for the header
+              const bgGradient = colorClasses.split(' ').slice(0, 2).join(' '); // 'from-orange-100 to-rose-100'
+
               return (
                 <motion.div
                   layoutId={`card-container-${selectedId}`}
-                  className="w-full h-full md:w-[600px] md:h-[85vh] bg-[#FDFDFD] md:rounded-[40px] shadow-2xl overflow-hidden relative flex flex-col"
+                  className="w-full h-full md:w-[600px] md:h-[85vh] bg-white md:rounded-[40px] shadow-2xl overflow-hidden relative flex flex-col"
                   onClick={(e) => e.stopPropagation()}
                 >
                    {/* Header Image Area */}
                    <motion.div 
                         layoutId={`card-bg-${selectedId}`}
-                        className={`h-48 md:h-64 shrink-0 bg-gradient-to-br ${getColor(selectedContent.type)} relative p-8 flex flex-col justify-between`}
+                        className={`h-56 shrink-0 bg-gradient-to-br ${bgGradient} relative p-8 flex flex-col justify-between`}
                    >
-                       <div className="absolute inset-0 bg-black/10 mix-blend-overlay" />
+                       <div className="absolute inset-0 bg-white/30 mix-blend-overlay" />
                        <div className="relative z-10 flex justify-between items-start">
                            <button 
                                 onClick={() => setSelectedId(null)}
-                                className="w-10 h-10 rounded-full bg-black/20 text-white flex items-center justify-center backdrop-blur-md hover:bg-black/30 transition-colors"
+                                className="w-10 h-10 rounded-full bg-white/60 text-slate-800 flex items-center justify-center backdrop-blur-md hover:bg-white transition-colors"
                            >
                                <X size={20} />
                            </button>
-                           <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-[10px] font-bold uppercase tracking-widest border border-white/20">
+                           <span className="px-3 py-1 bg-white/40 backdrop-blur-md rounded-full text-slate-800 text-[10px] font-bold uppercase tracking-widest border border-white/40">
                                 {selectedContent.type}
                            </span>
                        </div>
-                       <div className="relative z-10 text-white">
+                       <div className="relative z-10">
                             <motion.h2 
                                 layoutId={`card-title-${selectedId}`}
-                                className="text-3xl md:text-4xl font-serif font-bold leading-tight mb-2"
+                                className="text-3xl font-serif font-bold text-slate-800 leading-tight mb-2"
                             >
                                 {selectedContent.title}
                             </motion.h2>
-                            <p className="text-white/80 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
-                                By {selectedContent.author} <span className="w-1 h-1 rounded-full bg-white/60" /> {selectedContent.tags[0]}
+                            <p className="text-slate-600/80 text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                                By {selectedContent.author} <span className="w-1 h-1 rounded-full bg-slate-400" /> {selectedContent.tags[0]}
                             </p>
                        </div>
                    </motion.div>
 
                    {/* Scrollable Content */}
-                   <div className="flex-1 overflow-y-auto px-6 py-8 md:px-10 space-y-8 scrollbar-hide bg-white">
-                        <div className="flex justify-center -mt-4 mb-4">
+                   <div className="flex-1 overflow-y-auto px-6 py-8 md:px-10 space-y-8 scrollbar-hide bg-white relative">
+                        <div className="flex justify-center -mt-14 mb-4 relative z-20">
                              <VoicePlayer text={selectedContent.body} />
                         </div>
 
@@ -297,9 +421,6 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                             </div>
                         )}
                    </div>
-                   
-                   {/* Bottom Padding for scroll */}
-                   <div className="h-6 shrink-0 bg-white" />
                 </motion.div>
               );
             })()}
@@ -308,4 +429,76 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
       </AnimatePresence>
     </div>
   );
+};
+
+// Sub-component for individual items (MindDoc Card Style)
+const GalleryItem: React.FC<{ 
+    content: ContentData; 
+    getColor: (t: string) => string; 
+    getIcon: (t: string) => React.ReactNode; 
+    onClick: () => void; 
+    isFeatured?: boolean;
+}> = ({ content, getColor, getIcon, onClick, isFeatured }) => {
+    const colorClasses = getColor(content.type); // "from-x to-y text-z"
+    // We need to parse this string to apply different classes to bg and text
+    // Simple heuristic: Background is gradient, Text is text color class
+    const bgGradient = colorClasses.split(' ').slice(0, 2).join(' '); // 'from-orange-100 to-rose-100'
+    const textColor = colorClasses.split(' ').pop(); // 'text-rose-600'
+
+    return (
+        <motion.div
+            layoutId={`card-container-${content.id}`}
+            onClick={onClick}
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-20px" }}
+            transition={{ type: "spring", stiffness: 50, damping: 20 }}
+            whileHover={{ y: -5, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`
+                relative cursor-pointer group overflow-hidden
+                bg-white rounded-[32px] shadow-[0_8px_20px_-6px_rgba(0,0,0,0.05)]
+                border border-slate-100 hover:shadow-xl hover:border-slate-200 transition-all duration-300
+                flex flex-col justify-between
+                ${isFeatured ? 'col-span-2 aspect-[2/1]' : 'col-span-1 aspect-[4/5]'}
+            `}
+        >
+            <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${bgGradient} opacity-50 blur-2xl rounded-full -translate-y-1/2 translate-x-1/2`} />
+            
+            <div className="p-5 flex flex-col justify-between h-full relative z-10">
+                <div className="flex justify-between items-start">
+                    <div className={`
+                        w-10 h-10 rounded-full flex items-center justify-center 
+                        bg-slate-50 ${textColor}
+                    `}>
+                        {getIcon(content.type)}
+                    </div>
+                </div>
+
+                <div>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 block">
+                        {content.type}
+                    </span>
+                    <motion.h3 
+                        layoutId={`card-title-${content.id}`}
+                        className={`font-serif font-bold text-slate-800 leading-tight ${isFeatured ? 'text-2xl max-w-[80%]' : 'text-lg line-clamp-3'}`}
+                    >
+                        {content.title}
+                    </motion.h3>
+                    
+                    {isFeatured && (
+                         <p className="text-sm text-slate-500 mt-2 line-clamp-2 max-w-[90%]">
+                             {content.commentary || content.body.slice(0, 50)}
+                         </p>
+                    )}
+                </div>
+
+                <div className="flex items-center gap-2 mt-2">
+                    <span className="text-[10px] font-bold text-slate-300 flex items-center gap-1">
+                        <ArrowUpRight size={12} /> Open
+                    </span>
+                </div>
+            </div>
+        </motion.div>
+    );
 };

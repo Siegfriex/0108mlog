@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
-import { CoachPersona, ContentData, ContentType, MicroAction, EmotionType } from "../types";
+import { CoachPersona, ContentData, ContentType, MicroAction, EmotionType, TimelineEntry } from "../types";
 
 // Initialize Gemini Client
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -292,5 +292,37 @@ export const generateMicroAction = async (
       duration: "1 min",
       type: "breathing"
     };
+  }
+};
+
+export const generateTimelineAnalysis = async (entries: TimelineEntry[]): Promise<string> => {
+  if (!process.env.API_KEY) return "Analysis unavailable.";
+  
+  // Summarize entries for the model
+  const summaries = entries.slice(0, 10).map(e => 
+    `- ${e.date.toLocaleDateString()}: ${e.emotion} (Intensity ${e.intensity || 'N/A'}) - ${e.summary}`
+  ).join('\n');
+
+  const prompt = `
+    You are an empathetic AI therapist assistant.
+    Analyze the following timeline of emotional entries from a user.
+    Identify any recurring patterns, emotional shifts, or triggers.
+    
+    Provide a brief, supportive insight (max 2-3 sentences) in Korean.
+    Focus on growth, resilience, or gentle observation.
+    
+    User Entries:
+    ${summaries}
+  `;
+
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: prompt,
+    });
+    return response.text || "패턴을 분석할 수 없습니다.";
+  } catch (error) {
+    console.error("Timeline Analysis Error:", error);
+    return "분석 중 오류가 발생했습니다.";
   }
 };

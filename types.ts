@@ -1,3 +1,4 @@
+
 export enum EmotionType {
   JOY = 'joy',
   PEACE = 'peace',
@@ -58,6 +59,7 @@ export interface TimelineEntry {
   intensity?: number; // 1-10
   summary: string; // Short summary of the chat or diary
   detail: string;  // Full chat log or letter content
+  nuanceTags?: string[]; // e.g., ['#설레는', '#뿌듯한'] - detailed emotional nuances
 }
 
 export interface MicroAction {
