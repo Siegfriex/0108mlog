@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Smile, Frown, Meh, CloudRain, Flame, ArrowUp } from 'lucide-react';
@@ -7,7 +8,7 @@ import { generateDayModeResponse, generateMicroAction } from '../services/gemini
 
 const EMOTIONS_CONFIG = [
   { id: EmotionType.JOY, label: 'Super Awesome', icon: <Smile size={36} strokeWidth={2} />, color: 'text-amber-500', bgGradient: 'from-amber-200/40 via-yellow-100/40 to-orange-100/40' },
-  { id: EmotionType.PEACE, label: 'Pretty Good', icon: <Meh size={36} strokeWidth={2} />, color: 'text-sky-500', bgGradient: 'from-sky-200/40 via-blue-100/40 to-indigo-100/40' },
+  { id: EmotionType.PEACE, label: 'Pretty Good', icon: <Meh size={36} strokeWidth={2} />, color: 'text-brand-primary', bgGradient: 'from-brand-secondary/40 via-teal-100/40 to-cyan-100/40' },
   { id: EmotionType.ANXIETY, label: 'A bit Anxious', icon: <Frown size={36} strokeWidth={2} />, color: 'text-orange-500', bgGradient: 'from-orange-200/40 via-red-100/40 to-amber-100/40' },
   { id: EmotionType.SADNESS, label: 'Feeling Blue', icon: <CloudRain size={36} strokeWidth={2} />, color: 'text-indigo-500', bgGradient: 'from-indigo-200/40 via-purple-100/40 to-slate-100/40' },
   { id: EmotionType.ANGER, label: 'Frustrated', icon: <Flame size={36} strokeWidth={2} />, color: 'text-rose-500', bgGradient: 'from-rose-200/40 via-red-100/40 to-orange-100/40' },
@@ -180,7 +181,7 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave, setImmersive 
                                 {EMOTIONS_CONFIG.map((e, idx) => (
                                     <div 
                                         key={e.id}
-                                        className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${selectedEmotion === e.id ? 'bg-slate-800 scale-125' : 'bg-slate-300'}`}
+                                        className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full transition-all duration-300 ${selectedEmotion === e.id ? 'bg-brand-primary scale-125' : 'bg-slate-300'}`}
                                     />
                                 ))}
                             </div>
@@ -211,7 +212,7 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave, setImmersive 
                                     </div>
                                     <div className="relative h-4 w-full bg-slate-100 rounded-full overflow-hidden flex items-center">
                                         <motion.div 
-                                            className="h-full bg-slate-800" 
+                                            className="h-full bg-brand-primary" 
                                             initial={{ width: 0 }}
                                             animate={{ width: `${(intensity / 10) * 100}%` }}
                                         />
@@ -231,7 +232,8 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave, setImmersive 
                         <Button 
                             onClick={startCheckIn} 
                             disabled={!selectedEmotion}
-                            className="w-full bg-slate-900 text-white !rounded-xl !py-3.5 sm:!py-4 text-sm sm:text-base shadow-xl"
+                            variant="primary"
+                            className="w-full !rounded-xl !py-3.5 sm:!py-4 text-sm sm:text-base shadow-xl"
                         >
                             Start Chat
                         </Button>
@@ -283,7 +285,7 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave, setImmersive 
                 className={`
                     max-w-[85%] px-5 py-3.5 text-[15px] leading-relaxed shadow-sm backdrop-blur-md
                     ${msg.role === 'user'
-                    ? 'bg-slate-900 text-white rounded-[20px] rounded-br-sm shadow-xl shadow-slate-900/10'
+                    ? 'bg-brand-primary text-white rounded-[20px] rounded-br-sm shadow-xl shadow-brand-primary/20'
                     : 'bg-white/80 border border-white/50 text-slate-700 rounded-[20px] rounded-tl-sm shadow-sm'
                     }
                 `}
@@ -296,7 +298,7 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave, setImmersive 
                         animate={{ opacity: 1 }}
                         className="text-[10px] text-slate-400 font-bold px-3 flex items-center gap-1"
                     >
-                        <Sparkles size={10} className="text-amber-400" /> {persona.name}
+                        <Sparkles size={10} className="text-brand-primary" /> {persona.name}
                     </motion.span>
                 )}
             </motion.div>
@@ -337,7 +339,7 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave, setImmersive 
                      <motion.button 
                      onClick={handleFinishAndSave}
                      disabled={isLoading}
-                     className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center hover:bg-indigo-100"
+                     className="w-10 h-10 bg-brand-light text-brand-primary rounded-full flex items-center justify-center hover:bg-brand-secondary"
                      title="Finish & Save"
                  >
                      <Sparkles size={18} strokeWidth={2.5} />
@@ -347,7 +349,7 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave, setImmersive 
                 <motion.button 
                     onClick={handleSend}
                     disabled={isLoading || !input.trim()}
-                    className="w-10 h-10 bg-slate-900 rounded-full text-white shadow-lg flex items-center justify-center disabled:opacity-50 transition-transform active:scale-95"
+                    className="w-10 h-10 bg-brand-primary rounded-full text-white shadow-lg flex items-center justify-center disabled:opacity-50 transition-transform active:scale-95"
                 >
                     <ArrowUp size={20} strokeWidth={2.5} />
                 </motion.button>
@@ -364,11 +366,11 @@ export const DayMode: React.FC<DayModeProps> = ({ persona, onSave, setImmersive 
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 z-50 flex items-center justify-center p-6 bg-white/90 backdrop-blur-xl"
             >
-               {isActionLoading ? <div className="animate-spin w-10 h-10 border-4 border-slate-200 rounded-full border-t-indigo-500"/> : (
+               {isActionLoading ? <div className="animate-spin w-10 h-10 border-4 border-slate-200 rounded-full border-t-brand-primary"/> : (
                    <GlassCard className="w-full max-w-sm !p-8 shadow-2xl">
                        <h3 className="text-2xl font-bold mb-4">{actionCard?.title}</h3>
                        <p className="mb-6 text-slate-600">{actionCard?.description}</p>
-                       <Button onClick={closeActionCard} className="w-full bg-slate-900 text-white">Done</Button>
+                       <Button onClick={closeActionCard} variant="primary" className="w-full">Done</Button>
                    </GlassCard>
                )}
             </motion.div>

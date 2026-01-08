@@ -96,14 +96,22 @@ const App: React.FC = () => {
   return (
     <div className={`
       relative w-full h-[100dvh] overflow-hidden font-sans transition-colors duration-700 flex flex-col items-center
-      ${mode === 'day' ? 'text-slate-900 bg-[#F0F2F5]' : 'text-white bg-[#050505]'}
+      ${mode === 'day' ? 'text-slate-900 bg-[#F5F9FA]' : 'text-white bg-[#050505]'}
     `}>
       <NoiseOverlay />
 
-      {/* 1. Background Atmosphere (Stable & Subtle) */}
+      {/* 1. Background Atmosphere (Stable & Subtle - Teal Theme) */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-          <div className={`absolute top-[-10%] left-1/2 -translate-x-1/2 w-[120vw] h-[60vh] rounded-[100%] blur-[100px] opacity-40 transition-colors duration-1000 ${mode === 'day' ? 'bg-gradient-to-b from-indigo-200 to-transparent' : 'bg-gradient-to-b from-indigo-900/40 to-transparent'}`} />
-          <div className={`absolute bottom-[-20%] left-[-10%] w-[80vw] h-[80vw] rounded-full filter blur-[120px] mix-blend-multiply opacity-30 animate-float ${mode === 'day' ? 'bg-purple-200' : 'bg-purple-900/20'}`} />
+          {/* Main Top Gradient */}
+          <div className={`
+            absolute top-[-10%] left-1/2 -translate-x-1/2 w-[120vw] h-[60vh] rounded-[100%] blur-[100px] opacity-40 transition-colors duration-1000 
+            ${mode === 'day' ? 'bg-gradient-to-b from-brand-secondary to-transparent' : 'bg-gradient-to-b from-brand-dark to-transparent'}
+          `} />
+          {/* Bottom Floating Orb - Complimentary Color (Soft Pink/Peach) */}
+          <div className={`
+            absolute bottom-[-20%] left-[-10%] w-[80vw] h-[80vw] rounded-full filter blur-[120px] mix-blend-multiply opacity-30 animate-float 
+            ${mode === 'day' ? 'bg-brand-accent' : 'bg-brand-primary/20'}
+          `} />
       </div>
 
       {/* 2. Global Navigation Bar (GNB) - Strictly Constrained Width */}
@@ -115,14 +123,14 @@ const App: React.FC = () => {
               {/* Brand: Absolute Left */}
               <div className="flex items-center gap-3 group cursor-pointer select-none">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center backdrop-blur-md shadow-sm border transition-all duration-300
-                      ${mode === 'day' ? 'bg-white/90 border-white/60 text-slate-900' : 'bg-white/10 border-white/10 text-white'}
+                      ${mode === 'day' ? 'bg-white/90 border-white/60 text-brand-primary' : 'bg-white/10 border-white/10 text-white'}
                       group-hover:scale-105
                   `}>
                       <span className="font-extrabold text-lg tracking-tighter">M.</span>
                   </div>
                   <div className="flex flex-col">
                       <span className={`font-bold text-sm tracking-tight leading-none mb-0.5 ${mode === 'day' ? 'text-slate-900' : 'text-slate-100'}`}>MaumLog</span>
-                      <span className={`text-[9px] font-bold tracking-widest uppercase opacity-50 ${mode === 'day' ? 'text-slate-600' : 'text-slate-400'}`}>V5.0</span>
+                      <span className={`text-[9px] font-bold tracking-widest uppercase opacity-50 ${mode === 'day' ? 'text-brand-dark' : 'text-slate-400'}`}>V5.0</span>
                   </div>
               </div>
 
@@ -133,7 +141,7 @@ const App: React.FC = () => {
               `}>
                   <IconButton onClick={() => setShowSafetyLayer(true)} icon={<ShieldAlert size={18} strokeWidth={2.5} />} label="Safety" mode={mode} />
                   <IconButton onClick={() => setShowChatbot(true)} icon={<Bot size={18} strokeWidth={2.5} />} label="AI Helper" mode={mode} />
-                  <div className={`w-[1px] h-3 mx-0.5 opacity-20 ${mode === 'day' ? 'bg-black' : 'bg-white'}`} />
+                  <div className={`w-[1px] h-3 mx-0.5 opacity-20 ${mode === 'day' ? 'bg-brand-dark' : 'bg-white'}`} />
                   <IconButton onClick={toggleMode} icon={mode === 'day' ? <Moon size={18} strokeWidth={2.5} /> : <Sun size={18} strokeWidth={2.5} />} label="Theme" mode={mode} />
               </div>
           </header>
@@ -152,7 +160,7 @@ const App: React.FC = () => {
                ${isImmersive 
                  ? 'rounded-none shadow-none bg-transparent' 
                  : `rounded-[36px] shadow-2xl border backdrop-blur-lg
-                    ${mode === 'day' ? 'bg-white/40 border-white/60 shadow-slate-200/50' : 'bg-white/5 border-white/10 shadow-black/50'}`
+                    ${mode === 'day' ? 'bg-white/40 border-white/60 shadow-brand-primary/10' : 'bg-white/5 border-white/10 shadow-black/50'}`
                }
             `}
          >
@@ -199,7 +207,7 @@ const IconButton = ({ onClick, icon, label, mode }: any) => (
             w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200
             active:scale-95
             ${mode === 'day' 
-                ? 'text-slate-500 hover:bg-white hover:text-slate-900 hover:shadow-sm' 
+                ? 'text-slate-500 hover:bg-white hover:text-brand-primary hover:shadow-sm' 
                 : 'text-slate-400 hover:bg-white/20 hover:text-white'
             }
         `}

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Settings, Shield, MessageSquare, ChevronRight, ArrowLeft, UserCog } from 'lucide-react';
@@ -46,13 +47,13 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ persona, onUpdatePerso
         return (
           <div className="px-4 py-6 max-w-xl mx-auto w-full h-full overflow-y-auto scrollbar-hide">
             <header className="mb-8 text-center pt-4">
-                <div className="w-24 h-24 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                <div className="w-24 h-24 bg-gradient-to-br from-brand-secondary to-brand-primary rounded-full mx-auto mb-4 flex items-center justify-center text-white shadow-lg shadow-brand-primary/30">
                     <User size={40} strokeWidth={1.5} />
                 </div>
                 <h2 className="text-2xl font-bold text-slate-800">User Profile</h2>
                 <div className="flex justify-center gap-2 mt-3">
-                    <span className="px-3 py-1 bg-indigo-50 text-indigo-600 rounded-full text-[10px] font-bold uppercase tracking-wider border border-indigo-100">Level 5</span>
-                    <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-[10px] font-bold uppercase tracking-wider border border-purple-100">1,250 XP</span>
+                    <span className="px-3 py-1 bg-brand-light text-brand-primary rounded-full text-[10px] font-bold uppercase tracking-wider border border-brand-secondary">Level 5</span>
+                    <span className="px-3 py-1 bg-orange-50 text-orange-600 rounded-full text-[10px] font-bold uppercase tracking-wider border border-orange-100">1,250 XP</span>
                 </div>
             </header>
 
@@ -64,14 +65,14 @@ export const ProfileView: React.FC<ProfileViewProps> = ({ persona, onUpdatePerso
                         onClick={() => setView(item.id as ProfileSubView)}
                     >
                         <div className="p-5 flex items-center w-full">
-                            <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-600 mr-4 shrink-0 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                            <div className="w-12 h-12 rounded-2xl bg-brand-light flex items-center justify-center text-brand-primary mr-4 shrink-0 group-hover:bg-brand-primary group-hover:text-white transition-colors">
                                 {item.icon}
                             </div>
                             <div className="flex-1">
                                 <h4 className="font-bold text-slate-800 text-sm">{item.label}</h4>
                                 <p className="text-slate-500 text-xs">{item.description}</p>
                             </div>
-                            <ChevronRight size={20} className="text-slate-300 group-hover:text-indigo-400 transition-colors" />
+                            <ChevronRight size={20} className="text-slate-300 group-hover:text-brand-primary transition-colors" />
                         </div>
                     </GlassCard>
                 ))}

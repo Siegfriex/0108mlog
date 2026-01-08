@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion, HTMLMotionProps } from 'framer-motion';
 import { Loader2, MessageCircle, Book, BarChart2, Layers, User } from 'lucide-react';
@@ -30,7 +31,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', 
         relative overflow-hidden
         ${bgStyle} ${blurStyle}
         border border-white/60
-        shadow-[0_8px_32px_rgba(0,0,0,0.05)]
+        shadow-[0_8px_32px_rgba(42,142,158,0.05)]
         rounded-[32px] p-8
         transition-all duration-300 ease-out
         group
@@ -59,16 +60,20 @@ export const Button: React.FC<ButtonProps> = ({
   ...props 
 }) => {
   const variants = {
-    primary: 'bg-slate-900 text-white shadow-xl shadow-slate-900/10 border-none hover:bg-black hover:scale-[1.02] active:scale-[0.98]',
-    secondary: 'bg-white text-slate-900 border border-slate-200 hover:bg-slate-50',
-    ghost: 'bg-transparent text-slate-500 hover:bg-slate-100/50 hover:text-slate-900',
-    glass: 'bg-white/40 backdrop-blur-xl border border-white/60 text-slate-800 hover:bg-white/60 shadow-glass'
+    // Primary: Solid Brand Teal
+    primary: 'bg-brand-primary text-white shadow-xl shadow-brand-primary/20 border border-transparent hover:bg-brand-dark hover:scale-[1.02] active:scale-[0.98]',
+    // Secondary: Outline / Stroke Brand Teal (Matches the "Counselor Intro" button style)
+    secondary: 'bg-transparent text-brand-primary border border-brand-primary hover:bg-brand-light',
+    // Ghost: Subtle
+    ghost: 'bg-transparent text-slate-500 hover:bg-brand-light/50 hover:text-brand-primary',
+    // Glass: White glass with Teal border hint
+    glass: 'bg-white/40 backdrop-blur-xl border border-white/60 text-slate-800 hover:bg-white/60 shadow-glass hover:border-brand-primary/30'
   };
 
   return (
     <motion.button
       className={`
-        px-8 py-4 rounded-xl font-bold text-sm tracking-wide
+        px-8 py-4 rounded-full font-bold text-sm tracking-wide
         flex items-center justify-center gap-2
         transition-all duration-300
         disabled:opacity-50 disabled:cursor-not-allowed
@@ -86,7 +91,7 @@ export const Button: React.FC<ButtonProps> = ({
 
 export const LoadingSpinner = () => (
   <div className="flex items-center justify-center p-8">
-    <div className="w-10 h-10 border-4 border-slate-200 rounded-full border-t-indigo-500 animate-spin" />
+    <div className="w-10 h-10 border-4 border-slate-200 rounded-full border-t-brand-primary animate-spin" />
   </div>
 );
 
@@ -112,7 +117,7 @@ export const TabBar: React.FC<TabBarProps> = ({ activeTab, onTabChange, mode = '
       rounded-[32px] shadow-2xl
       w-auto min-w-[320px] max-w-full transition-colors duration-500
       ${mode === 'day' 
-        ? 'bg-white/80 border-white/60 shadow-indigo-200/20 ring-1 ring-white/50' 
+        ? 'bg-white/80 border-white/60 shadow-brand-primary/10 ring-1 ring-white/50' 
         : 'bg-slate-900/80 border-white/10 shadow-black/50 ring-1 ring-white/10'
       }
     `}>
@@ -129,8 +134,8 @@ export const TabBar: React.FC<TabBarProps> = ({ activeTab, onTabChange, mode = '
               w-10 h-10 rounded-xl
               transition-all duration-300
               ${isActive 
-                ? mode === 'day' ? 'text-slate-900 bg-white shadow-sm' : 'text-white bg-white/20'
-                : mode === 'day' ? 'text-slate-400 hover:text-slate-600' : 'text-slate-500 hover:text-slate-300'
+                ? mode === 'day' ? 'text-brand-primary bg-brand-light shadow-sm' : 'text-brand-secondary bg-white/20'
+                : mode === 'day' ? 'text-slate-400 hover:text-brand-dark' : 'text-slate-500 hover:text-slate-300'
               }
             `}
           >
@@ -140,7 +145,7 @@ export const TabBar: React.FC<TabBarProps> = ({ activeTab, onTabChange, mode = '
             {isActive && (
                 <motion.div 
                     layoutId="activeTabDot"
-                    className={`absolute -bottom-2 w-1 h-1 rounded-full ${mode === 'day' ? 'bg-slate-900' : 'bg-white'}`}
+                    className={`absolute -bottom-2 w-1 h-1 rounded-full ${mode === 'day' ? 'bg-brand-primary' : 'bg-brand-secondary'}`}
                 />
             )}
           </motion.button>
