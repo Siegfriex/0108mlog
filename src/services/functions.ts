@@ -39,9 +39,7 @@ export async function callFunction<TRequest, TResponse>(
     console.error(`Error calling function ${functionName}:`, error);
     
     // Firebase Functions 에러 처리
-    if (error.code === 'functions/unauthenticated') {
-      throw new Error('인증이 필요합니다. 다시 로그인해주세요.');
-    } else if (error.code === 'functions/permission-denied') {
+    if (error.code === 'functions/permission-denied') {
       throw new Error('권한이 없습니다.');
     } else if (error.code === 'functions/invalid-argument') {
       throw new Error('잘못된 요청입니다.');

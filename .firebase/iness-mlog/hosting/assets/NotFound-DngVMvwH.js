@@ -1,0 +1,6 @@
+import{c as t,t as l,j as s,B as a,V as c}from"./index-Bhn4ADLA.js";import{G as r}from"./GlassCard-Dvt-oZjS.js";/**
+ * @license lucide-react v0.562.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const i=[["path",{d:"M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8",key:"5wwlr5"}],["path",{d:"M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",key:"r6nss1"}]],n=t("house",i),d=()=>{const e=l();return s.jsx("div",{className:"h-full flex flex-col items-center justify-center p-6",children:s.jsx(r,{className:"max-w-md w-full text-center",children:s.jsxs("div",{className:"space-y-6 py-8",children:[s.jsx("div",{className:"text-6xl font-bold text-slate-300",children:"404"}),s.jsxs("div",{children:[s.jsx("h2",{className:"text-xl font-bold text-slate-800 mb-2",children:"페이지를 찾을 수 없습니다"}),s.jsx("p",{className:"text-slate-600",children:"요청하신 페이지가 존재하지 않거나 이동되었을 수 있습니다."})]}),s.jsxs("div",{className:"flex gap-3 justify-center",children:[s.jsxs(a,{onClick:()=>e(-1),variant:"ghost",children:[s.jsx(c,{size:18,className:"mr-2"}),"이전 페이지"]}),s.jsxs(a,{onClick:()=>e("/chat"),variant:"primary",children:[s.jsx(n,{size:18,className:"mr-2"}),"홈으로"]})]})]})})})};export{d as NotFound};
