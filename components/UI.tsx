@@ -60,9 +60,9 @@ export const Button: React.FC<ButtonProps> = ({
   ...props 
 }) => {
   const variants = {
-    // Primary: Solid Brand Teal
+    // Primary: Solid Brand Teal with soft shadow
     primary: 'bg-brand-primary text-white shadow-xl shadow-brand-primary/20 border border-transparent hover:bg-brand-dark hover:scale-[1.02] active:scale-[0.98]',
-    // Secondary: Outline / Stroke Brand Teal (Matches the "Counselor Intro" button style)
+    // Secondary: Outline / Stroke Brand Teal (Matches the "Counselor Intro" button style from benchmark)
     secondary: 'bg-transparent text-brand-primary border border-brand-primary hover:bg-brand-light',
     // Ghost: Subtle
     ghost: 'bg-transparent text-slate-500 hover:bg-brand-light/50 hover:text-brand-primary',
