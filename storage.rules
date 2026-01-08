@@ -1,0 +1,10 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // 개발 단계: 전체 개방
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}
