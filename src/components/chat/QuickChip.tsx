@@ -19,6 +19,8 @@ import { MessageCircle, BarChart2, Sparkles, ShieldAlert } from 'lucide-react';
  */
 export interface QuickChipProps {
   className?: string;
+  text?: string; // 텍스트만 전달하는 경우
+  onClick?: () => void; // 텍스트 기반 클릭 핸들러
   onCheckIn?: () => void;
   onWeeklySummary?: () => void;
   onTodayAction?: () => void;
@@ -34,11 +36,38 @@ export interface QuickChipProps {
  */
 export const QuickChip: React.FC<QuickChipProps> = ({
   className = '',
+  text,
+  onClick,
   onCheckIn,
   onWeeklySummary,
   onTodayAction,
   onSafety,
 }) => {
+  // 텍스트만 전달된 경우 (DayMode에서 사용)
+  if (text && onClick) {
+    return (
+      <motion.button
+        onClick={onClick}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className={`
+          flex items-center gap-2 px-4 py-2.5 rounded-full
+          bg-white/80 backdrop-blur-sm border border-slate-200/60
+          text-slate-700 hover:text-brand-primary hover:border-brand-primary/50
+          font-medium text-xs
+          whitespace-nowrap
+          shadow-sm hover:shadow-md
+          transition-all duration-300
+          min-w-fit
+          h-10
+        `}
+      >
+        <span>{text}</span>
+      </motion.button>
+    );
+  }
+
+  // 전체 칩 리스트 렌더링 (기존 방식)
   const chips = [
     {
       id: 'checkin',

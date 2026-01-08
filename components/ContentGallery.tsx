@@ -110,12 +110,11 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
 
   return (
     <div className="h-full w-full flex flex-col overflow-hidden relative">
-      <div className="h-full flex flex-col max-w-full mx-auto relative bg-[#FDFDFD]" ref={scrollContainerRef}>
-        <PullToRefresh onRefresh={handleRefresh}>
+      <PullToRefresh onRefresh={handleRefresh}>
+        <div className="h-full flex flex-col max-w-full mx-auto relative bg-[#FDFDFD]" ref={scrollContainerRef}>
           <div className="flex-1 overflow-y-auto scrollbar-hide py-6 px-4 min-h-0">
-        
-        {/* 1. Header & Insight Section (MindDoc Style) */}
-        <div className="mb-10 relative">
+            {/* 1. Header & Insight Section (MindDoc Style) */}
+            <div className="mb-10 relative">
             <div className="flex items-center justify-between mb-6 px-2">
                  <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
                     인사이트
@@ -230,47 +229,48 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                     </button>
                  ))}
             </div>
-        </div>
-
-        {/* 2. Content Feed (Asymmetrical Grid) */}
-        <div>
-            <div className="flex items-center justify-between mb-4 px-2">
-                <h3 className="font-bold text-slate-800">당신을 위해</h3>
-                <button className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors">전체 보기</button>
             </div>
-            
-            <div className="grid grid-cols-2 gap-4 pb-24">
-                {contents.map((content, idx) => {
-                    // 첫 번째 항목을 시각적으로 강조
-                    const isFeatured = idx === 0;
-                    return (
-                        <GalleryItem 
-                            key={content.id} 
-                            content={content} 
-                            getColor={getColor} 
-                            getIcon={getIcon} 
-                            isFeatured={isFeatured}
-                            onClick={() => setSelectedId(content.id)} 
-                        />
-                    );
-                })}
 
-                {/* Loader */}
-                <div ref={loaderRef} className="col-span-2 flex justify-center py-8">
-                     {isGenerating ? (
-                         <div className="flex flex-col items-center gap-2">
-                             <div className="w-6 h-6 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
-                         </div>
-                     ) : (
-                         <div className="flex flex-col items-center gap-1 opacity-40">
-                             <InfinityIcon size={16} className="text-slate-400" />
-                         </div>
-                     )}
+            {/* 2. Content Feed (Asymmetrical Grid) */}
+            <div>
+                <div className="flex items-center justify-between mb-4 px-2">
+                    <h3 className="font-bold text-slate-800">당신을 위해</h3>
+                    <button className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors">전체 보기</button>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 pb-24">
+                    {contents.map((content, idx) => {
+                        // 첫 번째 항목을 시각적으로 강조
+                        const isFeatured = idx === 0;
+                        return (
+                            <GalleryItem 
+                                key={content.id} 
+                                content={content} 
+                                getColor={getColor} 
+                                getIcon={getIcon} 
+                                isFeatured={isFeatured}
+                                onClick={() => setSelectedId(content.id)} 
+                            />
+                        );
+                    })}
+
+                    {/* Loader */}
+                    <div ref={loaderRef} className="col-span-2 flex justify-center py-8">
+                         {isGenerating ? (
+                             <div className="flex flex-col items-center gap-2">
+                                 <div className="w-6 h-6 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+                             </div>
+                         ) : (
+                             <div className="flex flex-col items-center gap-1 opacity-40">
+                                 <InfinityIcon size={16} className="text-slate-400" />
+                             </div>
+                         )}
+                    </div>
                 </div>
             </div>
           </div>
-        </PullToRefresh>
-      </div>
+        </div>
+      </PullToRefresh>
 
       {/* Expanded Modal */}
       <AnimatePresence>

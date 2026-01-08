@@ -29,22 +29,27 @@ export const generateDayModeResponse = onCall(
     try {
       const systemInstruction = getSystemInstruction(persona);
       const sanitizedMessage = sanitizeUserInput(userMessage);
-      const sanitizedHistory = (history || []).slice(-10).map((h: string) => sanitizeUserInput(h));
+      // 컨텍스트 확장: 10 -> 20 (메모리 유지 개선)
+      const sanitizedHistory = (history || []).slice(-20).map((h: string) => sanitizeUserInput(h));
       const prompt = `
         ${systemInstruction}
 
         [상황]: Day Mode (낮, 업무 시간)
         [목표]: 사용자의 감정을 빠르게 파악하고 실용적인 피드백 제공
         [제약]: 한국어로 3문장 이내로 짧게 응답.
+        [중요]: 이전 대화 맥락을 반드시 고려하여 일관성 있는 대화를 유지하세요.
 
-        이전 대화 맥락:
-        ${sanitizedHistory.join("\\n")}
+        이전 대화 맥락 (최근 20개):
+        ${sanitizedHistory.length > 0 ? sanitizedHistory.join("\\n") : "(대화 기록 없음)"}
         
         사용자: "${sanitizedMessage}"
         응답하세요.
       `;
 
-      const response = await callGeminiAPI(prompt, "gemini-3-flash-preview");
+      const response = await callGeminiAPI(prompt, "gemini-3-pro-preview", {
+        temperature: 0.7,
+        maxTokens: 500,
+      });
       return {success: true, data: response};
     } catch (error) {
       logger.error("generateDayModeResponse error:", error);
