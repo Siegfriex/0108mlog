@@ -1,3 +1,4 @@
+import React from 'react';
 
 export enum EmotionType {
   JOY = 'joy',
@@ -68,4 +69,14 @@ export interface MicroAction {
   description: string;
   duration: string; // e.g. "3 min"
   type: 'breathing' | 'journaling' | 'exercise' | 'mindfulness';
+}
+
+export interface TherapyTool {
+  id: string;
+  title: string;
+  description: string;
+  // Fix: React namespace error
+  icon: React.ReactNode;
+  duration: string;
+  category: 'CBT' | 'Mindfulness' | 'Breathwork' | 'Somatic';
 }
