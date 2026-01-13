@@ -13,7 +13,17 @@ export {
   pxToRem,
   vwToPx,
   vhToPx,
+  // 감정 색상 유틸리티
+  getEmotionColor,
+  getAmbientEmotionColor,
+  getJourneyEmotionColor,
+  getEmotionColorMap,
+  getChartColors,
+  getParticleColors,
+  setActiveEmotionColor,
   type CSSVariableName,
+  type EmotionType as StyleEmotionType,
+  type ModeType,
 } from './cssVariables';
 
 // Z-Index 관리

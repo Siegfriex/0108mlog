@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getParticleColors } from '../../utils/style';
 
 /**
  * 파티클 타입 정의
@@ -24,7 +25,7 @@ export interface ParticleExplosionProps {
    */
   position?: { x: number; y: number };
   /**
-   * 파티클 색상 (기본: 브랜드 색상)
+   * 파티클 색상 (기본: CSS 변수 기반 브랜드 색상)
    */
   colors?: string[];
   /**
@@ -45,20 +46,27 @@ export interface ParticleExplosionProps {
   triggerInterval?: number;
 }
 
+/** CSS 변수 기반 기본 파티클 색상 */
+const DEFAULT_PARTICLE_COLORS = getParticleColors();
+
 /**
  * ParticleExplosion 컴포넌트
  * 
  * 파티클 폭죽 효과를 제공하는 컴포넌트
  * 성공, 완료, 축하 등의 상황에서 사용
+ * 
+ * CSS 변수 기반 색상 시스템 사용
  */
 export const ParticleExplosion: React.FC<ParticleExplosionProps> = ({
   position = { x: 50, y: 50 },
-  colors = ['#14b8a6', '#0d9488', '#2dd4bf', '#5eead4'],
+  colors,
   particleCount = 30,
   speed = 5,
   autoTrigger = false,
   triggerInterval = 3000,
 }) => {
+  // CSS 변수 기반 기본 색상 또는 전달된 색상 사용
+  const particleColors = useMemo(() => colors || DEFAULT_PARTICLE_COLORS, [colors]);
   const [particles, setParticles] = useState<Particle[]>([]);
   const [isExploding, setIsExploding] = useState(false);
 
@@ -78,7 +86,7 @@ export const ParticleExplosion: React.FC<ParticleExplosionProps> = ({
         vx: Math.cos(angle) * velocity,
         vy: Math.sin(angle) * velocity,
         size: 4 + Math.random() * 6,
-        color: colors[Math.floor(Math.random() * colors.length)],
+        color: particleColors[Math.floor(Math.random() * particleColors.length)],
         life: 1,
       });
     }

@@ -1,0 +1,562 @@
+/**
+ * 애니메이션 키프레임 시스템
+ * 
+ * 모든 애니메이션 키프레임을 중앙 관리
+ * CSS 변수와 연동하여 일관성 유지
+ */
+
+/* ========================================
+ * 1. 기본 페이드 애니메이션
+ * ======================================== */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+ * 2. 슬라이드 애니메이션
+ * ======================================== */
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-left {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-right {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-up-fade {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+ * 3. 스케일 애니메이션
+ * ======================================== */
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes scale-bounce {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ========================================
+ * 4. 펄스/글로우 애니메이션
+ * ======================================== */
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(42, 142, 158, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(42, 142, 158, 0.4);
+  }
+}
+
+@keyframes pulse-scale {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: var(--shadow-brand);
+  }
+  50% {
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+/* ========================================
+ * 5. 플로트/호버 애니메이션
+ * ======================================== */
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes float-gentle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes float-rotate {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+  75% {
+    transform: translateY(-5px) rotate(-1deg);
+  }
+}
+
+/* ========================================
+ * 6. 회전 애니메이션
+ * ======================================== */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(3deg);
+  }
+  75% {
+    transform: rotate(-3deg);
+  }
+}
+
+/* ========================================
+ * 7. 시머/로딩 애니메이션
+ * ======================================== */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+@keyframes loading-dots {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce-loader {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+/* ========================================
+ * 8. 감정 특화 애니메이션
+ * ======================================== */
+
+/* 기쁨 - 밝고 활발한 움직임 */
+@keyframes emotion-joy {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: brightness(1);
+  }
+  25% {
+    transform: scale(1.05) rotate(2deg);
+    filter: brightness(1.1);
+  }
+  75% {
+    transform: scale(1.05) rotate(-2deg);
+    filter: brightness(1.1);
+  }
+}
+
+/* 평온 - 부드럽고 느린 움직임 */
+@keyframes emotion-peace {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+}
+
+/* 불안 - 떨리는 움직임 */
+@keyframes emotion-anxiety {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-2px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(2px);
+  }
+}
+
+/* 슬픔 - 천천히 가라앉는 움직임 */
+@keyframes emotion-sadness {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(3px);
+    opacity: 0.5;
+  }
+}
+
+/* 분노 - 강렬하고 빠른 움직임 */
+@keyframes emotion-anger {
+  0%, 100% {
+    transform: scale(1);
+    filter: saturate(1);
+  }
+  25%, 75% {
+    transform: scale(1.02);
+    filter: saturate(1.2);
+  }
+}
+
+/* ========================================
+ * 9. 배경 애니메이션
+ * ======================================== */
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes aurora {
+  0%, 100% {
+    opacity: 0.5;
+    transform: translateY(0) scale(1);
+  }
+  33% {
+    opacity: 0.7;
+    transform: translateY(-10px) scale(1.05);
+  }
+  66% {
+    opacity: 0.6;
+    transform: translateY(5px) scale(0.98);
+  }
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-10vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ========================================
+ * 10. 인터랙션 피드백 애니메이션
+ * ======================================== */
+
+@keyframes tap {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes success-check {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(-45deg);
+  }
+  100% {
+    transform: scale(1) rotate(-45deg);
+    opacity: 1;
+  }
+}
+
+/* ========================================
+ * 11. 모달/오버레이 애니메이션
+ * ======================================== */
+
+@keyframes modal-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modal-exit {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(20px);
+  }
+}
+
+@keyframes backdrop-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-enter {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes sheet-exit {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+/* ========================================
+ * 12. 토스트/알림 애니메이션
+ * ======================================== */
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-100%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toast-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100%) scale(0.9);
+  }
+}
+
+@keyframes notification-badge {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

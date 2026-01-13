@@ -16,6 +16,7 @@ import { Activity, TrendingUp, AlertCircle, Lightbulb, Zap } from 'lucide-react'
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { GlassCard, LoadingSpinner } from '../ui';
 import { TimelineEntry, EmotionType } from '../../../types';
+import { getChartColors } from '../../utils/style';
 
 /**
  * MonitorDashboard Props 인터페이스
@@ -42,6 +43,9 @@ interface MonitorData {
  */
 export const MonitorDashboard: React.FC<MonitorDashboardProps> = ({ timelineData }) => {
   const [isLoading, setIsLoading] = useState(true);
+  
+  // CSS 변수 기반 차트 색상
+  const chartColors = useMemo(() => getChartColors(), []);
 
   // 실시간 차트 데이터 생성 (최근 7일)
   const chartData = useMemo(() => {
@@ -125,22 +129,22 @@ export const MonitorDashboard: React.FC<MonitorDashboardProps> = ({ timelineData
           <div className="min-h-48">
             <ResponsiveContainer width="100%" height={200}>
             <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-              <XAxis dataKey="date" stroke="#94A3B8" fontSize={12} />
-              <YAxis domain={[0, 10]} stroke="#94A3B8" fontSize={12} />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartColors.grid} />
+              <XAxis dataKey="date" stroke={chartColors.axis} fontSize={12} />
+              <YAxis domain={[0, 10]} stroke={chartColors.axis} fontSize={12} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  border: '1px solid rgb(226, 232, 240)',
+                  backgroundColor: 'var(--color-glass-surface)',
+                  border: '1px solid var(--color-glass-border)',
                   borderRadius: 'var(--radius-lg)',
                 }}
               />
               <Line
                 type="monotone"
                 dataKey="intensity"
-                stroke="#2A8E9E"
+                stroke={chartColors.line}
                 strokeWidth={3}
-                dot={{ r: 4, fill: '#2A8E9E' }}
+                dot={{ r: 4, fill: chartColors.dot }}
                 activeDot={{ r: 6 }}
               />
             </LineChart>

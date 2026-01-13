@@ -10,11 +10,12 @@
  * - Timeline View: 시간순 감정 변화
  */
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart2, Grid3x3, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { GlassCard, Button } from '../ui';
 import { TimelineEntry, EmotionType } from '../../../types';
+import { getEmotionColorMap } from '../../utils/style';
 
 /**
  * JourneyView Props 인터페이스
@@ -29,14 +30,18 @@ export interface JourneyViewProps {
 type VisualizationType = 'sankey' | 'pixels' | 'timeline';
 
 /**
- * 감정 색상 매핑 (PRD 명세)
+ * 감정 색상 매핑 (CSS 변수 기반)
+ * 초기값: 하드코딩 → 런타임에 CSS 변수로 업데이트
  */
-const EMOTION_COLORS: Record<EmotionType, string> = {
-  [EmotionType.JOY]: '#FFD700',      // 노란색
-  [EmotionType.PEACE]: '#87CEEB',    // 하늘색
-  [EmotionType.ANXIETY]: '#FF6B6B',  // 빨간색
-  [EmotionType.SADNESS]: '#4A90E2',  // 파란색
-  [EmotionType.ANGER]: '#FF8C42',    // 주황색
+const getEmotionColors = (): Record<EmotionType, string> => {
+  const colorMap = getEmotionColorMap();
+  return {
+    [EmotionType.JOY]: colorMap.JOY || '#FFD700',
+    [EmotionType.PEACE]: colorMap.PEACE || '#87CEEB',
+    [EmotionType.ANXIETY]: colorMap.ANXIETY || '#FF6B6B',
+    [EmotionType.SADNESS]: colorMap.SADNESS || '#4A90E2',
+    [EmotionType.ANGER]: colorMap.ANGER || '#FF8C42',
+  };
 };
 
 /**
@@ -45,13 +50,13 @@ const EMOTION_COLORS: Record<EmotionType, string> = {
  * @param data 타임라인 데이터
  * @returns Sankey Flow 데이터
  */
-const generateSankeyData = (data: TimelineEntry[]) => {
+const generateSankeyData = (data: TimelineEntry[], emotionColors: Record<EmotionType, string>) => {
   if (data.length < 2) return { nodes: [], links: [] };
 
   const nodes = Object.values(EmotionType).map(emotion => ({
     id: emotion,
     name: emotion,
-    color: EMOTION_COLORS[emotion],
+    color: emotionColors[emotion],
   }));
 
   const transitions: Record<string, Record<string, number>> = {};
@@ -122,8 +127,11 @@ export const JourneyView: React.FC<JourneyViewProps> = ({ timelineData }) => {
   const [visualizationType, setVisualizationType] = useState<VisualizationType>('timeline');
   const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
 
+  // CSS 변수 기반 감정 색상
+  const emotionColors = useMemo(() => getEmotionColors(), []);
+
   // Sankey Flow 데이터
-  const sankeyData = useMemo(() => generateSankeyData(timelineData), [timelineData]);
+  const sankeyData = useMemo(() => generateSankeyData(timelineData, emotionColors), [timelineData, emotionColors]);
 
   // Year in Pixels 데이터
   const pixelsData = useMemo(() => generatePixelsData(timelineData), [timelineData]);
@@ -178,7 +186,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({ timelineData }) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <TimelineVisualization data={timelineData} />
+              <TimelineVisualization data={timelineData} emotionColors={emotionColors} />
             </motion.div>
           )}
 
@@ -189,7 +197,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({ timelineData }) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <YearInPixelsVisualization data={pixelsData} />
+              <YearInPixelsVisualization data={pixelsData} emotionColors={emotionColors} />
             </motion.div>
           )}
 
@@ -200,7 +208,7 @@ export const JourneyView: React.FC<JourneyViewProps> = ({ timelineData }) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <SankeyFlowVisualization data={sankeyData} />
+              <SankeyFlowVisualization data={sankeyData} emotionColors={emotionColors} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -212,7 +220,10 @@ export const JourneyView: React.FC<JourneyViewProps> = ({ timelineData }) => {
 /**
  * Timeline Visualization 컴포넌트
  */
-const TimelineVisualization: React.FC<{ data: TimelineEntry[] }> = ({ data }) => {
+const TimelineVisualization: React.FC<{ 
+  data: TimelineEntry[];
+  emotionColors: Record<EmotionType, string>;
+}> = ({ data, emotionColors }) => {
   return (
     <GlassCard>
       <div className="space-y-4">
@@ -229,7 +240,7 @@ const TimelineVisualization: React.FC<{ data: TimelineEntry[] }> = ({ data }) =>
             >
               <div
                 className="w-4 h-4 rounded-full shrink-0 mt-1"
-                style={{ backgroundColor: EMOTION_COLORS[entry.emotion] }}
+                style={{ backgroundColor: emotionColors[entry.emotion] }}
               />
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1">
@@ -268,7 +279,10 @@ const TimelineVisualization: React.FC<{ data: TimelineEntry[] }> = ({ data }) =>
 /**
  * Year in Pixels Visualization 컴포넌트
  */
-const YearInPixelsVisualization: React.FC<{ data: Array<{ date: Date; emotion: EmotionType | null; intensity: number }> }> = ({ data }) => {
+const YearInPixelsVisualization: React.FC<{ 
+  data: Array<{ date: Date; emotion: EmotionType | null; intensity: number }>;
+  emotionColors: Record<EmotionType, string>;
+}> = ({ data, emotionColors }) => {
   // 월별로 그룹화
   const months = useMemo(() => {
     const grouped: Record<number, typeof data> = {};
@@ -302,7 +316,7 @@ const YearInPixelsVisualization: React.FC<{ data: Array<{ date: Date; emotion: E
                     }
                   `}
                   style={{
-                    backgroundColor: day.emotion ? EMOTION_COLORS[day.emotion] : undefined,
+                    backgroundColor: day.emotion ? emotionColors[day.emotion] : undefined,
                   }}
                   title={day.emotion ? `${day.date.toLocaleDateString('ko-KR')}: ${day.emotion}` : undefined}
                 />
@@ -320,7 +334,13 @@ const YearInPixelsVisualization: React.FC<{ data: Array<{ date: Date; emotion: E
  * 
  * 참고: Recharts에는 Sankey 차트가 없으므로 간단한 플로우 다이어그램으로 구현
  */
-const SankeyFlowVisualization: React.FC<{ data: { nodes: Array<{ id: string; name: string; color: string }>; links: Array<{ source: string; target: string; value: number }> } }> = ({ data }) => {
+const SankeyFlowVisualization: React.FC<{ 
+  data: { 
+    nodes: Array<{ id: string; name: string; color: string }>; 
+    links: Array<{ source: string; target: string; value: number }>; 
+  };
+  emotionColors: Record<EmotionType, string>;
+}> = ({ data, emotionColors }) => {
   if (data.links.length === 0) {
     return (
       <GlassCard>
@@ -365,7 +385,7 @@ const SankeyFlowVisualization: React.FC<{ data: { nodes: Array<{ id: string; nam
               >
                 <div
                   className="w-6 h-6 rounded-full"
-                  style={{ backgroundColor: EMOTION_COLORS[link.source as EmotionType] }}
+                  style={{ backgroundColor: emotionColors[link.source as EmotionType] }}
                 />
                 <span className="text-sm text-slate-600">{link.source}</span>
                 <div className="flex-1 h-1 bg-gradient-to-r from-slate-200 to-slate-300 rounded-full relative">
@@ -373,14 +393,14 @@ const SankeyFlowVisualization: React.FC<{ data: { nodes: Array<{ id: string; nam
                     className="h-full rounded-full"
                     style={{
                       width: `${(link.value / Math.max(...data.links.map(l => l.value))) * 100}%`,
-                      backgroundColor: EMOTION_COLORS[link.source as EmotionType],
+                      backgroundColor: emotionColors[link.source as EmotionType],
                     }}
                   />
                 </div>
                 <span className="text-xs font-bold text-slate-500">{link.value}회</span>
                 <div
                   className="w-6 h-6 rounded-full"
-                  style={{ backgroundColor: EMOTION_COLORS[link.target as EmotionType] }}
+                  style={{ backgroundColor: emotionColors[link.target as EmotionType] }}
                 />
                 <span className="text-sm text-slate-600">{link.target}</span>
               </div>

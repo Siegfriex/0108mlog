@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { EmotionType } from '../../../types';
+import { getAmbientEmotionColor, type ModeType } from '../../utils/style';
 
 /**
  * AmbientBackground 컴포넌트
  * 
  * 감정에 반응하는 배경 구체 시스템
  * 3개의 구체가 감정에 따라 색상과 움직임이 변화
+ * 
+ * CSS 변수 기반 색상 시스템 사용
  */
 export interface AmbientBackgroundProps {
   /** 현재 감정 (emotion 또는 currentEmotion 둘 다 지원) */
@@ -14,8 +17,20 @@ export interface AmbientBackgroundProps {
   currentEmotion?: EmotionType | null;
   /** 감정 강도 (1-10, 애니메이션 속도에 영향) */
   intensity?: number;
-  mode?: 'day' | 'night';
+  mode?: ModeType;
 }
+
+/** 감정 타입 매핑 (EmotionType enum → string) */
+const emotionToString = (em: EmotionType): 'joy' | 'peace' | 'anxiety' | 'sadness' | 'anger' => {
+  switch (em) {
+    case EmotionType.JOY: return 'joy';
+    case EmotionType.PEACE: return 'peace';
+    case EmotionType.ANXIETY: return 'anxiety';
+    case EmotionType.SADNESS: return 'sadness';
+    case EmotionType.ANGER: return 'anger';
+    default: return 'peace';
+  }
+};
 
 export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({ 
   emotion,
@@ -29,27 +44,11 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({
   // 강도에 따른 애니메이션 속도 조절 (1-10 → 0.5-1.5 배속)
   const speedMultiplier = 0.5 + (intensity / 10);
   
-  // 감정별 색상 매핑
-  const getEmotionColor = (em?: EmotionType | null) => {
-    if (!em) return mode === 'day' ? '#99F6E4' : '#A78BFA';
-    
-    switch (em) {
-      case EmotionType.JOY:
-        return mode === 'day' ? '#FCD34D' : '#FBBF24';
-      case EmotionType.PEACE:
-        return mode === 'day' ? '#2A8E9E' : '#818CF8';
-      case EmotionType.ANXIETY:
-        return mode === 'day' ? '#FDA4AF' : '#F87171';
-      case EmotionType.SADNESS:
-        return mode === 'day' ? '#94A3B8' : '#A78BFA';
-      case EmotionType.ANGER:
-        return mode === 'day' ? '#F87171' : '#EF4444';
-      default:
-        return mode === 'day' ? '#99F6E4' : '#A78BFA';
-    }
-  };
-
-  const emotionColor = getEmotionColor(activeEmotion);
+  // CSS 변수 기반 감정 색상 (메모이제이션)
+  const emotionColor = useMemo(() => {
+    const emotionStr = activeEmotion ? emotionToString(activeEmotion) : null;
+    return getAmbientEmotionColor(emotionStr, mode);
+  }, [activeEmotion, mode]);
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-base">

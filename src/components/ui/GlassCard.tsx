@@ -108,20 +108,18 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       {/* 스포트라이트 효과 */}
       {enableSpotlight && (
         <div
-          className="absolute pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          className="absolute pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity w-72 h-72"
           style={{
-            width: '300px',
-            height: '300px',
-            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
-            left: `${mousePosition.x - 150}px`,
-            top: `${mousePosition.y - 150}px`,
+            background: 'radial-gradient(circle, rgb(255 255 255 / 0.1) 0%, transparent 70%)',
+            left: `${mousePosition.x}px`,
+            top: `${mousePosition.y}px`,
             transform: 'translate(-50%, -50%)',
           }}
         />
       )}
 
       {/* 상단 하이라이트 개선 */}
-      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-white/80 to-transparent opacity-60" />
+      <div className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-white/80 to-transparent opacity-60" />
       
       {/* 내부 그림자 (깊이감) */}
       <div className="absolute inset-0 shadow-inner pointer-events-none" style={{

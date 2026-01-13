@@ -163,6 +163,11 @@
   --color-brand-dark: var(--color-brand-800);
   --color-brand-light: var(--color-brand-50);
   
+  /* 기본 색상 */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+  
   /* RGB 채널 (Tailwind opacity 지원) */
   --color-brand-50-rgb: 240 253 250;
   --color-brand-100-rgb: 204 251 241;
@@ -231,6 +236,41 @@
   --color-emotion-active-100: var(--color-emotion-peace-100);
   --color-emotion-active-400: var(--color-emotion-peace-400);
   --color-emotion-active-600: var(--color-emotion-peace-600);
+
+  /* Day Mode 감정 색상 (AmbientBackground용) */
+  --color-emotion-day-default: #99F6E4;
+  --color-emotion-day-joy: #FCD34D;
+  --color-emotion-day-peace: #2A8E9E;
+  --color-emotion-day-anxiety: #FDA4AF;
+  --color-emotion-day-sadness: #94A3B8;
+  --color-emotion-day-anger: #F87171;
+  
+  /* Night Mode 감정 색상 (AmbientBackground용) */
+  --color-emotion-night-default: #A78BFA;
+  --color-emotion-night-joy: #FBBF24;
+  --color-emotion-night-peace: #818CF8;
+  --color-emotion-night-anxiety: #F87171;
+  --color-emotion-night-sadness: #A78BFA;
+  --color-emotion-night-anger: #EF4444;
+
+  /* JourneyView 감정 색상 */
+  --color-emotion-journey-joy: #FFD700;
+  --color-emotion-journey-peace: #87CEEB;
+  --color-emotion-journey-anxiety: #FF6B6B;
+  --color-emotion-journey-sadness: #4A90E2;
+  --color-emotion-journey-anger: #FF8C42;
+
+  /* Recharts/차트 색상 */
+  --color-chart-grid: #E2E8F0;
+  --color-chart-axis: #94A3B8;
+  --color-chart-line: var(--color-brand-primary);
+  --color-chart-dot: var(--color-brand-primary);
+  
+  /* 파티클 색상 */
+  --color-particle-1: #14b8a6;
+  --color-particle-2: #0d9488;
+  --color-particle-3: #2dd4bf;
+  --color-particle-4: #5eead4;
 
   /* ========================================
    * 6. 상태 색상

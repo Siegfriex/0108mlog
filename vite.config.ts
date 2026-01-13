@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -38,6 +39,17 @@ export default defineConfig(({ mode }) => {
           },
         },
         chunkSizeWarningLimit: 1000, // 1MB 경고 임계값
+      },
+      // Vitest 설정
+      test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './src/test/setup.ts',
+        include: ['src/**/*.{test,spec}.{ts,tsx}'],
+        coverage: {
+          reporter: ['text', 'json', 'html'],
+          include: ['src/features/**/*.ts'],
+        },
       },
     };
 });

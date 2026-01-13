@@ -1,0 +1,396 @@
+/**
+ * 유틸리티 클래스 시스템
+ * 
+ * 재사용 가능한 CSS 클래스 정의
+ * CSS 변수 기반으로 일관성 유지
+ */
+
+/* ========================================
+ * 1. Glass 효과
+ * ======================================== */
+
+.glass-surface {
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-glass-border);
+}
+
+.glass-card {
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-glass);
+  transition: box-shadow var(--transition-normal), transform var(--transition-normal);
+}
+
+.glass-card:hover {
+  box-shadow: var(--shadow-glass-hover);
+}
+
+.glass-button {
+  background: var(--color-glass-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-button);
+  transition: all var(--transition-fast);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-input);
+}
+
+/* ========================================
+ * 2. 감정별 그라데이션
+ * ======================================== */
+
+.emotion-gradient-joy {
+  background: linear-gradient(
+    135deg,
+    var(--color-emotion-joy-100) 0%,
+    var(--color-emotion-joy-400) 50%,
+    var(--color-emotion-joy-600) 100%
+  );
+}
+
+.emotion-gradient-peace {
+  background: linear-gradient(
+    135deg,
+    var(--color-emotion-peace-100) 0%,
+    var(--color-emotion-peace-400) 50%,
+    var(--color-emotion-peace-600) 100%
+  );
+}
+
+.emotion-gradient-anxiety {
+  background: linear-gradient(
+    135deg,
+    var(--color-emotion-anxiety-100) 0%,
+    var(--color-emotion-anxiety-400) 50%,
+    var(--color-emotion-anxiety-600) 100%
+  );
+}
+
+.emotion-gradient-sadness {
+  background: linear-gradient(
+    135deg,
+    var(--color-emotion-sadness-100) 0%,
+    var(--color-emotion-sadness-400) 50%,
+    var(--color-emotion-sadness-600) 100%
+  );
+}
+
+.emotion-gradient-anger {
+  background: linear-gradient(
+    135deg,
+    var(--color-emotion-anger-100) 0%,
+    var(--color-emotion-anger-400) 50%,
+    var(--color-emotion-anger-600) 100%
+  );
+}
+
+/* 감정 배경 (투명도 적용) */
+.emotion-bg-joy {
+  background-color: var(--color-emotion-joy-100);
+}
+
+.emotion-bg-peace {
+  background-color: var(--color-emotion-peace-100);
+}
+
+.emotion-bg-anxiety {
+  background-color: var(--color-emotion-anxiety-100);
+}
+
+.emotion-bg-sadness {
+  background-color: var(--color-emotion-sadness-100);
+}
+
+.emotion-bg-anger {
+  background-color: var(--color-emotion-anger-100);
+}
+
+/* 감정 텍스트 색상 */
+.emotion-text-joy {
+  color: var(--color-emotion-joy-600);
+}
+
+.emotion-text-peace {
+  color: var(--color-emotion-peace-600);
+}
+
+.emotion-text-anxiety {
+  color: var(--color-emotion-anxiety-600);
+}
+
+.emotion-text-sadness {
+  color: var(--color-emotion-sadness-600);
+}
+
+.emotion-text-anger {
+  color: var(--color-emotion-anger-600);
+}
+
+/* 감정 dot (타임라인용) */
+.emotion-dot-joy {
+  background-color: var(--color-emotion-joy-400);
+}
+
+.emotion-dot-peace {
+  background-color: var(--color-emotion-peace-400);
+}
+
+.emotion-dot-anxiety {
+  background-color: var(--color-emotion-anxiety-400);
+}
+
+.emotion-dot-sadness {
+  background-color: var(--color-emotion-sadness-400);
+}
+
+.emotion-dot-anger {
+  background-color: var(--color-emotion-anger-400);
+}
+
+/* ========================================
+ * 3. 애니메이션 클래스
+ * ======================================== */
+
+.animate-fade-in {
+  animation: fade-in var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-fade-out {
+  animation: fade-out var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up var(--duration-normal) var(--ease-spring) forwards;
+}
+
+.animate-slide-down {
+  animation: slide-down var(--duration-normal) var(--ease-spring) forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in var(--duration-normal) var(--ease-bounce) forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s var(--ease-in-out) infinite;
+}
+
+.animate-float {
+  animation: float 6s var(--ease-in-out) infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+}
+
+.animate-spin-slow {
+  animation: spin 3s linear infinite;
+}
+
+/* ========================================
+ * 4. 상태 유틸리티
+ * ======================================== */
+
+.status-success {
+  color: var(--color-status-success);
+}
+
+.status-warning {
+  color: var(--color-status-warning);
+}
+
+.status-error {
+  color: var(--color-status-error);
+}
+
+.status-info {
+  color: var(--color-status-info);
+}
+
+.status-bg-success {
+  background-color: var(--color-status-success);
+}
+
+.status-bg-warning {
+  background-color: var(--color-status-warning);
+}
+
+.status-bg-error {
+  background-color: var(--color-status-error);
+}
+
+.status-bg-info {
+  background-color: var(--color-status-info);
+}
+
+/* ========================================
+ * 5. 브랜드 유틸리티
+ * ======================================== */
+
+.brand-primary {
+  color: var(--color-brand-primary);
+}
+
+.brand-bg-primary {
+  background-color: var(--color-brand-primary);
+}
+
+.brand-bg-light {
+  background-color: var(--color-brand-light);
+}
+
+.brand-border {
+  border-color: var(--color-brand-primary);
+}
+
+.brand-shadow {
+  box-shadow: var(--shadow-brand);
+}
+
+.brand-glow {
+  box-shadow: var(--shadow-glow);
+}
+
+/* ========================================
+ * 6. 레이아웃 유틸리티
+ * ======================================== */
+
+.safe-area-top {
+  padding-top: var(--safe-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: var(--safe-bottom);
+}
+
+.safe-area-left {
+  padding-left: var(--safe-left);
+}
+
+.safe-area-right {
+  padding-right: var(--safe-right);
+}
+
+.safe-area-all {
+  padding-top: var(--safe-top);
+  padding-right: var(--safe-right);
+  padding-bottom: var(--safe-bottom);
+  padding-left: var(--safe-left);
+}
+
+.content-height {
+  height: var(--vh-content);
+}
+
+.modal-height {
+  max-height: var(--vh-modal);
+}
+
+.sheet-height {
+  max-height: var(--vh-sheet);
+}
+
+/* ========================================
+ * 7. 인터랙션 유틸리티
+ * ======================================== */
+
+.touch-feedback {
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.touch-feedback:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+
+.hover-lift {
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hover-glow {
+  transition: box-shadow var(--transition-normal);
+}
+
+.hover-glow:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+/* ========================================
+ * 8. 텍스트 유틸리티
+ * ======================================== */
+
+.text-gradient-brand {
+  background: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-700));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.text-pretty {
+  text-wrap: pretty;
+}
+
+/* ========================================
+ * 9. 스크롤 유틸리티
+ * ======================================== */
+
+.scroll-smooth {
+  scroll-behavior: smooth;
+}
+
+.scroll-snap-x {
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-snap-y {
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scroll-snap-item {
+  scroll-snap-align: start;
+}
+
+.scroll-snap-center {
+  scroll-snap-align: center;
+}
+
+/* ========================================
+ * 10. 포커스 유틸리티
+ * ======================================== */
+
+.focus-ring {
+  outline: none;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: 2px;
+}
+
+.focus-ring-inset:focus-visible {
+  outline: 2px solid var(--color-brand-primary);
+  outline-offset: -2px;
+}
