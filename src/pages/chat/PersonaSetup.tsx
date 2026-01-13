@@ -9,20 +9,23 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PersonaEditor } from '../../../components/PersonaEditor';
 import { CoachPersona } from '../../../types';
-import { DEFAULT_PERSONA } from '../../../constants';
+import { useAppContext } from '../../contexts';
+import { saveUserSettings } from '../../services/firestore';
+import { logError } from '../../utils/error';
 
 /**
  * PersonaSetup 컴포넌트
  */
 export const PersonaSetup: React.FC = () => {
   const navigate = useNavigate();
-  const [persona, setPersona] = React.useState<CoachPersona>(DEFAULT_PERSONA);
+  const { persona, setPersona } = useAppContext();
 
-  const handleUpdate = (newPersona: CoachPersona) => {
-    setPersona(newPersona);
-    // TODO: Firestore 저장
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Persona updated:', newPersona);
+  const handleUpdate = async (newPersona: CoachPersona) => {
+    try {
+      await saveUserSettings({ persona: newPersona });
+      setPersona(newPersona);
+    } catch (error) {
+      logError('PersonaSetup.handleUpdate', error);
     }
   };
 

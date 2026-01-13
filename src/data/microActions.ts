@@ -12,7 +12,7 @@
  * - environment: 환경 정리
  */
 
-import { MicroAction } from '../../../types';
+import { MicroAction } from '../../types';
 
 /**
  * 마이크로 액션 라이브러리 (30개)

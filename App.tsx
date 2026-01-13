@@ -72,10 +72,10 @@ const App: React.FC = () => {
     switch (activeTab) {
       case 'chat':
         return mode === 'day' 
-          ? <DayMode 
-              persona={persona} 
-              onSave={handleSaveEntry} 
-              setImmersive={setImmersive}
+          ? <DayMode
+              persona={persona}
+              onSave={handleSaveEntry}
+              setImmersive={setIsImmersive}
               onNavigateToReports={() => setActiveTab('reports')}
               onOpenSafety={() => setShowSafetyLayer(true)}
               onEmotionChange={setCurrentEmotion}

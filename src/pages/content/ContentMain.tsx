@@ -7,16 +7,8 @@
  */
 
 import React from 'react';
-import { useOutletContext, Navigate } from 'react-router-dom';
 import { ContentGallery } from '../../../components/ContentGallery';
-import { CoachPersona } from '../../../types';
-
-/**
- * Outlet Context 타입
- */
-interface OutletContext {
-  persona: CoachPersona;
-}
+import { useAppContext } from '../../contexts';
 
 /**
  * ContentMain Props 인터페이스
@@ -31,13 +23,7 @@ interface ContentMainProps {}
  * @returns {JSX.Element} ContentMain 컴포넌트
  */
 export const ContentMain: React.FC<ContentMainProps> = () => {
-  const context = useOutletContext<OutletContext>();
-  
-  if (!context) {
-    return <Navigate to="/" replace />;
-  }
-  
-  const { persona } = context;
+  const { persona } = useAppContext();
 
   return <ContentGallery persona={persona} />;
 };

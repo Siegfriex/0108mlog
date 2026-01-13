@@ -88,5 +88,25 @@ service cloud.firestore {
       allow update: if isOwner(resource.data.userId);
       allow delete: if isOwner(resource.data.userId);
     }
+
+    // 사용자 데이터 (users 컬렉션 하위 문서들)
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      // 동의 로그 (consentLogs)
+      match /consentLogs/{logId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // 온보딩 데이터 (onboarding)
+      match /onboarding/{docId} {
+        allow read, write: if isOwner(userId);
+      }
+
+      // 설정 (settings)
+      match /settings/{settingId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
   }
 }

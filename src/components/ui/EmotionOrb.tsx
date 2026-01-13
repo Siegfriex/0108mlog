@@ -33,6 +33,7 @@ export const EmotionOrb: React.FC<EmotionOrbProps> = ({
     <motion.button
       id={emotionId}
       onClick={onClick}
+      aria-label={`${label} 감정 선택`}
       aria-pressed={isSelected}
       aria-describedby={`${emotionId}-description`}
       tabIndex={0}

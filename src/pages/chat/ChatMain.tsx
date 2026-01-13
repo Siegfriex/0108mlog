@@ -7,23 +7,16 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useOutletContext, useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { DayMode } from '../../components/chat/DayMode';
 import { NightMode } from '../../components/chat/NightMode';
 import { ConsentModal } from '../../components/consent/ConsentModal';
 import { getConsentState } from '../../services/consent';
-import { CoachPersona, TimelineEntry } from '../../../types';
-
-/**
- * Outlet Context 타입
- */
-interface OutletContext {
-  mode: 'day' | 'night';
-  persona: CoachPersona;
-  setIsImmersive: (active: boolean) => void;
-  timelineData: TimelineEntry[];
-  setPersona: (persona: CoachPersona) => void;
-}
+import { TimelineEntry } from '../../../types';
+import { useAppContext } from '../../contexts';
+import { useUIContext } from '../../contexts';
+import { saveEmotionEntry } from '../../services/firestore';
+import { logError } from '../../utils/error';
 
 /**
  * ChatMain Props 인터페이스
@@ -38,16 +31,11 @@ interface ChatMainProps {}
  * @returns {JSX.Element} ChatMain 컴포넌트
  */
 export const ChatMain: React.FC<ChatMainProps> = () => {
-  const context = useOutletContext<OutletContext>();
   const navigate = useNavigate();
+  const { mode, persona, addTimelineEntry } = useAppContext();
+  const { setIsImmersive } = useUIContext();
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
-  
-  if (!context) {
-    return <Navigate to="/" replace />;
-  }
-  
-  const { mode, persona, setIsImmersive, timelineData, setPersona } = context;
   
   // 첫 방문 시 동의 모달 표시
   useEffect(() => {
@@ -70,11 +58,19 @@ export const ChatMain: React.FC<ChatMainProps> = () => {
     checkConsent();
   }, [consentChecked]);
   
-  const handleSaveEntry = (entry: TimelineEntry) => {
-    // TODO: Firestore 저장 로직 추가
-    // timelineData는 상위에서 관리하므로 여기서는 로그만
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Save entry:', entry);
+  const handleSaveEntry = async (entry: TimelineEntry) => {
+    try {
+      await saveEmotionEntry({
+        emotion: entry.emotion,
+        intensity: entry.intensity,
+        contextTags: entry.nuanceTags,
+        modeAtTime: mode,
+      });
+      // Context 업데이트
+      addTimelineEntry(entry);
+    } catch (error) {
+      logError('ChatMain.handleSaveEntry', error);
+      // 에러 토스트 표시 (추후 구현)
     }
   };
 

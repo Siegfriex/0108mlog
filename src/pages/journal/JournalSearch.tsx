@@ -9,6 +9,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { GlassCard, Button } from '../../components/ui';
+import { searchConversations } from '../../services/firestore';
+import { FirestoreConversation } from '../../types/firestore';
+import { logError } from '../../utils/error';
 
 /**
  * JournalSearch 컴포넌트
@@ -16,11 +19,26 @@ import { GlassCard, Button } from '../../components/ui';
 export const JournalSearch: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<FirestoreConversation[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
-  // TODO: Firestore 검색 로직 구현
-  const handleSearch = () => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Search:', searchQuery);
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+    try {
+      const results = await searchConversations(searchQuery, {
+        limit: 50,
+      });
+      setSearchResults(results);
+    } catch (error) {
+      logError('JournalSearch.handleSearch', error);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -50,11 +68,36 @@ export const JournalSearch: React.FC = () => {
             className="w-full pl-11 pr-4 py-3 bg-white/60 border border-white/60 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-primary/50 text-slate-700 placeholder-slate-400"
           />
         </div>
-        <GlassCard>
-          <div className="text-center py-12 text-slate-400">
-            <p>검색 결과가 여기에 표시됩니다.</p>
+        {isSearching ? (
+          <GlassCard>
+            <div className="text-center py-12 text-slate-400">
+              <p>검색 중...</p>
+            </div>
+          </GlassCard>
+        ) : searchResults.length > 0 ? (
+          <div className="space-y-2">
+            {searchResults.map((conversation) => (
+              <GlassCard key={conversation.id} className="p-4 cursor-pointer hover:bg-white/10 transition-colors" onClick={() => navigate(`/journal/detail/${conversation.id}`)}>
+                <h3 className="font-semibold text-slate-800 mb-1">{conversation.title}</h3>
+                <p className="text-sm text-slate-600">
+                  {conversation.messageCount}개 메시지 · {conversation.createdAt instanceof Date ? conversation.createdAt.toLocaleDateString('ko-KR') : '날짜 없음'}
+                </p>
+              </GlassCard>
+            ))}
           </div>
-        </GlassCard>
+        ) : searchQuery ? (
+          <GlassCard>
+            <div className="text-center py-12 text-slate-400">
+              <p>검색 결과가 없습니다.</p>
+            </div>
+          </GlassCard>
+        ) : (
+          <GlassCard>
+            <div className="text-center py-12 text-slate-400">
+              <p>검색어를 입력하세요.</p>
+            </div>
+          </GlassCard>
+        )}
       </div>
     </div>
   );

@@ -4,11 +4,14 @@
  * 대화/일기 원문 저장 동의를 요청하는 모달
  */
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Shield, X, Check } from 'lucide-react';
-import { Button } from '../ui';
+import { Button, Portal } from '../ui';
 import { saveConsent } from '../../services/consent';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { useFocusRestore } from '../../hooks/useFocusRestore';
 
 interface ConsentModalProps {
   isOpen: boolean;
@@ -17,8 +20,22 @@ interface ConsentModalProps {
 }
 
 export const ConsentModal: React.FC<ConsentModalProps> = ({ isOpen, onConsent, onSkip }) => {
+  const navigate = useNavigate();
   const [isAgreed, setIsAgreed] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // 포커스 트랩 적용
+  useFocusTrap({
+    enabled: isOpen,
+    containerRef,
+    initialFocusSelector: 'input[type="checkbox"]',
+  });
+
+  // 포커스 복원 적용
+  useFocusRestore({
+    shouldRestore: !isOpen,
+  });
 
   const handleConsent = async () => {
     if (!isAgreed) return;
@@ -47,11 +64,12 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({ isOpen, onConsent, o
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* 배경 오버레이 */}
-          <motion.div
+    <Portal>
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* 배경 오버레이 */}
+            <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -67,6 +85,7 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({ isOpen, onConsent, o
             className="fixed inset-0 z-consent-modal flex items-center justify-center p-4 pointer-events-none"
           >
             <div
+              ref={containerRef}
               className="bg-white rounded-lg shadow-2xl max-w-md w-full p-6 pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
             >
@@ -169,18 +188,19 @@ export const ConsentModal: React.FC<ConsentModalProps> = ({ isOpen, onConsent, o
               <div className="mt-4 text-center">
                 <button
                   onClick={() => {
-                    // TODO: 자세히 보기 페이지로 이동
-                    window.open('/profile/privacy', '_blank');
+                    navigate('/profile/privacy/policy');
                   }}
                   className="text-xs text-slate-500 hover:text-brand-primary transition-colors underline"
+                  aria-label="개인정보 처리방침 자세히 보기"
                 >
                   자세히 보기
                 </button>
               </div>
             </div>
           </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+          </>
+        )}
+      </AnimatePresence>
+    </Portal>
   );
 };

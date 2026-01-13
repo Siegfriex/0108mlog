@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import { GlassCard, Button } from '../../components/ui';
 import { Shield, Trash2, Download, ToggleLeft, ToggleRight } from 'lucide-react';
 import { getConsentState, saveConsent } from '../../services/consent';
+import { exportUserData, deleteAllUserData } from '../../services/firestore';
+import { logError } from '../../utils/error';
 
 /**
  * Privacy 컴포넌트
@@ -46,18 +48,34 @@ export const Privacy: React.FC = () => {
     }
   };
 
-  const handleExportData = () => {
-    // TODO: 데이터 내보내기 로직
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Export data');
+  const handleExportData = async () => {
+    try {
+      const blob = await exportUserData();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `maumlog-export-${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      alert('데이터 내보내기가 완료되었습니다.');
+    } catch (error) {
+      logError('Privacy.handleExportData', error);
+      alert('데이터 내보내기 중 오류가 발생했습니다.');
     }
   };
 
-  const handleDeleteAllData = () => {
+  const handleDeleteAllData = async () => {
     if (confirm('모든 데이터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
-      // TODO: 전체 데이터 삭제 로직
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Delete all data');
+      try {
+        await deleteAllUserData();
+        alert('모든 데이터가 삭제되었습니다.');
+        // 프로필 페이지로 리다이렉트
+        navigate('/profile');
+      } catch (error) {
+        logError('Privacy.handleDeleteAllData', error);
+        alert('데이터 삭제 중 오류가 발생했습니다.');
       }
     }
   };

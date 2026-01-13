@@ -7,16 +7,9 @@
  */
 
 import React from 'react';
-import { useOutletContext, useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { JournalView } from '../../../components/JournalView';
-import { TimelineEntry } from '../../../types';
-
-/**
- * Outlet Context 타입
- */
-interface OutletContext {
-  timelineData: TimelineEntry[];
-}
+import { useAppContext } from '../../contexts';
 
 /**
  * JournalTimeline Props 인터페이스
@@ -31,14 +24,8 @@ interface JournalTimelineProps {}
  * @returns {JSX.Element} JournalTimeline 컴포넌트
  */
 export const JournalTimeline: React.FC<JournalTimelineProps> = () => {
-  const context = useOutletContext<OutletContext>();
+  const { timelineData } = useAppContext();
   const navigate = useNavigate();
-  
-  if (!context) {
-    return <Navigate to="/" replace />;
-  }
-  
-  const { timelineData } = context;
 
   // JournalView에 네비게이션 핸들러 전달
   const handleNavigateToJourney = () => {

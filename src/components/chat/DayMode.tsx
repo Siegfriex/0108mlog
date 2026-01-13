@@ -346,6 +346,7 @@ export const DayMode: React.FC<DayModeProps> = ({
                       variant="primary" 
                       className="w-full"
                       onClick={machine.startActionFeedback}
+                      aria-label={`${machine.action.title} 시도해보기`}
                     >
                       시도해보기 ({machine.action.duration})
                     </Button>
@@ -387,6 +388,7 @@ export const DayMode: React.FC<DayModeProps> = ({
                     onClick={handleFinishAndSave}
                     variant="primary"
                     className="flex-1"
+                    aria-label="체크인 완료 및 저장"
                   >
                     저장하기
                   </Button>

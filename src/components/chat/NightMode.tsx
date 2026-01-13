@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Sparkles, CheckCircle, ArrowRight, Smile, Meh, Frown, CloudRain, Flame } from 'lucide-react';
 import { GlassCard, Button, CelestialBackground } from '../ui';
 import { VoicePlayer } from './VoicePlayer';
 import { CoachPersona, TimelineEntry, EmotionType } from '../../../types';
 import { useNightCheckinMachine } from '../../features/checkin/useNightCheckinMachine';
+import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation';
 
 interface NightModeProps {
   persona: CoachPersona;
@@ -32,6 +33,7 @@ const NIGHT_EMOTIONS = [
  */
 export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisDetected, onEmotionChange }) => {
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   
   // 상태 머신 훅 사용
   const machine = useNightCheckinMachine({
@@ -47,6 +49,31 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
 
   // 현재 단계 (상태 머신에서 추출)
   const step = machine.currentStep;
+
+  // 선택된 감정에 맞춰 인덱스 동기화
+  useEffect(() => {
+    if (machine.emotion) {
+      const index = NIGHT_EMOTIONS.findIndex(e => e.id === machine.emotion);
+      if (index !== -1) {
+        setSelectedIndex(index);
+      }
+    }
+  }, [machine.emotion]);
+
+  // 키보드 네비게이션 Hook 적용 (감정 선택 단계에서만 활성화)
+  const { containerRef } = useKeyboardNavigation({
+    itemCount: NIGHT_EMOTIONS.length,
+    selectedIndex,
+    onSelectChange: setSelectedIndex,
+    onEnter: (index) => {
+      machine.selectEmotion(NIGHT_EMOTIONS[index].id);
+    },
+    enabled: step === 'emotion',
+    columns: 2, // 모바일 2열, 데스크탑 3열
+    loop: true,
+    horizontal: true,
+    vertical: true,
+  });
 
   /**
    * 다음 단계로 이동
@@ -92,23 +119,37 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
                 exit={{ opacity: 0, y: -20 }}
                 className="flex-1 flex flex-col justify-center items-center gap-8 max-w-2xl mx-auto w-full"
             >
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
-                    {NIGHT_EMOTIONS.map((emotion) => (
-                        <button
-                            key={emotion.id}
-                            onClick={() => machine.selectEmotion(emotion.id)}
-                            className={`
-                                aspect-square p-6 rounded-lg backdrop-blur-md border text-left transition-all duration-300 flex flex-col justify-center items-center gap-4 group
-                                ${machine.emotion === emotion.id 
-                                    ? 'bg-white/20 border-white/60 shadow-glow-white scale-105 ring-1 ring-white/50' 
-                                    : 'bg-white/5 border-white/5 hover:bg-white/10'
-                                }
-                            `}
-                        >
-                            <span className="text-white/80 group-hover:scale-110 transition-transform duration-300">{emotion.icon}</span>
-                            <span className="text-white/90 font-medium text-lg tracking-wide">{emotion.label}</span>
-                        </button>
-                    ))}
+                <div 
+                    ref={containerRef as React.RefObject<HTMLDivElement>}
+                    className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full"
+                    tabIndex={-1}
+                >
+                    {NIGHT_EMOTIONS.map((emotion, index) => {
+                        const isSelected = machine.emotion === emotion.id;
+                        const isFocused = selectedIndex === index;
+                        return (
+                            <button
+                                key={emotion.id}
+                                onClick={() => {
+                                    setSelectedIndex(index);
+                                    machine.selectEmotion(emotion.id);
+                                }}
+                                className={`
+                                    aspect-square p-6 rounded-lg backdrop-blur-md border text-left transition-all duration-300 flex flex-col justify-center items-center gap-4 group
+                                    focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-transparent
+                                    ${isSelected 
+                                        ? 'bg-white/20 border-white/60 shadow-glow-white scale-105 ring-1 ring-white/50' 
+                                        : 'bg-white/5 border-white/5 hover:bg-white/10'
+                                    }
+                                    ${isFocused && !isSelected ? 'ring-2 ring-white/30 ring-offset-2 ring-offset-transparent' : ''}
+                                `}
+                                tabIndex={isFocused ? 0 : -1}
+                            >
+                                <span className="text-white/80 group-hover:scale-110 transition-transform duration-300">{emotion.icon}</span>
+                                <span className="text-white/90 font-medium text-lg tracking-wide">{emotion.label}</span>
+                            </button>
+                        );
+                    })}
                 </div>
 
                 {machine.emotion && (
@@ -132,6 +173,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
                         <Button 
                           onClick={handleNextStep} 
                           className="w-full mt-8 py-4 bg-purple-500 hover:bg-purple-600 border-none text-white font-bold text-lg shadow-xl shadow-purple-900/40"
+                          aria-label="다음 단계로 계속하기"
                         >
                             계속하기 <ArrowRight size={20} />
                         </Button>
@@ -174,6 +216,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
                     onClick={handleAnalyze} 
                     isLoading={machine.isAnalyzing}
                     className="w-full py-5 bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg border-none text-lg font-bold rounded-xl"
+                    aria-label="일기 분석 및 편지 생성"
                 >
                     <Sparkles className="w-5 h-5 mr-2" />
                     별에게 보내기
@@ -215,6 +258,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
                             variant="ghost" 
                             onClick={machine.reset}
                             className="w-full text-indigo-300 hover:text-white hover:bg-white/5 py-4 text-base"
+                            aria-label="새 기록 시작하기"
                         >
                             새 기록 시작하기
                         </Button>

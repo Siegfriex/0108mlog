@@ -31,3 +31,6 @@ export { ErrorBoundary } from './ErrorBoundary';
 export { EmotionSelectModal } from './EmotionSelectModal';
 export type { EmotionSelectModalProps } from './EmotionSelectModal';
 export { AIThinkingAnimation } from './AIThinkingAnimation';
+export { SkipLink } from './SkipLink';
+export type { SkipLinkProps } from './SkipLink';
+export { Portal } from './Portal';

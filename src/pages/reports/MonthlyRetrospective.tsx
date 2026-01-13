@@ -8,7 +8,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlassCard, Button, LoadingSpinner } from '../../components/ui';
-import { generateMonthlyNarrative } from '../../../services/geminiService';
+import { generateMonthlyNarrative } from '../../services/ai/gemini';
 
 /**
  * MonthlyRetrospective 컴포넌트

@@ -16,6 +16,10 @@ import {
   orderBy,
   limit,
   getDocs,
+  deleteDoc,
+  writeBatch,
+  getDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { auth } from '../config/firebase';
@@ -28,7 +32,6 @@ import {
   FirestoreUserProfile,
 } from '../types/firestore';
 import { EmotionType, CoachPersona } from '../../types';
-import { getDoc, updateDoc } from 'firebase/firestore';
 import { canSaveConversation } from './consent';
 import { logError } from '../utils/error';
 
@@ -249,8 +252,11 @@ export async function saveUserSettings(settings: {
   reminderFrequency?: 'daily' | 'twice' | 'none'; // 하루 1회, 하루 2회, 없음
   language?: 'ko' | 'en';
   autoDayNightMode?: boolean;
+  dayModeStartTime?: string; // HH:mm 형식
+  nightModeStartTime?: string; // HH:mm 형식
   predictiveNudgeEnabled?: boolean;
   snoozeUntil?: Date;
+  persona?: CoachPersona;
 }): Promise<void> {
   try {
     const userId = getCurrentUserId();
@@ -261,6 +267,7 @@ export async function saveUserSettings(settings: {
     
     const updateData: Partial<FirestoreUserProfile> = {
       updatedAt: serverTimestamp() as Timestamp,
+      ...(settings.persona && { persona: settings.persona }),
       preferences: {
         ...(userProfileSnap.exists() ? userProfileSnap.data().preferences : {}),
         reminderEnabled: settings.reminderEnabled ?? userProfileSnap.data()?.preferences?.reminderEnabled ?? true,
@@ -268,6 +275,8 @@ export async function saveUserSettings(settings: {
         language: settings.language ?? userProfileSnap.data()?.preferences?.language ?? 'ko',
         ...(settings.reminderFrequency && { reminderFrequency: settings.reminderFrequency }),
         ...(settings.autoDayNightMode !== undefined && { autoDayNightMode: settings.autoDayNightMode }),
+        ...(settings.dayModeStartTime && { dayModeStartTime: settings.dayModeStartTime }),
+        ...(settings.nightModeStartTime && { nightModeStartTime: settings.nightModeStartTime }),
         ...(settings.predictiveNudgeEnabled !== undefined && { predictiveNudgeEnabled: settings.predictiveNudgeEnabled }),
         ...(settings.snoozeUntil && { snoozeUntil: Timestamp.fromDate(settings.snoozeUntil) }),
       },
@@ -498,5 +507,303 @@ export async function getRecentEmotionEntries(
   } catch (error) {
     logError('getRecentEmotionEntries', error);
     return [];
+  }
+}
+
+/**
+ * 대화 삭제
+ * 
+ * @param conversationId 삭제할 대화 ID
+ * @returns {Promise<void>}
+ */
+export async function deleteConversation(conversationId: string): Promise<void> {
+  try {
+    const userId = getCurrentUserId();
+    
+    // 대화 문서 확인 및 소유권 검증
+    const conversationRef = doc(db, FIRESTORE_COLLECTIONS.CONVERSATIONS, conversationId);
+    const conversationSnap = await getDoc(conversationRef);
+    
+    if (!conversationSnap.exists()) {
+      throw new Error('Conversation not found');
+    }
+    
+    const conversationData = conversationSnap.data() as FirestoreConversation;
+    if (conversationData.userId !== userId) {
+      throw new Error('Unauthorized: You can only delete your own conversations');
+    }
+    
+    // 배치로 대화와 관련 메시지 모두 삭제
+    const batch = writeBatch(db);
+    
+    // 대화 삭제
+    batch.delete(conversationRef);
+    
+    // 관련 메시지 삭제
+    const messagesRef = collection(db, FIRESTORE_COLLECTIONS.MESSAGES);
+    const messagesQuery = query(
+      messagesRef,
+      where('conversationId', '==', conversationId)
+    );
+    const messagesSnapshot = await getDocs(messagesQuery);
+    
+    messagesSnapshot.forEach((messageDoc) => {
+      batch.delete(messageDoc.ref);
+    });
+    
+    await batch.commit();
+  } catch (error) {
+    logError('deleteConversation', error);
+    throw error;
+  }
+}
+
+/**
+ * 모든 대화 삭제
+ * 
+ * @returns {Promise<void>}
+ */
+export async function deleteAllConversations(): Promise<void> {
+  try {
+    const userId = getCurrentUserId();
+    
+    // 사용자의 모든 대화 조회
+    const conversationsRef = collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS);
+    const conversationsQuery = query(
+      conversationsRef,
+      where('userId', '==', userId)
+    );
+    const conversationsSnapshot = await getDocs(conversationsQuery);
+    
+    // 배치로 모든 대화와 관련 메시지 삭제
+    const batch = writeBatch(db);
+    const conversationIds: string[] = [];
+    
+    conversationsSnapshot.forEach((conversationDoc) => {
+      batch.delete(conversationDoc.ref);
+      conversationIds.push(conversationDoc.id);
+    });
+    
+    // 각 대화의 메시지 삭제
+    const messagesRef = collection(db, FIRESTORE_COLLECTIONS.MESSAGES);
+    for (const conversationId of conversationIds) {
+      const messagesQuery = query(
+        messagesRef,
+        where('conversationId', '==', conversationId)
+      );
+      const messagesSnapshot = await getDocs(messagesQuery);
+      
+      messagesSnapshot.forEach((messageDoc) => {
+        batch.delete(messageDoc.ref);
+      });
+    }
+    
+    await batch.commit();
+  } catch (error) {
+    logError('deleteAllConversations', error);
+    throw error;
+  }
+}
+
+/**
+ * 대화 검색
+ * 
+ * @param searchQuery 검색어
+ * @param options 검색 옵션
+ * @returns {Promise<FirestoreConversation[]>} 검색 결과
+ */
+export async function searchConversations(
+  searchQuery: string,
+  options?: {
+    userId?: string;
+    limit?: number;
+  }
+): Promise<FirestoreConversation[]> {
+  try {
+    const userId = options?.userId || getCurrentUserId();
+    const limitCount = options?.limit || 50;
+    
+    // Firestore는 전체 텍스트 검색을 지원하지 않으므로,
+    // 제목으로만 검색 (실제 구현 시 Algolia 등 외부 검색 서비스 고려)
+    const conversationsRef = collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS);
+    const conversationsQuery = query(
+      conversationsRef,
+      where('userId', '==', userId),
+      orderBy('updatedAt', 'desc'),
+      limit(limitCount)
+    );
+    
+    const snapshot = await getDocs(conversationsQuery);
+    const results: FirestoreConversation[] = [];
+    
+    snapshot.forEach((doc) => {
+      const data = doc.data() as Omit<FirestoreConversation, 'id'>;
+      // 클라이언트 사이드 필터링 (제목에 검색어 포함)
+      if (data.title.toLowerCase().includes(searchQuery.toLowerCase())) {
+        results.push({
+          id: doc.id,
+          ...data,
+        });
+      }
+    });
+    
+    return results;
+  } catch (error) {
+    logError('searchConversations', error);
+    return [];
+  }
+}
+
+/**
+ * 사용자 페르소나 업데이트
+ * 
+ * @param persona 업데이트할 페르소나
+ * @returns {Promise<void>}
+ */
+export async function updateUserPersona(persona: CoachPersona): Promise<void> {
+  try {
+    await saveUserSettings({ persona });
+  } catch (error) {
+    logError('updateUserPersona', error);
+    throw error;
+  }
+}
+
+/**
+ * 사용자 데이터 내보내기 (JSON)
+ * 
+ * @returns {Promise<Blob>} JSON 데이터 Blob
+ */
+export async function exportUserData(): Promise<Blob> {
+  try {
+    const userId = getCurrentUserId();
+    
+    // 모든 사용자 데이터 수집
+    const data: {
+      conversations: FirestoreConversation[];
+      emotions: FirestoreEmotionData[];
+      diaries: FirestoreDiaryData[];
+      profile: FirestoreUserProfile | null;
+    } = {
+      conversations: [],
+      emotions: [],
+      diaries: [],
+      profile: null,
+    };
+    
+    // 대화 데이터
+    const conversationsRef = collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS);
+    const conversationsQuery = query(
+      conversationsRef,
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc')
+    );
+    const conversationsSnapshot = await getDocs(conversationsQuery);
+    conversationsSnapshot.forEach((doc) => {
+      data.conversations.push({
+        id: doc.id,
+        ...doc.data(),
+      } as FirestoreConversation);
+    });
+    
+    // 감정 데이터
+    const emotionsRef = collection(db, FIRESTORE_COLLECTIONS.EMOTIONS);
+    const emotionsQuery = query(
+      emotionsRef,
+      where('userId', '==', userId),
+      orderBy('timestamp', 'desc')
+    );
+    const emotionsSnapshot = await getDocs(emotionsQuery);
+    emotionsSnapshot.forEach((doc) => {
+      data.emotions.push(doc.data() as FirestoreEmotionData);
+    });
+    
+    // 일기 데이터
+    const diariesRef = collection(db, FIRESTORE_COLLECTIONS.DIARIES);
+    const diariesQuery = query(
+      diariesRef,
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc')
+    );
+    const diariesSnapshot = await getDocs(diariesQuery);
+    diariesSnapshot.forEach((doc) => {
+      data.diaries.push(doc.data() as FirestoreDiaryData);
+    });
+    
+    // 프로필 데이터
+    const profileRef = doc(db, FIRESTORE_COLLECTIONS.USER_PROFILES, userId);
+    const profileSnap = await getDoc(profileRef);
+    if (profileSnap.exists()) {
+      data.profile = {
+        userId,
+        ...profileSnap.data(),
+      } as FirestoreUserProfile;
+    }
+    
+    // JSON으로 변환하여 Blob 생성
+    const jsonString = JSON.stringify(data, null, 2);
+    return new Blob([jsonString], { type: 'application/json' });
+  } catch (error) {
+    logError('exportUserData', error);
+    throw error;
+  }
+}
+
+/**
+ * 모든 사용자 데이터 삭제
+ * 
+ * @returns {Promise<void>}
+ */
+export async function deleteAllUserData(): Promise<void> {
+  try {
+    const userId = getCurrentUserId();
+    
+    // 배치로 모든 데이터 삭제
+    const batch = writeBatch(db);
+    
+    // 대화 및 메시지 삭제
+    await deleteAllConversations();
+    
+    // 감정 데이터 삭제
+    const emotionsRef = collection(db, FIRESTORE_COLLECTIONS.EMOTIONS);
+    const emotionsQuery = query(
+      emotionsRef,
+      where('userId', '==', userId)
+    );
+    const emotionsSnapshot = await getDocs(emotionsQuery);
+    emotionsSnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    
+    // 일기 데이터 삭제
+    const diariesRef = collection(db, FIRESTORE_COLLECTIONS.DIARIES);
+    const diariesQuery = query(
+      diariesRef,
+      where('userId', '==', userId)
+    );
+    const diariesSnapshot = await getDocs(diariesQuery);
+    diariesSnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    
+    // 마이크로 액션 로그 삭제
+    const actionLogsRef = collection(db, FIRESTORE_COLLECTIONS.MICRO_ACTION_LOGS);
+    const actionLogsQuery = query(
+      actionLogsRef,
+      where('userId', '==', userId)
+    );
+    const actionLogsSnapshot = await getDocs(actionLogsQuery);
+    actionLogsSnapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    
+    // 프로필 삭제 (선택적 - 사용자 계정은 유지)
+    // const profileRef = doc(db, FIRESTORE_COLLECTIONS.USER_PROFILES, userId);
+    // batch.delete(profileRef);
+    
+    await batch.commit();
+  } catch (error) {
+    logError('deleteAllUserData', error);
+    throw error;
   }
 }

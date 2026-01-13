@@ -5,16 +5,15 @@
  * 기존 App.tsx의 레이아웃 구조 보존
  */
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldAlert, Moon, Sun, Bot } from 'lucide-react';
-import { TabBar, NoiseOverlay } from '../ui';
+import { TabBar, NoiseOverlay, SkipLink } from '../ui';
 import { AIChatbot } from '../../../components/AIChatbot';
-import { CoachPersona } from '../../../types';
-import { DEFAULT_PERSONA, TIME_CONSTANTS } from '../../../constants';
-import { INITIAL_TIMELINE } from '../../mock/data';
-import { resolveMode, setModeOverride, getModeOverride, Mode } from '../../services/modeResolver';
+import { useAppContext } from '../../contexts';
+import { useUIContext } from '../../contexts';
+import { Mode } from '../../services/modeResolver';
 
 /**
  * MainLayout Props 인터페이스
@@ -32,32 +31,9 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  const [mode, setMode] = useState<Mode>('day');
-  const [persona, setPersona] = useState<CoachPersona>(DEFAULT_PERSONA);
-  const [showChatbot, setShowChatbot] = useState(false);
-  const [isImmersive, setIsImmersive] = useState(false);
-  const [timelineData] = useState(INITIAL_TIMELINE);
-  
-  // 모드 초기화 및 주기적 업데이트
-  useEffect(() => {
-    const initializeMode = async () => {
-      const resolvedMode = await resolveMode();
-      setMode(resolvedMode);
-    };
-
-    initializeMode();
-
-    // 수동 override가 없으면 주기적으로 모드 확인 (1분마다)
-    const interval = setInterval(async () => {
-      const override = getModeOverride();
-      if (!override) {
-        const resolvedMode = await resolveMode();
-        setMode(resolvedMode);
-      }
-    }, TIME_CONSTANTS.MODE_CHECK_INTERVAL);
-
-    return () => clearInterval(interval);
-  }, []);
+  // Context에서 상태 가져오기
+  const { mode, persona, setMode: setModeContext } = useAppContext();
+  const { showChatbot, isImmersive, setShowChatbot, setIsImmersive } = useUIContext();
   
   // URL 기반 탭 활성화
   const getActiveTab = () => {
@@ -96,8 +72,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
   // 모드 토글 핸들러 (수동 override 설정)
   const toggleMode = () => {
     const newMode: Mode = mode === 'day' ? 'night' : 'day';
-    setModeOverride(newMode);
-    setMode(newMode);
+    setModeContext(newMode);
   };
 
   return (
@@ -105,6 +80,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
       relative w-full h-screen-dynamic overflow-hidden font-sans transition-colors duration-700 flex flex-col items-center
       ${mode === 'day' ? 'text-slate-900 bg-brand-light' : 'text-white bg-slate-950'}
     `}>
+      <SkipLink />
       <NoiseOverlay />
 
       {/* Background Atmosphere */}
@@ -153,15 +129,15 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
             flex items-center gap-1 p-1 rounded-full backdrop-blur-xl border shadow-sm transition-colors duration-500
             ${mode === 'day' ? 'bg-white/60 border-white/50' : 'bg-white/5 border-white/10'}
           `}>
-            <IconButton onClick={() => setShowChatbot(true)} icon={<Bot size={18} strokeWidth={2.5} />} label="AI Helper" mode={mode} />
+            <IconButton onClick={() => setShowChatbot(true)} icon={<Bot size={18} strokeWidth={2.5} />} label="AI Helper" mode={mode} aria-label="AI Helper" />
             <div className={`w-px h-3 mx-0.5 opacity-20 ${mode === 'day' ? 'bg-brand-dark' : 'bg-white'}`} />
-            <IconButton onClick={toggleMode} icon={mode === 'day' ? <Moon size={18} strokeWidth={2.5} /> : <Sun size={18} strokeWidth={2.5} />} label="Theme" mode={mode} />
+            <IconButton onClick={toggleMode} icon={mode === 'day' ? <Moon size={18} strokeWidth={2.5} /> : <Sun size={18} strokeWidth={2.5} />} label="Theme" mode={mode} aria-label="테마 전환" />
           </div>
         </header>
       </div>
 
       {/* Main Stage */}
-      <main className={`
+      <main id="main-content" className={`
         relative z-content-base w-full h-full flex flex-col items-center
         transition-all duration-700 ease-[0.22, 1, 0.36, 1]
         ${isImmersive ? 'px-0 py-0' : 'px-4 pt-24 pb-28'}
@@ -186,7 +162,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className="flex-1 w-full h-full overflow-hidden"
             >
-              <Outlet context={{ mode, persona, setIsImmersive, timelineData, setPersona }} />
+              <Outlet />
             </motion.div>
           </AnimatePresence>
         </motion.div>
@@ -236,11 +212,19 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
 };
 
 // Icon Button 컴포넌트
-const IconButton = ({ onClick, icon, label, mode }: { onClick: () => void; icon: React.ReactNode; label: string; mode: 'day' | 'night' }) => (
+interface IconButtonProps {
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+  mode: 'day' | 'night';
+  'aria-label': string;
+}
+
+const IconButton: React.FC<IconButtonProps> = ({ onClick, icon, label, mode, 'aria-label': ariaLabel }) => (
   <button
     onClick={onClick}
     title={label}
-    aria-label={label}
+    aria-label={ariaLabel}
     className={`
       w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200
       active:scale-95

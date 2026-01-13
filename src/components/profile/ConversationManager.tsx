@@ -15,7 +15,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, Download, Calendar, List, Grid, ArrowLeft, MoreVertical, X } from 'lucide-react';
-import { GlassCard, Button } from '../ui';
+import { GlassCard, Button, Portal } from '../ui';
 import { TimelineEntry } from '../../../types';
 
 /**
@@ -218,56 +218,58 @@ export const ConversationManager: React.FC<ConversationManagerProps> = ({
       )}
 
       {/* 삭제 확인 모달 */}
-      <AnimatePresence>
-        {showDeleteConfirm && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-modal flex items-center justify-center bg-slate-900/50 backdrop-blur-sm"
-            onClick={() => {
-              setShowDeleteConfirm(false);
-              setConversationToDelete(null);
-            }}
-          >
+      <Portal>
+        <AnimatePresence>
+          {showDeleteConfirm && (
             <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-modal flex items-center justify-center bg-slate-900/50 backdrop-blur-sm"
+              onClick={() => {
+                setShowDeleteConfirm(false);
+                setConversationToDelete(null);
+              }}
             >
-              <h3 className="text-lg font-bold text-slate-900 mb-2">
-                대화 삭제 확인
-              </h3>
-              <p className="text-sm text-slate-600 mb-6">
-                {conversationToDelete === 'all'
-                  ? '모든 대화를 삭제하시겠어요? 삭제된 대화는 30일간 복구 가능합니다.'
-                  : '이 대화를 삭제하시겠어요? 삭제된 대화는 30일간 복구 가능합니다.'}
-              </p>
-              <div className="flex gap-3">
-                <Button
-                  onClick={() => {
-                    setShowDeleteConfirm(false);
-                    setConversationToDelete(null);
-                  }}
-                  variant="ghost"
-                  className="flex-1"
-                >
-                  취소
-                </Button>
-                <Button
-                  onClick={conversationToDelete === 'all' ? handleDeleteAllConfirm : handleDeleteConfirm}
-                  variant="primary"
-                  className="flex-1 bg-red-600 hover:bg-red-700"
-                >
-                  삭제
-                </Button>
-              </div>
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-xl"
+              >
+                <h3 className="text-lg font-bold text-slate-900 mb-2">
+                  대화 삭제 확인
+                </h3>
+                <p className="text-sm text-slate-600 mb-6">
+                  {conversationToDelete === 'all'
+                    ? '모든 대화를 삭제하시겠어요? 삭제된 대화는 30일간 복구 가능합니다.'
+                    : '이 대화를 삭제하시겠어요? 삭제된 대화는 30일간 복구 가능합니다.'}
+                </p>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => {
+                      setShowDeleteConfirm(false);
+                      setConversationToDelete(null);
+                    }}
+                    variant="ghost"
+                    className="flex-1"
+                  >
+                    취소
+                  </Button>
+                  <Button
+                    onClick={conversationToDelete === 'all' ? handleDeleteAllConfirm : handleDeleteConfirm}
+                    variant="primary"
+                    className="flex-1 bg-red-600 hover:bg-red-700"
+                  >
+                    삭제
+                  </Button>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </Portal>
     </div>
   );
 };

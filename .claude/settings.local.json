@@ -8,7 +8,12 @@
       "Bash(pushd:*)",
       "Bash(popd:*)",
       "Bash(npm run lint:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(dir \"C:\\\\INEESm\" /s /b)",
+      "Bash(findstr:*)",
+      "Bash(Get-ChildItem -Path \"C:\\\\INEESm\\\\src\" -Directory)",
+      "Bash(ForEach-Object { $_Name })",
+      "Bash(npx tsc --noEmit)"
     ]
   }
 }

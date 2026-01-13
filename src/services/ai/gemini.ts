@@ -70,7 +70,7 @@ export const generateDayModeResponse = async (
     return response.data.data || response.data.fallback || '응답을 생성할 수 없습니다.';
   }
 
-  return response.fallback || response.error || '잠시 연결이 불안정합니다.';
+  return response.fallback?.fallback || response.error || '잠시 연결이 불안정합니다.';
 };
 
 /**
@@ -102,7 +102,7 @@ export const generateNightModeLetter = async (
     return response.data.data || response.data.fallback || '편지를 작성하는 중 오류가 발생했습니다.';
   }
 
-  return response.fallback || response.error || '지금은 편지를 쓸 수 없는 상태예요.';
+  return response.fallback?.fallback || response.error || '지금은 편지를 쓸 수 없는 상태예요.';
 };
 
 /**
@@ -128,7 +128,7 @@ export const generateMonthlyNarrative = async (summary?: string): Promise<string
     return response.data.data || response.data.fallback || '리포트를 생성할 수 없습니다.';
   }
 
-  return response.fallback || response.error || '리포트를 불러오는 중 오류가 발생했습니다.';
+  return response.fallback?.fallback || response.error || '리포트를 불러오는 중 오류가 발생했습니다.';
 };
 
 /**
@@ -195,7 +195,7 @@ export const generateChatbotResponse = async (
     return response.data.data || response.data.fallback || '응답을 생성할 수 없습니다.';
   }
 
-  return response.fallback || response.error || '연결에 문제가 발생했습니다.';
+  return response.fallback?.fallback || response.error || '연결에 문제가 발생했습니다.';
 };
 
 /**
@@ -238,7 +238,7 @@ export const generateMicroAction = async (
     return response.data.data || response.data.fallback || fallbackAction;
   }
 
-  return response.fallback || fallbackAction;
+  return response.fallback?.fallback || fallbackAction;
 };
 
 /**
@@ -264,5 +264,5 @@ export const generateTimelineAnalysis = async (entries: TimelineEntry[]): Promis
     return response.data.data || response.data.fallback || 'Analysis unavailable.';
   }
 
-  return response.fallback || response.error || '분석 중 오류가 발생했습니다.';
+  return response.fallback?.fallback || response.error || '분석 중 오류가 발생했습니다.';
 };

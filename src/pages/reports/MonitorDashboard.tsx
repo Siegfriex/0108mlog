@@ -7,16 +7,8 @@
  */
 
 import React from 'react';
-import { useOutletContext, Navigate } from 'react-router-dom';
 import { MonitorDashboard } from '../../components/reports/MonitorDashboard';
-import { TimelineEntry } from '../../../types';
-
-/**
- * Outlet Context 타입
- */
-interface OutletContext {
-  timelineData: TimelineEntry[];
-}
+import { useAppContext } from '../../contexts';
 
 /**
  * MonitorDashboardPage Props 인터페이스
@@ -31,13 +23,7 @@ interface MonitorDashboardPageProps {}
  * @returns {JSX.Element} MonitorDashboardPage 컴포넌트
  */
 export const MonitorDashboardPage: React.FC<MonitorDashboardPageProps> = () => {
-  const context = useOutletContext<OutletContext>();
-  
-  if (!context) {
-    return <Navigate to="/" replace />;
-  }
-  
-  const { timelineData } = context;
+  const { timelineData } = useAppContext();
 
   return <MonitorDashboard timelineData={timelineData} />;
 };

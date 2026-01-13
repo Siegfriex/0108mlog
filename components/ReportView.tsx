@@ -1,10 +1,10 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Radar, RadarChart, 
-  PolarGrid, PolarAngleAxis, PolarRadiusAxis, AreaChart, Area, XAxis, YAxis, 
-  CartesianGrid, Defs, LinearGradient, Stop 
+import {
+  PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Radar, RadarChart,
+  PolarGrid, PolarAngleAxis, PolarRadiusAxis, AreaChart, Area, XAxis, YAxis,
+  CartesianGrid
 } from 'recharts';
 import { X, TrendingUp, BarChart2, Zap, ArrowRight, PieChart as PieChartIcon, Activity, Hexagon, Users, Heart, Sparkles } from 'lucide-react';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경

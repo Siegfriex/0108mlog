@@ -183,7 +183,8 @@ export const generateMonthlyNarrative = onCall(
 
         checkColdStart(context);
 
-        const {summary} = request.data;
+        // request.data가 없을 수 있으므로 안전하게 처리
+        const {summary} = request.data || {};
 
         try {
           logMemoryUsage(context, "start");

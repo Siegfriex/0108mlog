@@ -6,44 +6,38 @@
  */
 
 import React from 'react';
-import { useNavigate, useOutletContext, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ConversationManager } from '../../components/profile/ConversationManager';
-import { TimelineEntry } from '../../../types';
-
-/**
- * Outlet Context 타입
- */
-interface OutletContext {
-  timelineData: TimelineEntry[];
-}
+import { useAppContext } from '../../contexts';
+import { deleteConversation, deleteAllConversations } from '../../services/firestore';
+import { logError } from '../../utils/error';
 
 /**
  * Conversations 컴포넌트
  */
 export const Conversations: React.FC = () => {
   const navigate = useNavigate();
-  const context = useOutletContext<OutletContext>();
+  const { timelineData, deleteTimelineEntry } = useAppContext();
   
-  if (!context) {
-    return <Navigate to="/" replace />;
-  }
-  
-  const { timelineData } = context;
-  
-  const conversations: TimelineEntry[] = timelineData;
+  const conversations = timelineData;
 
-  const handleDeleteConversation = (id: string) => {
-    // TODO: Firestore 삭제 로직
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Delete conversation:', id);
+  const handleDeleteConversation = async (id: string) => {
+    try {
+      await deleteConversation(id);
+      deleteTimelineEntry(id);
+    } catch (error) {
+      logError('Conversations.handleDeleteConversation', error);
     }
   };
 
-  const handleDeleteAllConversations = () => {
+  const handleDeleteAllConversations = async () => {
     if (confirm('모든 대화를 삭제하시겠습니까?')) {
-      // TODO: Firestore 전체 삭제 로직
-      if (process.env.NODE_ENV === 'development') {
-        console.log('Delete all conversations');
+      try {
+        await deleteAllConversations();
+        // 모든 타임라인 엔트리 삭제
+        conversations.forEach(entry => deleteTimelineEntry(entry.id));
+      } catch (error) {
+        logError('Conversations.handleDeleteAllConversations', error);
       }
     }
   };

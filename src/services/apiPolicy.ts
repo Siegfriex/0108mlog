@@ -131,7 +131,7 @@ export async function callWithPolicy<T>(
             return {
               success: false,
               error: errorMessage,
-              fallback: fallbackResult,
+              fallback: fallbackResult as T,
               _isMockData: true,
             };
           } catch (fallbackError) {
@@ -170,7 +170,7 @@ export async function callWithPolicy<T>(
       return {
         success: false,
         error: finalErrorMessage,
-        fallback: fallbackResult,
+        fallback: fallbackResult as T,
         _isMockData: true,
       };
     } catch (fallbackError) {

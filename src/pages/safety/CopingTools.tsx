@@ -11,7 +11,7 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wind, Anchor, HeartPulse, ArrowLeft, X } from 'lucide-react';
-import { Button } from '../../components/ui';
+import { Button, Portal } from '../../components/ui';
 
 /**
  * CopingTools 컴포넌트
@@ -283,10 +283,12 @@ export const CopingTools: React.FC = () => {
       </motion.div>
 
       {/* 도구 가이드 모달 */}
-      <AnimatePresence>
-        {selectedTool === 'breathing' && <BreathingGuide />}
-        {selectedTool === 'grounding' && <GroundingGuide />}
-      </AnimatePresence>
+      <Portal>
+        <AnimatePresence>
+          {selectedTool === 'breathing' && <BreathingGuide />}
+          {selectedTool === 'grounding' && <GroundingGuide />}
+        </AnimatePresence>
+      </Portal>
     </div>
   );
 };

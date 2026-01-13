@@ -13,6 +13,7 @@ export interface ButtonProps extends HTMLMotionProps<"button"> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'glass';
   isLoading?: boolean;
   children?: React.ReactNode;
+  'aria-label'?: string; // 접근성을 위한 라벨 (아이콘만 있는 버튼 등에 필수)
 }
 
 export const Button: React.FC<ButtonProps> = ({ 
@@ -21,6 +22,7 @@ export const Button: React.FC<ButtonProps> = ({
   isLoading, 
   className = '', 
   onClick,
+  'aria-label': ariaLabel,
   ...props 
 }) => {
   const [ripples, setRipples] = useState<Array<{ x: number; y: number; id: number }>>([]);
@@ -56,6 +58,9 @@ export const Button: React.FC<ButtonProps> = ({
     onClick?.(e);
   };
 
+  // aria-label이 없고 children도 없거나 텍스트가 없는 경우 기본값 설정
+  const effectiveAriaLabel = ariaLabel || (typeof children === 'string' ? children : undefined);
+
   return (
     <motion.button
       ref={buttonRef}
@@ -71,6 +76,7 @@ export const Button: React.FC<ButtonProps> = ({
       `}
       disabled={isLoading || props.disabled}
       onClick={handleClick}
+      aria-label={effectiveAriaLabel}
       whileHover={!isLoading && !props.disabled ? { scale: 1.02 } : {}}
       whileTap={!isLoading && !props.disabled ? { scale: 0.98 } : {}}
       transition={{ duration: 0.2 }}

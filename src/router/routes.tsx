@@ -5,6 +5,7 @@
  * Level 1 및 Level 2 하위 페이지 포함
  */
 
+import React from 'react';
 import { Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
@@ -23,7 +24,7 @@ const JournalJourney = lazy(() => import('../pages/journal/JournalJourney').then
 const WeeklyReport = lazy(() => import('../pages/reports/WeeklyReport').then(m => ({ default: m.WeeklyReport })));
 const MonthlyReport = lazy(() => import('../pages/reports/MonthlyReport').then(m => ({ default: m.MonthlyReport })));
 const MonthlyRetrospective = lazy(() => import('../pages/reports/MonthlyRetrospective').then(m => ({ default: m.MonthlyRetrospective })));
-const MonitorDashboard = lazy(() => import('../pages/reports/MonitorDashboard').then(m => ({ default: m.MonitorDashboard })));
+const MonitorDashboard = lazy(() => import('../pages/reports/MonitorDashboard').then(m => ({ default: m.MonitorDashboardPage })));
 
 const ContentMain = lazy(() => import('../pages/content/ContentMain').then(m => ({ default: m.ContentMain })));
 const ContentPoems = lazy(() => import('../pages/content/ContentPoems').then(m => ({ default: m.ContentPoems })));
@@ -36,6 +37,7 @@ const PersonaSettings = lazy(() => import('../pages/profile/PersonaSettings').th
 const DayNightSettings = lazy(() => import('../pages/profile/DayNightSettings').then(m => ({ default: m.DayNightSettings })));
 const Settings = lazy(() => import('../pages/profile/Settings').then(m => ({ default: m.Settings })));
 const Privacy = lazy(() => import('../pages/profile/Privacy').then(m => ({ default: m.Privacy })));
+const PrivacyPolicy = lazy(() => import('../pages/profile/PrivacyPolicy').then(m => ({ default: m.PrivacyPolicy })));
 const Conversations = lazy(() => import('../pages/profile/Conversations').then(m => ({ default: m.Conversations })));
 
 const SafetyMain = lazy(() => import('../pages/safety/SafetyMain').then(m => ({ default: m.SafetyMain })));
@@ -91,6 +93,7 @@ export const routes = (
     <Route path="profile/daynight" element={<LoadingWrapper><DayNightSettings /></LoadingWrapper>} />
     <Route path="profile/settings" element={<LoadingWrapper><Settings /></LoadingWrapper>} />
     <Route path="profile/privacy" element={<LoadingWrapper><Privacy /></LoadingWrapper>} />
+    <Route path="profile/privacy/policy" element={<LoadingWrapper><PrivacyPolicy /></LoadingWrapper>} />
     <Route path="profile/conversations" element={<LoadingWrapper><Conversations /></LoadingWrapper>} />
     
     {/* 안전망 라우트 */}

@@ -7,18 +7,12 @@
  */
 
 import React from 'react';
-import { useOutletContext, Navigate } from 'react-router-dom';
 import { ProfileView } from '../../../components/ProfileView';
-import { CoachPersona, TimelineEntry } from '../../../types';
-
-/**
- * Outlet Context 타입
- */
-interface OutletContext {
-  persona: CoachPersona;
-  setPersona: (persona: CoachPersona) => void;
-  timelineData: TimelineEntry[];
-}
+import { CoachPersona } from '../../../types';
+import { useAppContext } from '../../contexts';
+import { saveUserSettings } from '../../services/firestore';
+import { deleteConversation, deleteAllConversations } from '../../services/firestore';
+import { logError } from '../../utils/error';
 
 /**
  * ProfileMain Props 인터페이스
@@ -33,32 +27,35 @@ interface ProfileMainProps {}
  * @returns {JSX.Element} ProfileMain 컴포넌트
  */
 export const ProfileMain: React.FC<ProfileMainProps> = () => {
-  const context = useOutletContext<OutletContext>();
+  const { persona, setPersona, timelineData, deleteTimelineEntry } = useAppContext();
   
-  if (!context) {
-    return <Navigate to="/" replace />;
-  }
-  
-  const { persona, setPersona, timelineData } = context;
-  
-  const conversations: TimelineEntry[] = timelineData;
+  const conversations = timelineData;
 
-  const handleUpdatePersona = (newPersona: CoachPersona) => {
-    setPersona(newPersona);
-    // TODO: Firestore 업데이트 로직 추가
-  };
-
-  const handleDeleteConversation = (id: string) => {
-    // TODO: Firestore 삭제 로직 추가
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Delete conversation:', id);
+  const handleUpdatePersona = async (newPersona: CoachPersona) => {
+    try {
+      await saveUserSettings({ persona: newPersona });
+      setPersona(newPersona);
+    } catch (error) {
+      logError('ProfileMain.handleUpdatePersona', error);
     }
   };
 
-  const handleDeleteAllConversations = () => {
-    // TODO: Firestore 전체 삭제 로직 추가
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Delete all conversations');
+  const handleDeleteConversation = async (id: string) => {
+    try {
+      await deleteConversation(id);
+      deleteTimelineEntry(id);
+    } catch (error) {
+      logError('ProfileMain.handleDeleteConversation', error);
+    }
+  };
+
+  const handleDeleteAllConversations = async () => {
+    try {
+      await deleteAllConversations();
+      // 모든 타임라인 엔트리 삭제
+      conversations.forEach(entry => deleteTimelineEntry(entry.id));
+    } catch (error) {
+      logError('ProfileMain.handleDeleteAllConversations', error);
     }
   };
 

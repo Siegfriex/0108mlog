@@ -13,7 +13,7 @@
  */
 
 import { Timestamp } from 'firebase/firestore';
-import { EmotionType, CoachPersona } from '../../../types';
+import { EmotionType, CoachPersona } from '../../types';
 
 /**
  * Firestore Timestamp를 Date로 변환하는 헬퍼 타입
@@ -205,6 +205,7 @@ export const FIRESTORE_COLLECTIONS = {
   DIARIES: 'diaries',
   USER_PROFILES: 'userProfiles',
   MICRO_ACTIONS: 'microActions',
+  MICRO_ACTION_LOGS: 'microActionLogs',
   WEEKLY_REPORTS: 'weeklyReports',
   MONTHLY_REPORTS: 'monthlyReports',
   CONTENTS: 'contents',

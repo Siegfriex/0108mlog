@@ -25,7 +25,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { FIRESTORE_COLLECTIONS } from '../types/firestore';
-import { TimelineEntry, EmotionType } from '../../../types';
+import { TimelineEntry, EmotionType } from '../../types';
 import { toDate } from '../utils/firestore';
 
 /**

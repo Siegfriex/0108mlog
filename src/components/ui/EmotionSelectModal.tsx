@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GlassCard, Button, EmotionOrb } from './index';
+import { GlassCard, Button, EmotionOrb, Portal } from './index';
 import { EmotionType } from '../../../types';
 import { Smile, Meh, Frown, CloudRain, Flame } from 'lucide-react';
+import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
+import { useFocusRestore } from '../../hooks/useFocusRestore';
 
 /**
  * 감정 설정 구성
@@ -36,20 +39,63 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
   onIntensityChange,
   onComplete,
 }) => {
+  // 키보드 네비게이션을 위한 선택 인덱스
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const modalContainerRef = useRef<HTMLDivElement>(null);
+
+  // 선택된 감정에 맞춰 인덱스 동기화
+  useEffect(() => {
+    if (selectedEmotion) {
+      const index = EMOTIONS_CONFIG.findIndex(e => e.id === selectedEmotion);
+      if (index !== -1) {
+        setSelectedIndex(index);
+      }
+    }
+  }, [selectedEmotion]);
+
+  // 키보드 네비게이션 Hook 적용
+  const { containerRef } = useKeyboardNavigation({
+    itemCount: EMOTIONS_CONFIG.length,
+    selectedIndex,
+    onSelectChange: setSelectedIndex,
+    onEnter: (index) => {
+      onEmotionSelect(EMOTIONS_CONFIG[index].id);
+    },
+    enabled: isOpen,
+    columns: 2, // 모바일 2열, 데스크탑에서는 flex-wrap으로 자동 조정
+    loop: true,
+    horizontal: true,
+    vertical: true,
+  });
+
+  // 포커스 트랩 적용
+  useFocusTrap({
+    enabled: isOpen,
+    containerRef: modalContainerRef,
+    initialFocusSelector: 'button[aria-label*="감정 선택"]',
+  });
+
+  // 포커스 복원 적용
+  useFocusRestore({
+    shouldRestore: !isOpen,
+  });
+
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* 배경 오버레이 */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-md z-modal flex items-center justify-center p-4"
-          >
+    <Portal>
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* 배경 오버레이 */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 bg-black/40 backdrop-blur-md z-modal flex items-center justify-center p-4"
+            >
             {/* 글래스모피즘 모달 */}
             <motion.div
+              ref={modalContainerRef}
               initial={{ scale: 0.8, opacity: 0, y: 50 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.8, opacity: 0, y: 50 }}
@@ -88,13 +134,16 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
 
                   {/* 감정 선택 그리드 */}
                   <motion.div
+                    ref={containerRef as React.RefObject<HTMLDivElement>}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.3 }}
                     className="flex flex-wrap justify-center gap-4 mb-8"
+                    tabIndex={-1}
                   >
-                    {EMOTIONS_CONFIG.map((emotion) => {
+                    {EMOTIONS_CONFIG.map((emotion, index) => {
                       const isSelected = selectedEmotion === emotion.id;
+                      const isFocused = selectedIndex === index;
                       return (
                         <motion.div
                           key={emotion.id}
@@ -108,7 +157,10 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
                             color={emotion.color}
                             bgGradient={emotion.bgGradient}
                             isSelected={isSelected}
-                            onClick={() => onEmotionSelect(emotion.id)}
+                            onClick={() => {
+                              setSelectedIndex(index);
+                              onEmotionSelect(emotion.id);
+                            }}
                           />
                         </motion.div>
                       );
@@ -165,8 +217,9 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
               </GlassCard>
             </motion.div>
           </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+          </>
+        )}
+      </AnimatePresence>
+    </Portal>
   );
 };

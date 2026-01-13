@@ -6,36 +6,28 @@
  */
 
 import React from 'react';
-import { useNavigate, useOutletContext, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { PersonaEditor } from '../../../components/PersonaEditor';
 import { CoachPersona } from '../../../types';
-
-/**
- * Outlet Context 타입
- */
-interface OutletContext {
-  persona: CoachPersona;
-}
+import { useAppContext } from '../../contexts';
+import { saveUserSettings } from '../../services/firestore';
+import { logError } from '../../utils/error';
 
 /**
  * PersonaSettings 컴포넌트
  */
 export const PersonaSettings: React.FC = () => {
   const navigate = useNavigate();
-  const context = useOutletContext<OutletContext>();
-  
-  if (!context) {
-    return <Navigate to="/" replace />;
-  }
-  
-  const { persona } = context;
+  const { persona, setPersona } = useAppContext();
 
-  const handleUpdate = (newPersona: CoachPersona) => {
-    // TODO: Firestore 저장
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Persona updated:', newPersona);
+  const handleUpdate = async (newPersona: CoachPersona) => {
+    try {
+      await saveUserSettings({ persona: newPersona });
+      setPersona(newPersona);
+      navigate('/profile');
+    } catch (error) {
+      logError('PersonaSettings.handleUpdate', error);
     }
-    navigate('/profile');
   };
 
   return (
