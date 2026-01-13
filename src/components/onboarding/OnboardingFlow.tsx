@@ -13,7 +13,7 @@
  * 6. 첫 체크인 가이드
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { WelcomeScreen } from './WelcomeScreen';
 import { PermissionRequest } from './PermissionRequest';
@@ -21,6 +21,8 @@ import { InitialAssessment } from './InitialAssessment';
 import { GoalSetting } from './GoalSetting';
 import { PersonalizationSetup } from './PersonalizationSetup';
 import { TutorialGuide } from './TutorialGuide';
+import { ExitConfirm } from './ExitConfirm';
+import { saveOnboardingData } from '../../services/firestore';
 
 /**
  * 온보딩 단계 타입 정의
@@ -53,7 +55,7 @@ export interface OnboardingData {
  */
 export interface OnboardingFlowProps {
   onComplete: (data: OnboardingData) => void;
-  onSkip?: () => void;
+  onExit?: () => void;
 }
 
 /**
@@ -81,24 +83,72 @@ const getStepNumber = (step: OnboardingStep): number => {
  * @param {OnboardingFlowProps} props - 컴포넌트 props
  * @returns {JSX.Element} OnboardingFlow 컴포넌트
  */
-export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSkip }) => {
+export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onExit }) => {
   const [currentStep, setCurrentStep] = useState<OnboardingStep>('welcome');
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     notificationPermission: 'default',
     locationPermission: 'default',
   });
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   /**
    * 온보딩 완료 처리
-   * 로컬 스토리지에 완료 플래그 저장 및 콜백 호출
+   * Firestore에 저장 시도 (재시도 포함) 및 로컬 스토리지 백업
    */
-  const handleComplete = () => {
-    // 로컬 스토리지에 온보딩 완료 플래그 저장
-    localStorage.setItem('onboarding_completed', 'true');
-    localStorage.setItem('onboarding_data', JSON.stringify(onboardingData));
+  const handleComplete = async () => {
+    setIsSaving(true);
+    setSaveError(null);
     
-    // 완료 콜백 호출
-    onComplete(onboardingData);
+    try {
+      // Firestore에 온보딩 데이터 저장 (재시도 로직 포함)
+      await saveOnboardingData(onboardingData, 3);
+      
+      // 로컬 스토리지에 온보딩 완료 플래그 저장 (백업)
+      localStorage.setItem('onboarding_completed', 'true');
+      localStorage.setItem('onboarding_data', JSON.stringify(onboardingData));
+      
+      // 완료 콜백 호출
+      onComplete(onboardingData);
+    } catch (error) {
+      console.error('Failed to save onboarding data:', error);
+      setSaveError('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+      
+      // 에러가 발생해도 로컬 스토리지에는 저장 (오프라인 대비)
+      localStorage.setItem('onboarding_completed', 'true');
+      localStorage.setItem('onboarding_data', JSON.stringify(onboardingData));
+      
+      // 사용자에게 재시도 옵션 제공하거나 계속 진행할 수 있도록 함
+      // 여기서는 에러를 표시하지만 완료 콜백은 호출 (로컬 저장 완료)
+      onComplete(onboardingData);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  /**
+   * 종료 확인 다이얼로그 표시
+   */
+  const handleExitRequest = useCallback(() => {
+    setShowExitConfirm(true);
+  }, []);
+
+  /**
+   * 종료 확인
+   */
+  const handleExitConfirm = () => {
+    setShowExitConfirm(false);
+    if (onExit) {
+      onExit();
+    }
+  };
+
+  /**
+   * 종료 취소
+   */
+  const handleExitCancel = () => {
+    setShowExitConfirm(false);
   };
 
   /**
@@ -121,6 +171,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSk
 
   /**
    * 이전 단계로 이동
+   * Step 1 (welcome)에서 뒤로가기 시 종료 확인 다이얼로그 표시
    */
   const handleBack = () => {
     const steps: OnboardingStep[] = ['welcome', 'permissions', 'assessment', 'goals', 'personalization', 'tutorial'];
@@ -128,6 +179,9 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSk
     
     if (currentIndex > 0) {
       setCurrentStep(steps[currentIndex - 1]);
+    } else if (currentStep === 'welcome') {
+      // Step 1에서 뒤로가기 시 종료 확인
+      handleExitRequest();
     }
   };
 
@@ -142,11 +196,53 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSk
 
   const stepNumber = getStepNumber(currentStep);
 
+  /**
+   * 브라우저 뒤로가기 버튼 처리
+   * Step 1에서 뒤로가기 시 종료 확인 다이얼로그 표시
+   */
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (currentStep === 'welcome') {
+        event.preventDefault();
+        handleExitRequest();
+        // 히스토리 복원
+        window.history.pushState(null, '', window.location.href);
+      }
+    };
+
+    // 히스토리 스택에 현재 상태 추가
+    window.history.pushState(null, '', window.location.href);
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [currentStep, handleExitRequest]);
+
   return (
     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
+      {/* 종료 확인 다이얼로그 */}
+      <ExitConfirm
+        isOpen={showExitConfirm}
+        onConfirm={handleExitConfirm}
+        onCancel={handleExitCancel}
+      />
+
+      {/* 저장 에러 표시 */}
+      {saveError && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-toast bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg shadow-lg max-w-md"
+        >
+          <p className="text-sm font-medium">{saveError}</p>
+        </motion.div>
+      )}
+
       {/* 진행률 표시 (개선) */}
       <motion.div 
-        className="absolute top-8 left-1/2 -translate-x-1/2 z-10"
+        className="absolute top-8 left-1/2 -translate-x-1/2 z-content-base"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -190,7 +286,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSk
           {currentStep === 'welcome' && (
             <WelcomeScreen
               onNext={() => handleNext('permissions')}
-              onSkip={onSkip}
+              onExit={handleExitRequest}
             />
           )}
           
@@ -239,6 +335,22 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onSk
               onBack={handleBack}
               onSkip={handleComplete}
             />
+          )}
+          
+          {/* 저장 중 표시 */}
+          {isSaving && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-loading"
+            >
+              <div className="bg-white rounded-2xl p-6 shadow-xl">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-12 h-12 border-4 border-brand-primary border-t-transparent rounded-full animate-spin" />
+                  <p className="text-sm font-medium text-slate-700">저장 중...</p>
+                </div>
+              </div>
+            </motion.div>
           )}
         </motion.div>
       </AnimatePresence>

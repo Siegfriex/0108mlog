@@ -15,7 +15,7 @@ import { Button } from '../ui';
  */
 export interface WelcomeScreenProps {
   onNext: () => void;
-  onSkip?: () => void;
+  onExit?: () => void;
 }
 
 /**
@@ -25,7 +25,7 @@ export interface WelcomeScreenProps {
  * @param {WelcomeScreenProps} props - 컴포넌트 props
  * @returns {JSX.Element} WelcomeScreen 컴포넌트
  */
-export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onSkip }) => {
+export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onExit }) => {
   return (
     <div className="w-full max-w-md mx-auto text-center space-y-8">
       {/* 벚꽃 일러스트 (아이콘으로 대체) */}
@@ -81,25 +81,12 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onSkip }) 
         <Button
           onClick={onNext}
           variant="primary"
-          className="w-full max-w-[240px] h-14 text-lg font-semibold shadow-xl shadow-brand-primary/30 hover:shadow-brand-primary/40 transition-all"
+          className="w-full max-w-[15rem] h-14 text-lg font-semibold shadow-xl shadow-brand-primary/30 hover:shadow-brand-primary/40 transition-all"
         >
           대화 시작하기
           <ArrowRight size={20} className="ml-2" />
         </Button>
       </motion.div>
-
-      {/* 스킵 옵션 (선택적) */}
-      {onSkip && (
-        <motion.button
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          onClick={onSkip}
-          className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
-        >
-          건너뛰기
-        </motion.button>
-      )}
     </div>
   );
 };

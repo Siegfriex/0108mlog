@@ -122,7 +122,7 @@ export const MonitorDashboard: React.FC<MonitorDashboardProps> = ({ timelineData
             <p>아직 충분한 데이터가 없어요</p>
           </div>
         ) : (
-          <div className="min-h-[200px]">
+          <div className="min-h-48">
             <ResponsiveContainer width="100%" height={200}>
             <LineChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />

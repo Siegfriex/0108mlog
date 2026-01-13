@@ -114,7 +114,7 @@ export const QuickChip: React.FC<QuickChipProps> = ({
             whitespace-nowrap
             shadow-sm hover:shadow-md
             transition-all duration-300
-            min-w-[100px]
+            min-w-24
             h-12
           `}
         >

@@ -95,7 +95,7 @@ export const TabBar: React.FC<TabBarProps> = ({
         relative flex items-center justify-between px-6 py-3 gap-2 pb-safe-bottom
         backdrop-blur-2xl border
         rounded-xl shadow-2xl
-        w-auto min-w-[320px] max-w-full transition-colors duration-500
+        w-auto min-w-80 max-w-full transition-colors duration-500
         ${mode === 'day' 
           ? 'bg-white/80 border-white/60 shadow-brand-primary/10 ring-1 ring-white/50' 
           : 'bg-slate-900/80 border-white/10 shadow-black/50 ring-1 ring-white/10'

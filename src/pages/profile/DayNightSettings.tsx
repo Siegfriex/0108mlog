@@ -32,7 +32,12 @@ export const DayNightSettings: React.FC = () => {
         
         if (settings) {
           setAutoMode(settings.autoDayNightMode ?? true);
-          // 시간 설정은 별도 필드로 관리 (현재는 기본값 사용)
+          if (settings.dayModeStartTime) {
+            setDayModeStart(settings.dayModeStartTime);
+          }
+          if (settings.nightModeStartTime) {
+            setNightModeStart(settings.nightModeStartTime);
+          }
         }
       } catch (error) {
         console.error('설정 불러오기 오류:', error);
@@ -50,6 +55,8 @@ export const DayNightSettings: React.FC = () => {
       setSaving(true);
       await saveUserSettings({
         autoDayNightMode: autoMode,
+        dayModeStartTime: autoMode ? dayModeStart : undefined,
+        nightModeStartTime: autoMode ? nightModeStart : undefined,
       });
       alert('설정이 저장되었습니다.');
     } catch (error) {

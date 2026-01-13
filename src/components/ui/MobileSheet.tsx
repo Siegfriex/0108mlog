@@ -68,7 +68,7 @@ export const MobileSheet: React.FC<MobileSheetProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/50 z-40"
+            className="fixed inset-0 bg-black/50 z-modal-backdrop"
             style={{ opacity }}
           />
 
@@ -83,7 +83,7 @@ export const MobileSheet: React.FC<MobileSheetProps> = ({
             dragElastic={0.2}
             onDragEnd={handleDragEnd}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl pb-safe-bottom touch-none"
+            className="fixed bottom-0 left-0 right-0 z-modal bg-white rounded-t-3xl shadow-2xl pb-safe-bottom touch-none"
             style={{ y, height }}
           >
             {/* 드래그 핸들 바 */}

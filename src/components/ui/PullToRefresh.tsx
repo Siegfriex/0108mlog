@@ -62,7 +62,7 @@ export const PullToRefresh: React.FC<PullToRefreshProps> = ({
       {/* 새로고침 인디케이터 */}
       <motion.div
         style={{ y, opacity, rotate }}
-        className="absolute top-0 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 pt-4"
+        className="absolute top-0 left-1/2 -translate-x-1/2 z-content-base flex items-center gap-2 pt-4"
       >
         <RefreshCw size={24} className="text-brand-primary" />
         <span className="text-sm text-brand-primary font-medium">

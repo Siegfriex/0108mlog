@@ -10,7 +10,7 @@ import { X, TrendingUp, BarChart2, Zap, ArrowRight, PieChart as PieChartIcon, Ac
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
 import { GlassCard, LoadingSpinner, Button } from '../src/components/ui';
 import { TimelineEntry, EmotionType } from '../types';
-import { generateMonthlyNarrative } from '../services/geminiService';
+import { generateMonthlyNarrative } from '../src/services/ai/gemini';
 
 // 목업 데이터 import: 중앙화된 목업 데이터 사용
 import { RADAR_DATA, AREA_DATA } from '../src/mock/data';
@@ -501,7 +501,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+                    className="fixed inset-0 z-modal flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
                     onClick={() => setShowModal(false)}
                 >
                     <motion.div

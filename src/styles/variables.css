@@ -1,0 +1,409 @@
+/**
+ * CSS 변수 통합 파일 - 완전판
+ * 
+ * 모든 디자인 토큰을 CSS 변수로 정의
+ * TypeScript에서 동적 접근 가능
+ * Tailwind CSS와 완벽 통합
+ */
+
+:root {
+  /* ========================================
+   * 1. 기본 단위 시스템
+   * ======================================== */
+  
+  /* Base Unit (1rem = 16px 기준) */
+  --unit-base: 1rem;
+  
+  /* Spacing Scale (4px 배수 시스템) */
+  --spacing-0: 0;
+  --spacing-px: 1px;
+  --spacing-0-5: 0.125rem;   /* 2px */
+  --spacing-1: 0.25rem;      /* 4px */
+  --spacing-2: 0.5rem;       /* 8px */
+  --spacing-3: 0.75rem;      /* 12px */
+  --spacing-4: 1rem;         /* 16px */
+  --spacing-5: 1.25rem;      /* 20px */
+  --spacing-6: 1.5rem;       /* 24px */
+  --spacing-8: 2rem;         /* 32px */
+  --spacing-10: 2.5rem;      /* 40px */
+  --spacing-12: 3rem;        /* 48px */
+  --spacing-16: 4rem;        /* 64px */
+  --spacing-20: 5rem;        /* 80px */
+  --spacing-24: 6rem;        /* 96px */
+  
+  /* 시맨틱 간격 (별칭) */
+  --spacing-xs: var(--spacing-1);     /* 4px */
+  --spacing-sm: var(--spacing-2);     /* 8px */
+  --spacing-md: var(--spacing-4);     /* 16px */
+  --spacing-lg: var(--spacing-6);     /* 24px */
+  --spacing-xl: var(--spacing-8);     /* 32px */
+  --spacing-xxl: var(--spacing-12);   /* 48px */
+
+  /* ========================================
+   * 2. Viewport 단위 시스템
+   * ======================================== */
+  
+  /* Viewport Width */
+  --vw-full: 100vw;
+  --vw-screen: 100dvw;
+  
+  /* Viewport Height (안전 영역 고려) */
+  --vh-full: 100vh;
+  --vh-dynamic: 100dvh;
+  --vh-small: 100svh;
+  --vh-large: 100lvh;
+  
+  /* Safe Area Insets */
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  
+  /* Safe Viewport Height */
+  --vh-safe: calc(100dvh - var(--safe-top) - var(--safe-bottom));
+  
+  /* Content Area Heights */
+  --vh-content: calc(var(--vh-safe) - var(--header-height) - var(--dock-height));
+  --vh-modal: 90dvh;
+  --vh-sheet: 85dvh;
+  
+  /* Layout Heights */
+  --header-height: 4rem;      /* 64px */
+  --dock-height: 5rem;        /* 80px (패딩 포함) */
+  --tab-bar-height: 3.5rem;   /* 56px */
+
+  /* ========================================
+   * 3. Z-Index 레이어 시스템
+   * ======================================== */
+  
+  /* Base Layers (0-99) */
+  --z-below: -1;
+  --z-base: 0;
+  --z-above: 1;
+  
+  /* Background Layers (0-9) */
+  --z-bg-base: 0;
+  --z-bg-pattern: 1;
+  --z-bg-gradient: 2;
+  --z-bg-particles: 3;
+  
+  /* Content Layers (10-49) - 탭별 분리 */
+  --z-content-base: 10;
+  
+  /* Tab-specific Content Layers */
+  --z-tab-chat: 10;
+  --z-tab-chat-content: 11;
+  --z-tab-chat-input: 12;
+  
+  --z-tab-journal: 15;
+  --z-tab-journal-content: 16;
+  --z-tab-journal-fab: 17;
+  
+  --z-tab-reports: 20;
+  --z-tab-reports-content: 21;
+  --z-tab-reports-chart: 22;
+  
+  --z-tab-content: 25;
+  --z-tab-content-grid: 26;
+  --z-tab-content-detail: 27;
+  
+  --z-tab-profile: 30;
+  --z-tab-profile-content: 31;
+  --z-tab-profile-settings: 32;
+  
+  /* Navigation Layers (50-99) */
+  --z-nav: 50;
+  --z-header: 50;
+  --z-dock: 50;
+  --z-fab: 60;
+  --z-sticky: 70;
+  
+  /* Overlay Layers (100-999) */
+  --z-overlay-base: 100;
+  --z-safety: 200;
+  --z-loading: 300;
+  --z-toast: 400;
+  
+  /* Modal Layers (1000-1999) */
+  --z-dropdown: 1000;
+  --z-popover: 1010;
+  --z-tooltip: 1020;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-modal-content: 1051;
+  --z-sheet: 1060;
+  --z-sheet-content: 1061;
+  
+  /* Consent/Critical Layers (2000+) */
+  --z-consent-backdrop: 2000;
+  --z-consent-modal: 2001;
+  --z-emergency: 9000;
+  --z-max: 9999;
+
+  /* ========================================
+   * 4. 브랜드 색상 시스템
+   * ======================================== */
+  
+  /* Primary Brand (Teal) */
+  --color-brand-50: #F0FDFA;
+  --color-brand-100: #CCFBF1;
+  --color-brand-200: #99F6E4;
+  --color-brand-300: #5EEAD4;
+  --color-brand-400: #2DD4BF;
+  --color-brand-500: #14B8A6;
+  --color-brand-600: #2A8E9E;
+  --color-brand-700: #0D9488;
+  --color-brand-800: #115E59;
+  --color-brand-900: #134E4A;
+  
+  /* 시맨틱 별칭 */
+  --color-brand-primary: var(--color-brand-600);
+  --color-brand-secondary: var(--color-brand-200);
+  --color-brand-accent: #FDA4AF;
+  --color-brand-dark: var(--color-brand-800);
+  --color-brand-light: var(--color-brand-50);
+  
+  /* RGB 채널 (Tailwind opacity 지원) */
+  --color-brand-50-rgb: 240 253 250;
+  --color-brand-100-rgb: 204 251 241;
+  --color-brand-200-rgb: 153 246 228;
+  --color-brand-300-rgb: 94 234 212;
+  --color-brand-400-rgb: 45 212 191;
+  --color-brand-500-rgb: 20 184 166;
+  --color-brand-600-rgb: 42 142 158;
+  --color-brand-700-rgb: 13 148 136;
+  --color-brand-800-rgb: 17 94 89;
+  --color-brand-900-rgb: 19 78 74;
+  
+  --color-brand-primary-rgb: 42 142 158;
+  --color-brand-secondary-rgb: 153 246 228;
+  --color-brand-accent-rgb: 253 164 175;
+  --color-brand-dark-rgb: 17 94 89;
+  --color-brand-light-rgb: 240 253 250;
+
+  /* ========================================
+   * 5. 감정 색상 시스템
+   * ======================================== */
+  
+  /* Joy (기쁨) - Yellow/Amber */
+  --color-emotion-joy-100: #FFF9C4;
+  --color-emotion-joy-400: #FFD700;
+  --color-emotion-joy-600: #FFA000;
+  --color-emotion-joy-100-rgb: 255 249 196;
+  --color-emotion-joy-400-rgb: 255 215 0;
+  --color-emotion-joy-600-rgb: 255 160 0;
+  
+  /* Peace (평온) - Cyan/Teal */
+  --color-emotion-peace-100: #E1F5FE;
+  --color-emotion-peace-400: #4FC3F7;
+  --color-emotion-peace-500: #14B8A6;
+  --color-emotion-peace-600: #039BE5;
+  --color-emotion-peace-100-rgb: 225 245 254;
+  --color-emotion-peace-400-rgb: 79 195 247;
+  --color-emotion-peace-500-rgb: 20 184 166;
+  --color-emotion-peace-600-rgb: 3 155 229;
+  
+  /* Anxiety (불안) - Orange */
+  --color-emotion-anxiety-100: #FBE9E7;
+  --color-emotion-anxiety-400: #FF8A65;
+  --color-emotion-anxiety-600: #F4511E;
+  --color-emotion-anxiety-100-rgb: 251 233 231;
+  --color-emotion-anxiety-400-rgb: 255 138 101;
+  --color-emotion-anxiety-600-rgb: 244 81 30;
+  
+  /* Sadness (슬픔) - Purple */
+  --color-emotion-sadness-100: #F3E5F5;
+  --color-emotion-sadness-400: #BA68C8;
+  --color-emotion-sadness-600: #8E24AA;
+  --color-emotion-sadness-100-rgb: 243 229 245;
+  --color-emotion-sadness-400-rgb: 186 104 200;
+  --color-emotion-sadness-600-rgb: 142 36 170;
+  
+  /* Anger (분노) - Red */
+  --color-emotion-anger-100: #FFEBEE;
+  --color-emotion-anger-400: #EF5350;
+  --color-emotion-anger-600: #C62828;
+  --color-emotion-anger-100-rgb: 255 235 238;
+  --color-emotion-anger-400-rgb: 239 83 80;
+  --color-emotion-anger-600-rgb: 198 40 40;
+
+  /* Active Emotion (동적으로 설정됨) */
+  --color-emotion-active-100: var(--color-emotion-peace-100);
+  --color-emotion-active-400: var(--color-emotion-peace-400);
+  --color-emotion-active-600: var(--color-emotion-peace-600);
+
+  /* ========================================
+   * 6. 상태 색상
+   * ======================================== */
+  
+  --color-status-success: #4CAF50;
+  --color-status-warning: #FF9800;
+  --color-status-error: #F44336;
+  --color-status-info: #2196F3;
+  
+  --color-status-success-rgb: 76 175 80;
+  --color-status-warning-rgb: 255 152 0;
+  --color-status-error-rgb: 244 67 54;
+  --color-status-info-rgb: 33 150 243;
+
+  /* ========================================
+   * 7. Glass 효과 색상
+   * ======================================== */
+  
+  --color-glass-surface: rgba(255, 255, 255, 0.75);
+  --color-glass-surface-dark: rgba(15, 23, 42, 0.75);
+  --color-glass-border: rgba(255, 255, 255, 0.6);
+  --color-glass-border-dark: rgba(255, 255, 255, 0.1);
+
+  /* ========================================
+   * 8. Border Radius
+   * ======================================== */
+  
+  --radius-none: 0;
+  --radius-sm: 0.5rem;       /* 8px */
+  --radius-md: 1rem;         /* 16px */
+  --radius-lg: 1.5rem;       /* 24px */
+  --radius-xl: 2rem;         /* 32px */
+  --radius-2xl: 2.25rem;     /* 36px */
+  --radius-full: 9999px;
+  
+  /* 컴포넌트별 Radius */
+  --radius-button: var(--radius-md);
+  --radius-card: var(--radius-xl);
+  --radius-modal: var(--radius-2xl);
+  --radius-input: var(--radius-md);
+  --radius-chip: var(--radius-full);
+
+  /* ========================================
+   * 9. 그림자 시스템
+   * ======================================== */
+  
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* 브랜드 그림자 */
+  --shadow-brand: 0 8px 32px rgba(42, 142, 158, 0.05);
+  --shadow-brand-md: 0 10px 40px rgba(42, 142, 158, 0.1);
+  --shadow-brand-lg: 0 20px 60px rgba(42, 142, 158, 0.15);
+  
+  /* Glass 그림자 */
+  --shadow-glass: 0 20px 40px -10px rgba(42, 142, 158, 0.15);
+  --shadow-glass-hover: 0 25px 50px -12px rgba(42, 142, 158, 0.25);
+  --shadow-glow: 0 0 20px rgba(42, 142, 158, 0.4);
+  --shadow-floating: 0 10px 30px -5px rgba(0, 0, 0, 0.1);
+
+  /* ========================================
+   * 10. 애니메이션 시스템
+   * ======================================== */
+  
+  /* Duration */
+  --duration-instant: 0ms;
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-slower: 700ms;
+  --duration-slowest: 1000ms;
+  
+  /* Easing */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  
+  /* 컴포넌트별 트랜지션 */
+  --transition-fast: var(--duration-fast) var(--ease-out);
+  --transition-normal: var(--duration-normal) var(--ease-out);
+  --transition-smooth: var(--duration-normal) var(--ease-smooth);
+  --transition-spring: var(--duration-slow) var(--ease-spring);
+
+  /* ========================================
+   * 11. 타이포그래피
+   * ======================================== */
+  
+  /* Font Family */
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'Consolas', 'Monaco', monospace;
+  
+  /* Font Size */
+  --text-xs: 0.75rem;        /* 12px */
+  --text-sm: 0.875rem;       /* 14px */
+  --text-base: 1rem;         /* 16px */
+  --text-lg: 1.125rem;       /* 18px */
+  --text-xl: 1.25rem;        /* 20px */
+  --text-2xl: 1.5rem;        /* 24px */
+  --text-3xl: 1.875rem;      /* 30px */
+  --text-4xl: 2.25rem;       /* 36px */
+  
+  /* Line Height */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* Font Weight */
+  --font-light: 300;
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* ========================================
+   * 12. 브레이크포인트 (참조용)
+   * ======================================== */
+  
+  --breakpoint-xs: 375px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+}
+
+/* ========================================
+ * 다크 모드 / 나이트 모드
+ * ======================================== */
+
+[data-theme="night"],
+.dark {
+  /* 배경 */
+  --color-bg-primary: #0F172A;
+  --color-bg-secondary: #1E293B;
+  --color-bg-tertiary: #334155;
+  
+  /* 텍스트 */
+  --color-text-primary: #F1F5F9;
+  --color-text-secondary: #CBD5E1;
+  --color-text-muted: #94A3B8;
+  
+  /* Glass */
+  --color-glass-surface: var(--color-glass-surface-dark);
+  --color-glass-border: var(--color-glass-border-dark);
+  
+  /* 액센트 */
+  --color-accent-purple: #A78BFA;
+  --color-accent-indigo: #818CF8;
+  --color-accent-cyan: #22D3EE;
+}
+
+/* ========================================
+ * Reduced Motion 지원
+ * ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+    --duration-slower: 0ms;
+    --duration-slowest: 0ms;
+  }
+}

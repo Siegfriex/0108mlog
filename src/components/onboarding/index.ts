@@ -17,3 +17,5 @@ export { PersonalizationSetup } from './PersonalizationSetup';
 export type { PersonalizationSetupProps } from './PersonalizationSetup';
 export { TutorialGuide } from './TutorialGuide';
 export type { TutorialGuideProps } from './TutorialGuide';
+export { ExitConfirm } from './ExitConfirm';
+export type { ExitConfirmProps } from './ExitConfirm';

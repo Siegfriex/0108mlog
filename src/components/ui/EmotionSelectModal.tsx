@@ -46,7 +46,7 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-md z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/40 backdrop-blur-md z-modal flex items-center justify-center p-4"
           >
             {/* 글래스모피즘 모달 */}
             <motion.div
@@ -70,7 +70,7 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
                 {/* 배경 그라데이션 효과 */}
                 <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 via-brand-secondary/5 to-transparent pointer-events-none" />
                 
-                <div className="relative z-10">
+                <div className="relative z-content-base">
                   {/* 헤더 */}
                   <motion.div
                     initial={{ opacity: 0, y: -20 }}

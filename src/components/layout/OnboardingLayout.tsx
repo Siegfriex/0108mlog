@@ -40,10 +40,11 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = () => {
   };
 
   /**
-   * 온보딩 스킵 핸들러
+   * 온보딩 종료 핸들러
    */
-  const handleSkip = () => {
-    localStorage.setItem('onboarding_completed', 'true');
+  const handleExit = () => {
+    // 종료 시 아무것도 저장하지 않고 앱 종료 (또는 홈으로 이동)
+    // 실제로는 앱 종료 또는 홈 화면으로 이동
     navigate('/chat');
   };
 
@@ -52,7 +53,7 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = () => {
       <NoiseOverlay />
       <OnboardingFlow
         onComplete={handleOnboardingComplete}
-        onSkip={handleSkip}
+        onExit={handleExit}
       />
     </div>
   );

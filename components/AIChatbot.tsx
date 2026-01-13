@@ -4,7 +4,7 @@ import { Send, X, Bot, Sparkles } from 'lucide-react';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
 import { GlassCard, Button, LoadingSpinner } from '../src/components/ui';
 import { ChatMessage, CoachPersona } from '../types';
-import { generateChatbotResponse } from '../services/geminiService';
+import { generateChatbotResponse } from '../src/services/ai/gemini';
 
 interface AIChatbotProps {
   persona: CoachPersona;
@@ -76,7 +76,7 @@ export const AIChatbot: React.FC<AIChatbotProps> = ({ persona, onClose }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: '100%' }}
       transition={{ type: "spring", damping: 25, stiffness: 200 }}
-      className="fixed inset-0 z-[100] flex flex-col bg-[#F8FAFC] overflow-hidden"
+      className="fixed inset-0 z-modal flex flex-col bg-[#F8FAFC] overflow-hidden"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-md border-b border-slate-100 z-10">

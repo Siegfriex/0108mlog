@@ -99,6 +99,8 @@ export interface FirestoreUserProfile {
     reminderFrequency?: 'daily' | 'twice' | 'none'; // 하루 1회, 하루 2회, 없음
     language: 'ko' | 'en';
     autoDayNightMode?: boolean;
+    dayModeStartTime?: string; // HH:mm 형식
+    nightModeStartTime?: string; // HH:mm 형식
     predictiveNudgeEnabled?: boolean;
     snoozeUntil?: FirestoreTimestamp;
   };

@@ -10,9 +10,9 @@ import {
 import { LineChart, Line, ResponsiveContainer, XAxis, Tooltip as RechartsTooltip } from 'recharts';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
 import { Button, PullToRefresh } from '../src/components/ui';
-import { VoicePlayer } from './VoicePlayer';
+import { VoicePlayer } from '../src/components/chat/VoicePlayer';
 import { ContentData, CoachPersona } from '../types';
-import { generateHealingContent } from '../services/geminiService';
+import { generateHealingContent } from '../src/services/ai/gemini';
 
 interface ContentGalleryProps {
   persona: CoachPersona;
@@ -275,7 +275,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
       {/* Expanded Modal */}
       <AnimatePresence>
         {selectedId && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          <div className="fixed inset-0 z-modal flex items-center justify-center">
             {/* Backdrop */}
             <motion.div
                 initial={{ opacity: 0 }}

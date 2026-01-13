@@ -11,6 +11,11 @@ import {
   doc,
   Timestamp,
   serverTimestamp,
+  query,
+  where,
+  orderBy,
+  limit,
+  getDocs,
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { auth } from '../config/firebase';
@@ -22,8 +27,9 @@ import {
   FirestoreMicroActionLog,
   FirestoreUserProfile,
 } from '../types/firestore';
-import { EmotionType, CoachPersona } from '../../../types';
+import { EmotionType, CoachPersona } from '../../types';
 import { getDoc, updateDoc } from 'firebase/firestore';
+import { canSaveConversation } from './consent';
 
 /**
  * 현재 사용자 ID 가져오기
@@ -153,8 +159,15 @@ export async function saveDiaryEntry(
     letterContent?: string;
     conversationId?: string;
   }
-): Promise<string> {
+): Promise<string | null> {
   try {
+    // 동의 확인: 동의 없으면 원문 저장 건너뛰기
+    const hasConsent = await canSaveConversation();
+    if (!hasConsent) {
+      console.log('Conversation storage consent not granted. Skipping diary content storage.');
+      return null;
+    }
+
     const userId = getCurrentUserId();
 
     const entry: Omit<FirestoreDiaryData, 'id'> = {
@@ -301,5 +314,188 @@ export async function getUserSettings(): Promise<FirestoreUserProfile['preferenc
   } catch (error) {
     console.error('Error getting user settings:', error);
     throw error;
+  }
+}
+
+/**
+ * 오늘의 Day Mode 체크인 요약 가져오기
+ * 
+ * @returns {Promise<string | null>} 오늘의 Day Mode 요약 또는 null
+ */
+export async function getTodayDayModeSummary(): Promise<string | null> {
+  try {
+    const userId = getCurrentUserId();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayStart = Timestamp.fromDate(today);
+    const todayEnd = Timestamp.fromDate(new Date(today.getTime() + 24 * 60 * 60 * 1000));
+
+    const emotionsRef = collection(db, FIRESTORE_COLLECTIONS.EMOTIONS);
+    const q = query(
+      emotionsRef,
+      where('userId', '==', userId),
+      where('modeAtTime', '==', 'day'),
+      where('timestamp', '>=', todayStart),
+      where('timestamp', '<', todayEnd),
+      orderBy('timestamp', 'desc'),
+      limit(1)
+    );
+
+    const querySnapshot = await getDocs(q);
+    
+    if (!querySnapshot.empty) {
+      const latestEntry = querySnapshot.docs[0].data() as FirestoreEmotionData;
+      
+      // 대화가 있으면 대화 요약 생성, 없으면 감정/태그 기반 요약
+      if (latestEntry.conversationId) {
+        const conversationsRef = collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS);
+        const conversationDoc = await getDoc(doc(conversationsRef, latestEntry.conversationId));
+        
+        if (conversationDoc.exists()) {
+          const conversation = conversationDoc.data() as FirestoreConversation;
+          // 대화 제목이나 첫 메시지 요약 반환
+          return conversation.title || `오늘 ${latestEntry.emotion} 감정을 느꼈어요.`;
+        }
+      }
+      
+      // 태그 기반 요약 생성
+      if (latestEntry.contextTags && latestEntry.contextTags.length > 0) {
+        return `오늘 ${latestEntry.contextTags.join(', ')} 상황에서 ${latestEntry.emotion} 감정을 느꼈어요.`;
+      }
+      
+      // 기본 요약
+      return `오늘 ${latestEntry.emotion} 감정을 느꼈어요.`;
+    }
+
+    return null;
+  } catch (error) {
+    console.error('Error getting today day mode summary:', error);
+    return null;
+  }
+}
+
+/**
+ * 온보딩 데이터 저장
+ * 
+ * @param onboardingData 온보딩 데이터
+ * @param retries 재시도 횟수 (기본값: 3)
+ * @returns {Promise<void>}
+ */
+export async function saveOnboardingData(
+  onboardingData: {
+    notificationPermission: 'granted' | 'denied' | 'default';
+    locationPermission: 'granted' | 'denied' | 'default';
+    initialEmotionState?: number;
+    neededHelp?: string[];
+    checkinGoal?: string;
+    selectedGoal?: string;
+    notificationTime?: string;
+    notificationFrequency?: 'daily' | 'twice' | 'weekly';
+  },
+  retries: number = 3
+): Promise<void> {
+  let lastError: Error | null = null;
+  
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const userId = getCurrentUserId();
+      const userProfileRef = doc(db, FIRESTORE_COLLECTIONS.USER_PROFILES, userId);
+      
+      // 기존 프로필 확인
+      const userProfileSnap = await getDoc(userProfileRef);
+      
+      const updateData: Partial<FirestoreUserProfile> = {
+        updatedAt: serverTimestamp() as Timestamp,
+        onboardingCompleted: true,
+        preferences: {
+          ...(userProfileSnap.exists() ? userProfileSnap.data().preferences : {}),
+          reminderEnabled: onboardingData.notificationPermission === 'granted',
+          reminderTime: onboardingData.notificationTime || '09:00',
+          reminderFrequency: onboardingData.notificationFrequency === 'twice' 
+            ? 'twice' 
+            : onboardingData.notificationFrequency === 'weekly' 
+            ? 'none' 
+            : 'daily',
+        },
+      };
+
+      if (userProfileSnap.exists()) {
+        await updateDoc(userProfileRef, updateData);
+      } else {
+        // 프로필이 없으면 생성
+        await setDoc(userProfileRef, {
+          userId,
+          persona: {
+            name: 'AI 동반자',
+            mbti: 'INFJ',
+            tone: 'warm',
+            traits: [],
+          },
+          createdAt: serverTimestamp() as Timestamp,
+          onboardingCompleted: true,
+          ...updateData,
+        });
+      }
+
+      // 온보딩 데이터를 로컬 스토리지에도 저장 (백업)
+      localStorage.setItem('onboarding_data', JSON.stringify(onboardingData));
+      
+      return; // 성공 시 함수 종료
+    } catch (error) {
+      lastError = error as Error;
+      console.error(`Error saving onboarding data (attempt ${attempt + 1}/${retries}):`, error);
+      
+      // 마지막 시도가 아니면 지수 백오프 대기
+      if (attempt < retries - 1) {
+        const delay = Math.pow(2, attempt) * 1000; // 1초, 2초, 4초...
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  
+  // 모든 재시도 실패 시 에러 throw
+  throw new Error(`Failed to save onboarding data after ${retries} attempts: ${lastError?.message}`);
+}
+
+/**
+ * 최근 감정 기록 가져오기 (패턴 감지용)
+ * 
+ * @param days 가져올 일수 (기본값: 7일)
+ * @returns {Promise<Array<{emotion: EmotionType; intensity: number; timestamp: Date}>>} 감정 기록 배열
+ */
+export async function getRecentEmotionEntries(
+  days: number = 7
+): Promise<Array<{ emotion: EmotionType; intensity: number; timestamp: Date }>> {
+  try {
+    const userId = getCurrentUserId();
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    const cutoffTimestamp = Timestamp.fromDate(cutoffDate);
+
+    const emotionsRef = collection(db, FIRESTORE_COLLECTIONS.EMOTIONS);
+    const q = query(
+      emotionsRef,
+      where('userId', '==', userId),
+      where('timestamp', '>=', cutoffTimestamp),
+      orderBy('timestamp', 'desc'),
+      limit(30) // 최대 30개
+    );
+
+    const querySnapshot = await getDocs(q);
+    const entries: Array<{ emotion: EmotionType; intensity: number; timestamp: Date }> = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data() as FirestoreEmotionData;
+      entries.push({
+        emotion: data.emotion,
+        intensity: data.intensity,
+        timestamp: (data.timestamp as Timestamp).toDate(),
+      });
+    });
+
+    return entries;
+  } catch (error) {
+    console.error('Error getting recent emotion entries:', error);
+    return [];
   }
 }

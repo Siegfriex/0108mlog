@@ -6,89 +6,281 @@ export default {
     "./components/**/*.{js,ts,jsx,tsx}",
     "./App.tsx",
   ],
+  darkMode: ['class', '[data-theme="night"]'],
   theme: {
     extend: {
+      /* ========================================
+       * 색상 시스템
+       * ======================================== */
       colors: {
         brand: {
-          primary: '#2A8E9E',   // Muted Teal - 현재 프론트엔드 디자인 시스템
-          secondary: '#99F6E4', // Teal 200
-          accent: '#FDA4AF',    // Soft Pink
-          dark: '#115E59',      // Teal 800
-          light: '#F0FDFA',     // Teal 50
+          50: 'rgb(var(--color-brand-50-rgb) / <alpha-value>)',
+          100: 'rgb(var(--color-brand-100-rgb) / <alpha-value>)',
+          200: 'rgb(var(--color-brand-200-rgb) / <alpha-value>)',
+          300: 'rgb(var(--color-brand-300-rgb) / <alpha-value>)',
+          400: 'rgb(var(--color-brand-400-rgb) / <alpha-value>)',
+          500: 'rgb(var(--color-brand-500-rgb) / <alpha-value>)',
+          600: 'rgb(var(--color-brand-600-rgb) / <alpha-value>)',
+          700: 'rgb(var(--color-brand-700-rgb) / <alpha-value>)',
+          800: 'rgb(var(--color-brand-800-rgb) / <alpha-value>)',
+          900: 'rgb(var(--color-brand-900-rgb) / <alpha-value>)',
+          primary: 'rgb(var(--color-brand-primary-rgb) / <alpha-value>)',
+          secondary: 'rgb(var(--color-brand-secondary-rgb) / <alpha-value>)',
+          accent: 'rgb(var(--color-brand-accent-rgb) / <alpha-value>)',
+          dark: 'rgb(var(--color-brand-dark-rgb) / <alpha-value>)',
+          light: 'rgb(var(--color-brand-light-rgb) / <alpha-value>)',
         },
         emotion: {
-          joy: { 100: '#FFF9C4', 400: '#FFD700', 600: '#FFA000' },
-          peace: { 100: '#E1F5FE', 400: '#4FC3F7', 600: '#039BE5' },
-          anxiety: { 100: '#FBE9E7', 400: '#FF8A65', 600: '#F4511E' },
-          sadness: { 100: '#F3E5F5', 400: '#BA68C8', 600: '#8E24AA' },
-          anger: { 100: '#FFEBEE', 400: '#EF5350', 600: '#C62828' },
+          joy: {
+            100: 'rgb(var(--color-emotion-joy-100-rgb) / <alpha-value>)',
+            400: 'rgb(var(--color-emotion-joy-400-rgb) / <alpha-value>)',
+            600: 'rgb(var(--color-emotion-joy-600-rgb) / <alpha-value>)',
+          },
+          peace: {
+            100: 'rgb(var(--color-emotion-peace-100-rgb) / <alpha-value>)',
+            400: 'rgb(var(--color-emotion-peace-400-rgb) / <alpha-value>)',
+            500: 'rgb(var(--color-emotion-peace-500-rgb) / <alpha-value>)',
+            600: 'rgb(var(--color-emotion-peace-600-rgb) / <alpha-value>)',
+          },
+          anxiety: {
+            100: 'rgb(var(--color-emotion-anxiety-100-rgb) / <alpha-value>)',
+            400: 'rgb(var(--color-emotion-anxiety-400-rgb) / <alpha-value>)',
+            600: 'rgb(var(--color-emotion-anxiety-600-rgb) / <alpha-value>)',
+          },
+          sadness: {
+            100: 'rgb(var(--color-emotion-sadness-100-rgb) / <alpha-value>)',
+            400: 'rgb(var(--color-emotion-sadness-400-rgb) / <alpha-value>)',
+            600: 'rgb(var(--color-emotion-sadness-600-rgb) / <alpha-value>)',
+          },
+          anger: {
+            100: 'rgb(var(--color-emotion-anger-100-rgb) / <alpha-value>)',
+            400: 'rgb(var(--color-emotion-anger-400-rgb) / <alpha-value>)',
+            600: 'rgb(var(--color-emotion-anger-600-rgb) / <alpha-value>)',
+          },
         },
         status: {
-          success: '#4CAF50',
-          warning: '#FF9800',
-          error: '#F44336',
-          info: '#2196F3',
+          success: 'rgb(var(--color-status-success-rgb) / <alpha-value>)',
+          warning: 'rgb(var(--color-status-warning-rgb) / <alpha-value>)',
+          error: 'rgb(var(--color-status-error-rgb) / <alpha-value>)',
+          info: 'rgb(var(--color-status-info-rgb) / <alpha-value>)',
         },
         glass: {
-          surface: 'rgba(255, 255, 255, 0.75)',
-          border: 'rgba(255, 255, 255, 0.6)',
+          surface: 'var(--color-glass-surface)',
+          border: 'var(--color-glass-border)',
         },
       },
+
+      /* ========================================
+       * 타이포그래피
+       * ======================================== */
       fontFamily: {
-        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'sans-serif'],
-        mono: ['Consolas', 'Monaco', 'monospace'],
+        sans: ['var(--font-sans)'],
+        mono: ['var(--font-mono)'],
       },
       fontSize: {
-        xs: ['12px', { lineHeight: '18px' }],      // 1.5배
-        sm: ['14px', { lineHeight: '21px' }],       // 1.5배
-        base: ['16px', { lineHeight: '24px' }],    // 1.5배
-        lg: ['20px', { lineHeight: '24px' }],       // 1.2배
-        xl: ['24px', { lineHeight: '28.8px' }],     // 1.2배
-        '2xl': ['32px', { lineHeight: '38.4px' }],  // 1.2배
+        xs: ['var(--text-xs)', { lineHeight: 'var(--leading-normal)' }],
+        sm: ['var(--text-sm)', { lineHeight: 'var(--leading-normal)' }],
+        base: ['var(--text-base)', { lineHeight: 'var(--leading-normal)' }],
+        lg: ['var(--text-lg)', { lineHeight: 'var(--leading-snug)' }],
+        xl: ['var(--text-xl)', { lineHeight: 'var(--leading-snug)' }],
+        '2xl': ['var(--text-2xl)', { lineHeight: 'var(--leading-tight)' }],
+        '3xl': ['var(--text-3xl)', { lineHeight: 'var(--leading-tight)' }],
+        '4xl': ['var(--text-4xl)', { lineHeight: 'var(--leading-none)' }],
       },
+
+      /* ========================================
+       * 간격 시스템
+       * ======================================== */
       spacing: {
-        xs: '4px',
-        sm: '8px',
-        md: '16px',
-        lg: '24px',
-        xl: '32px',
-        xxl: '48px',
-        'touch-target': '44px', // 최소 터치 타겟 크기
-        'safe-top': 'env(safe-area-inset-top)',
-        'safe-bottom': 'env(safe-area-inset-bottom)',
-        'safe-left': 'env(safe-area-inset-left)',
-        'safe-right': 'env(safe-area-inset-right)',
+        'px': 'var(--spacing-px)',
+        '0.5': 'var(--spacing-0-5)',
+        '1': 'var(--spacing-1)',
+        '2': 'var(--spacing-2)',
+        '3': 'var(--spacing-3)',
+        '4': 'var(--spacing-4)',
+        '5': 'var(--spacing-5)',
+        '6': 'var(--spacing-6)',
+        '8': 'var(--spacing-8)',
+        '10': 'var(--spacing-10)',
+        '12': 'var(--spacing-12)',
+        '16': 'var(--spacing-16)',
+        '20': 'var(--spacing-20)',
+        '24': 'var(--spacing-24)',
+        // 시맨틱 별칭
+        'xs': 'var(--spacing-xs)',
+        'sm': 'var(--spacing-sm)',
+        'md': 'var(--spacing-md)',
+        'lg': 'var(--spacing-lg)',
+        'xl': 'var(--spacing-xl)',
+        'xxl': 'var(--spacing-xxl)',
+        // 레이아웃
+        'header': 'var(--header-height)',
+        'dock': 'var(--dock-height)',
+        'tab-bar': 'var(--tab-bar-height)',
+        'touch-target': '2.75rem',
+        // Safe Area
+        'safe-top': 'var(--safe-top)',
+        'safe-bottom': 'var(--safe-bottom)',
+        'safe-left': 'var(--safe-left)',
+        'safe-right': 'var(--safe-right)',
       },
-      screens: {
-        'xs': '375px',
-        'sm': '640px',
-        'md': '768px',
-        'lg': '1024px',
-        'xl': '1280px',
-        '2xl': '1536px',
+
+      /* ========================================
+       * Z-Index 레이어 시스템
+       * ======================================== */
+      zIndex: {
+        // 기본 레이어
+        'below': 'var(--z-below)',
+        'base': 'var(--z-base)',
+        'above': 'var(--z-above)',
+        
+        // 배경 레이어
+        'bg-base': 'var(--z-bg-base)',
+        'bg-pattern': 'var(--z-bg-pattern)',
+        'bg-gradient': 'var(--z-bg-gradient)',
+        'bg-particles': 'var(--z-bg-particles)',
+        
+        // 컨텐츠 레이어
+        'content-base': 'var(--z-content-base)',
+        
+        // 탭별 레이어
+        'tab-chat': 'var(--z-tab-chat)',
+        'tab-chat-content': 'var(--z-tab-chat-content)',
+        'tab-chat-input': 'var(--z-tab-chat-input)',
+        
+        'tab-journal': 'var(--z-tab-journal)',
+        'tab-journal-content': 'var(--z-tab-journal-content)',
+        'tab-journal-fab': 'var(--z-tab-journal-fab)',
+        
+        'tab-reports': 'var(--z-tab-reports)',
+        'tab-reports-content': 'var(--z-tab-reports-content)',
+        'tab-reports-chart': 'var(--z-tab-reports-chart)',
+        
+        'tab-content': 'var(--z-tab-content)',
+        'tab-content-grid': 'var(--z-tab-content-grid)',
+        'tab-content-detail': 'var(--z-tab-content-detail)',
+        
+        'tab-profile': 'var(--z-tab-profile)',
+        'tab-profile-content': 'var(--z-tab-profile-content)',
+        'tab-profile-settings': 'var(--z-tab-profile-settings)',
+        
+        // 네비게이션 레이어
+        'nav': 'var(--z-nav)',
+        'header': 'var(--z-header)',
+        'dock': 'var(--z-dock)',
+        'fab': 'var(--z-fab)',
+        'sticky': 'var(--z-sticky)',
+        
+        // 오버레이 레이어
+        'overlay-base': 'var(--z-overlay-base)',
+        'safety': 'var(--z-safety)',
+        'loading': 'var(--z-loading)',
+        'toast': 'var(--z-toast)',
+        
+        // 모달 레이어
+        'dropdown': 'var(--z-dropdown)',
+        'popover': 'var(--z-popover)',
+        'tooltip': 'var(--z-tooltip)',
+        'modal-backdrop': 'var(--z-modal-backdrop)',
+        'modal': 'var(--z-modal)',
+        'modal-content': 'var(--z-modal-content)',
+        'sheet': 'var(--z-sheet)',
+        'sheet-content': 'var(--z-sheet-content)',
+        
+        // 크리티컬 레이어
+        'consent-backdrop': 'var(--z-consent-backdrop)',
+        'consent-modal': 'var(--z-consent-modal)',
+        'emergency': 'var(--z-emergency)',
+        'max': 'var(--z-max)',
       },
-      gridTemplateColumns: {
-        'auto-fit': 'repeat(auto-fit, minmax(250px, 1fr))',
-        'auto-fill': 'repeat(auto-fill, minmax(200px, 1fr))',
-      },
-      boxShadow: {
-        'glass': '0 20px 40px -10px rgba(42, 142, 158, 0.15)',
-        'glass-hover': '0 25px 50px -12px rgba(42, 142, 158, 0.25)',
-        'glow': '0 0 20px rgba(42, 142, 158, 0.4)',
-        'floating': '0 10px 30px -5px rgba(0, 0, 0, 0.1)',
-        'brand': '0 8px 32px rgba(42, 142, 158, 0.05)',
-      },
+
+      /* ========================================
+       * Border Radius
+       * ======================================== */
       borderRadius: {
-        sm: '16px',
-        md: '24px',
-        lg: '32px',
-        xl: '36px',
+        'none': 'var(--radius-none)',
+        'sm': 'var(--radius-sm)',
+        'md': 'var(--radius-md)',
+        'lg': 'var(--radius-lg)',
+        'xl': 'var(--radius-xl)',
+        '2xl': 'var(--radius-2xl)',
+        'full': 'var(--radius-full)',
+        // 컴포넌트별
+        'button': 'var(--radius-button)',
+        'card': 'var(--radius-card)',
+        'modal': 'var(--radius-modal)',
+        'input': 'var(--radius-input)',
+        'chip': 'var(--radius-chip)',
       },
+
+      /* ========================================
+       * 그림자
+       * ======================================== */
+      boxShadow: {
+        'xs': 'var(--shadow-xs)',
+        'sm': 'var(--shadow-sm)',
+        'md': 'var(--shadow-md)',
+        'lg': 'var(--shadow-lg)',
+        'xl': 'var(--shadow-xl)',
+        '2xl': 'var(--shadow-2xl)',
+        'brand': 'var(--shadow-brand)',
+        'brand-md': 'var(--shadow-brand-md)',
+        'brand-lg': 'var(--shadow-brand-lg)',
+        'glass': 'var(--shadow-glass)',
+        'glass-hover': 'var(--shadow-glass-hover)',
+        'glow': 'var(--shadow-glow)',
+        'floating': 'var(--shadow-floating)',
+      },
+
+      /* ========================================
+       * 트랜지션
+       * ======================================== */
+      transitionDuration: {
+        'instant': 'var(--duration-instant)',
+        'fast': 'var(--duration-fast)',
+        'normal': 'var(--duration-normal)',
+        'slow': 'var(--duration-slow)',
+        'slower': 'var(--duration-slower)',
+        'slowest': 'var(--duration-slowest)',
+      },
+      transitionTimingFunction: {
+        'smooth': 'var(--ease-smooth)',
+        'bounce': 'var(--ease-bounce)',
+        'spring': 'var(--ease-spring)',
+      },
+
+      /* ========================================
+       * 높이 (Viewport 기반)
+       * ======================================== */
+      height: {
+        'screen-safe': 'var(--vh-safe)',
+        'screen-dynamic': 'var(--vh-dynamic)',
+        'content': 'var(--vh-content)',
+        'modal': 'var(--vh-modal)',
+        'sheet': 'var(--vh-sheet)',
+      },
+      minHeight: {
+        'screen-safe': 'var(--vh-safe)',
+        'content': 'var(--vh-content)',
+      },
+      maxHeight: {
+        'modal': 'var(--vh-modal)',
+        'sheet': 'var(--vh-sheet)',
+      },
+
+      /* ========================================
+       * 애니메이션
+       * ======================================== */
       animation: {
         'float': 'float 6s ease-in-out infinite',
         'shimmer': 'shimmer 2s linear infinite',
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'blob': 'blob 7s infinite',
+        'fade-in': 'fadeIn var(--duration-normal) var(--ease-out)',
+        'fade-out': 'fadeOut var(--duration-normal) var(--ease-out)',
+        'slide-up': 'slideUp var(--duration-normal) var(--ease-smooth)',
+        'slide-down': 'slideDown var(--duration-normal) var(--ease-smooth)',
+        'scale-in': 'scaleIn var(--duration-fast) var(--ease-spring)',
       },
       keyframes: {
         float: {
@@ -105,6 +297,46 @@ export default {
           '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
           '100%': { transform: 'translate(0px, 0px) scale(1)' },
         },
+        fadeIn: {
+          'from': { opacity: '0' },
+          'to': { opacity: '1' },
+        },
+        fadeOut: {
+          'from': { opacity: '1' },
+          'to': { opacity: '0' },
+        },
+        slideUp: {
+          'from': { transform: 'translateY(100%)', opacity: '0' },
+          'to': { transform: 'translateY(0)', opacity: '1' },
+        },
+        slideDown: {
+          'from': { transform: 'translateY(-100%)', opacity: '0' },
+          'to': { transform: 'translateY(0)', opacity: '1' },
+        },
+        scaleIn: {
+          'from': { transform: 'scale(0.95)', opacity: '0' },
+          'to': { transform: 'scale(1)', opacity: '1' },
+        },
+      },
+
+      /* ========================================
+       * 브레이크포인트
+       * ======================================== */
+      screens: {
+        'xs': '375px',
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+      },
+
+      /* ========================================
+       * 그리드
+       * ======================================== */
+      gridTemplateColumns: {
+        'auto-fit': 'repeat(auto-fit, minmax(250px, 1fr))',
+        'auto-fill': 'repeat(auto-fill, minmax(200px, 1fr))',
       },
     },
   },

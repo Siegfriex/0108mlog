@@ -152,7 +152,7 @@ export const ParticleExplosion: React.FC<ParticleExplosionProps> = ({
    */
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-50">
+    <div className="fixed inset-0 pointer-events-none z-popover">
       <AnimatePresence>
         {particles.map((particle) => (
           <motion.div

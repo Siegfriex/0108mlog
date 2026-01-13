@@ -1,14 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { DayMode } from './components/DayMode';
-import { NightMode } from './components/NightMode';
+import { DayMode } from './src/components/chat/DayMode';
+import { NightMode } from './src/components/chat/NightMode';
 import { ReportView } from './components/ReportView';
 import { JournalView } from './components/JournalView'; 
 import { ProfileView } from './components/ProfileView';
 import { ContentGallery } from './components/ContentGallery';
 import { AIChatbot } from './components/AIChatbot';
-import { SafetyLayer } from './components/SafetyLayer';
+import { SafetyLayer } from './src/components/safety/SafetyLayer';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
 import { TabBar, NoiseOverlay, AmbientBackground, CelestialBackground, ErrorBoundary } from './src/components/ui';
 // 온보딩 플로우 import: FEAT-011
