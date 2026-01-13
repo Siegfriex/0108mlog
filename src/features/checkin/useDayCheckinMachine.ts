@@ -143,8 +143,9 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
     try {
       const response = await generateDayModeResponse(message, history, persona);
       send({ type: 'AI_RESPONSE_SUCCESS', response });
-    } catch (error: any) {
-      send({ type: 'AI_RESPONSE_ERROR', error: error.message || '연결에 문제가 발생했습니다.' });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : '연결에 문제가 발생했습니다.';
+      send({ type: 'AI_RESPONSE_ERROR', error: errorMessage });
     }
   }, [send, state, persona, onCrisisDetected]);
 
@@ -235,15 +236,16 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
         onComplete?.(entry);
         
         return;
-      } catch (error: any) {
+      } catch (error: unknown) {
         retryCount++;
+        const errorMessage = error instanceof Error ? error.message : '저장 실패';
 
         if (retryCount <= maxRetries) {
           const delay = Math.pow(2, retryCount - 1) * 1000;
           await new Promise(resolve => setTimeout(resolve, delay));
           send({ type: 'SAVE_RETRY', retryCount });
         } else {
-          send({ type: 'SAVE_ERROR', error: error.message || '저장 실패' });
+          send({ type: 'SAVE_ERROR', error: errorMessage });
         }
       }
     }

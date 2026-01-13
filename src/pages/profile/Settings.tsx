@@ -12,6 +12,7 @@ import { GlassCard, Button, LoadingSpinner } from '../../components/ui';
 import { Bell, Globe, Clock, Zap, Pause } from 'lucide-react';
 import { saveUserSettings, getUserSettings } from '../../services/firestore';
 import { FirestoreUserProfile } from '../../types/firestore';
+import { Timestamp } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 
 /**
@@ -46,7 +47,9 @@ export const Settings: React.FC = () => {
           if (settings.snoozeUntil) {
             const snoozeDate = settings.snoozeUntil instanceof Date 
               ? settings.snoozeUntil 
-              : (settings.snoozeUntil as any).toDate?.() || new Date();
+              : settings.snoozeUntil instanceof Timestamp
+              ? settings.snoozeUntil.toDate()
+              : new Date(settings.snoozeUntil);
             setSnoozeUntil(snoozeDate);
           }
         }

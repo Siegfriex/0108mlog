@@ -20,7 +20,7 @@ export type { CelestialBackgroundProps } from './CelestialBackground';
 export { MagneticButton } from './MagneticButton';
 export type { MagneticButtonProps } from './MagneticButton';
 export { ParticleExplosion } from './ParticleExplosion';
-export type { ParticleExplosionProps, ParticleExplosionRef } from './ParticleExplosion';
+export type { ParticleExplosionProps } from './ParticleExplosion';
 export { ScrambleText } from './ScrambleText';
 export type { ScrambleTextProps } from './ScrambleText';
 export { MobileSheet } from './MobileSheet';

@@ -30,6 +30,7 @@ import {
 import { EmotionType, CoachPersona } from '../../types';
 import { getDoc, updateDoc } from 'firebase/firestore';
 import { canSaveConversation } from './consent';
+import { logError } from '../utils/error';
 
 /**
  * 현재 사용자 ID 가져오기
@@ -92,7 +93,7 @@ export async function saveConversation(
 
     return docRef.id;
   } catch (error) {
-    console.error('Error saving conversation:', error);
+    logError('saveConversation', error);
     throw error;
   }
 }
@@ -139,7 +140,7 @@ export async function saveEmotionEntry(
 
     return docRef.id;
   } catch (error) {
-    console.error('Error saving emotion entry:', error);
+    logError('saveEmotionEntry', error);
     throw error;
   }
 }
@@ -164,7 +165,7 @@ export async function saveDiaryEntry(
     // 동의 확인: 동의 없으면 원문 저장 건너뛰기
     const hasConsent = await canSaveConversation();
     if (!hasConsent) {
-      console.log('Conversation storage consent not granted. Skipping diary content storage.');
+      // 동의 없음: 일기 원문 저장 건너뛰기 (의도된 동작)
       return null;
     }
 
@@ -189,7 +190,7 @@ export async function saveDiaryEntry(
 
     return docRef.id;
   } catch (error) {
-    console.error('Error saving diary entry:', error);
+    logError('saveDiaryEntry', error);
     throw error;
   }
 }
@@ -231,7 +232,7 @@ export async function saveMicroActionLog(
 
     return docRef.id;
   } catch (error) {
-    console.error('Error saving micro action log:', error);
+    logError('saveMicroActionLog', error);
     throw error;
   }
 }
@@ -290,7 +291,7 @@ export async function saveUserSettings(settings: {
       });
     }
   } catch (error) {
-    console.error('Error saving user settings:', error);
+    logError('saveUserSettings', error);
     throw error;
   }
 }
@@ -312,7 +313,7 @@ export async function getUserSettings(): Promise<FirestoreUserProfile['preferenc
 
     return null;
   } catch (error) {
-    console.error('Error getting user settings:', error);
+    logError('getUserSettings', error);
     throw error;
   }
 }
@@ -369,7 +370,7 @@ export async function getTodayDayModeSummary(): Promise<string | null> {
 
     return null;
   } catch (error) {
-    console.error('Error getting today day mode summary:', error);
+    logError('getTodayDayModeSummary', error);
     return null;
   }
 }
@@ -443,7 +444,7 @@ export async function saveOnboardingData(
       return; // 성공 시 함수 종료
     } catch (error) {
       lastError = error as Error;
-      console.error(`Error saving onboarding data (attempt ${attempt + 1}/${retries}):`, error);
+      logError(`saveOnboardingData (attempt ${attempt + 1}/${retries})`, error);
       
       // 마지막 시도가 아니면 지수 백오프 대기
       if (attempt < retries - 1) {
@@ -495,7 +496,7 @@ export async function getRecentEmotionEntries(
 
     return entries;
   } catch (error) {
-    console.error('Error getting recent emotion entries:', error);
+    logError('getRecentEmotionEntries', error);
     return [];
   }
 }

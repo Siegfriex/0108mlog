@@ -47,7 +47,11 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({
   // CSS 변수 기반 감정 색상 (메모이제이션)
   const emotionColor = useMemo(() => {
     const emotionStr = activeEmotion ? emotionToString(activeEmotion) : null;
-    return getAmbientEmotionColor(emotionStr, mode);
+    // emotionStr을 EmotionType으로 변환
+    const emotionType = emotionStr as 'joy' | 'peace' | 'anxiety' | 'sadness' | 'anger' | null;
+    // mode를 ModeType으로 명시적 변환
+    const modeType: ModeType = mode as ModeType;
+    return getAmbientEmotionColor(emotionType, modeType);
   }, [activeEmotion, mode]);
 
   return (

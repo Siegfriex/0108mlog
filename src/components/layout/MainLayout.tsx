@@ -12,7 +12,7 @@ import { ShieldAlert, Moon, Sun, Bot } from 'lucide-react';
 import { TabBar, NoiseOverlay } from '../ui';
 import { AIChatbot } from '../../../components/AIChatbot';
 import { CoachPersona } from '../../../types';
-import { DEFAULT_PERSONA } from '../../../constants';
+import { DEFAULT_PERSONA, TIME_CONSTANTS } from '../../../constants';
 import { INITIAL_TIMELINE } from '../../mock/data';
 import { resolveMode, setModeOverride, getModeOverride, Mode } from '../../services/modeResolver';
 
@@ -54,7 +54,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
         const resolvedMode = await resolveMode();
         setMode(resolvedMode);
       }
-    }, 60000); // 1분
+    }, TIME_CONSTANTS.MODE_CHECK_INTERVAL);
 
     return () => clearInterval(interval);
   }, []);

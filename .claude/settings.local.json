@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(firebase:*)",
+      "Bash(gcloud:*)",
+      "Bash(start:*)"
+    ]
+  }
+}

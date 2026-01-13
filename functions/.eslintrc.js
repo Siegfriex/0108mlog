@@ -29,7 +29,7 @@ module.exports = {
     "quotes": ["error", "double"],
     "import/no-unresolved": 0,
     "indent": ["error", 2],
-    "linebreak-style": ["error", "unix"],
+    "linebreak-style": "off",
     "max-len": ["error", {"code": 100, "ignoreUrls": true, "ignoreStrings": true}],
     "valid-jsdoc": "off",
     "@typescript-eslint/no-explicit-any": "warn",

@@ -6,6 +6,7 @@
 
 import { signInAnonymously, onAuthStateChanged, User } from 'firebase/auth';
 import { auth } from '../config/firebase';
+import { logError } from '../utils/error';
 
 /**
  * Anonymous Auth 자동 부트스트랩
@@ -26,15 +27,20 @@ export async function ensureAnonymousAuth(): Promise<User> {
     // 익명 인증 수행
     const userCredential = await signInAnonymously(auth);
     return userCredential.user;
-  } catch (error: any) {
-    console.error('Anonymous auth error:', error);
+  } catch (error: unknown) {
+    logError('ensureAnonymousAuth', error);
     
     // 네트워크 오류 등 재시도 가능한 오류 처리
-    if (error.code === 'auth/network-request-failed' || 
-        error.code === 'auth/internal-error' ||
-        error.message?.includes('Failed to fetch') ||
-        error.message?.includes('ECONNREFUSED') ||
-        error.message?.includes('ERR_CONNECTION_REFUSED')) {
+    const errorCode = (error && typeof error === 'object' && 'code' in error) 
+      ? String(error.code) 
+      : '';
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    if (errorCode === 'auth/network-request-failed' || 
+        errorCode === 'auth/internal-error' ||
+        errorMessage.includes('Failed to fetch') ||
+        errorMessage.includes('ECONNREFUSED') ||
+        errorMessage.includes('ERR_CONNECTION_REFUSED')) {
       // 재시도 로직 (최대 3회)
       for (let i = 0; i < 3; i++) {
         await new Promise(resolve => setTimeout(resolve, 1000 * (i + 1))); // 지수 백오프

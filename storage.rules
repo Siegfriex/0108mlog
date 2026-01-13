@@ -2,9 +2,15 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // 개발 단계: 전체 개방
-    match /{allPaths=**} {
-      allow read, write: if true;
+    // 사용자별 파일 저장
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // 공개 읽기 전용 파일 (예: 프로필 이미지 등)
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
     }
   }
 }

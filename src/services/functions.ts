@@ -6,6 +6,7 @@
 
 import { getFunctions, httpsCallable, Functions } from 'firebase/functions';
 import app from '../config/firebase';
+import { logError } from '../utils/error';
 
 /**
  * Firebase Functions 인스턴스
@@ -35,18 +36,22 @@ export async function callFunction<TRequest, TResponse>(
     const callable = httpsCallable<TRequest, TResponse>(functionsInstance, functionName);
     const result = await callable(data);
     return result.data as TResponse;
-  } catch (error: any) {
-    console.error(`Error calling function ${functionName}:`, error);
+  } catch (error: unknown) {
+    logError(`callFunction:${functionName}`, error);
     
     // Firebase Functions 에러 처리
-    if (error.code === 'functions/permission-denied') {
+    const errorCode = (error && typeof error === 'object' && 'code' in error) 
+      ? String(error.code) 
+      : '';
+    
+    if (errorCode === 'functions/permission-denied') {
       throw new Error('권한이 없습니다.');
-    } else if (error.code === 'functions/invalid-argument') {
+    } else if (errorCode === 'functions/invalid-argument') {
       throw new Error('잘못된 요청입니다.');
-    } else if (error.code === 'functions/deadline-exceeded') {
+    } else if (errorCode === 'functions/deadline-exceeded') {
       throw new Error('요청 시간이 초과되었습니다.');
     }
     
-    throw error;
+    throw error instanceof Error ? error : new Error(String(error));
   }
 }

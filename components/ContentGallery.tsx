@@ -32,7 +32,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
   const loaderRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const fetchContent = async (append: boolean = false) => {
+  const fetchContent = useCallback(async (append: boolean = false) => {
     if (isGenerating) return;
     setIsGenerating(true);
     
@@ -49,13 +49,15 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
     } finally {
       setIsGenerating(false);
     }
-  };
+  }, [isGenerating, selectedMood, persona]);
 
-  const handleManualGenerate = () => fetchContent(false);
+  const handleManualGenerate = useCallback(() => {
+    fetchContent(false);
+  }, [fetchContent]);
 
   const handleLoadMore = useCallback(() => {
-      fetchContent(true);
-  }, [isGenerating, selectedMood, persona]);
+    fetchContent(true);
+  }, [fetchContent]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(

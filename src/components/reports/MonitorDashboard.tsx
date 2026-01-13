@@ -17,6 +17,7 @@ import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianG
 import { GlassCard, LoadingSpinner } from '../ui';
 import { TimelineEntry, EmotionType } from '../../../types';
 import { getChartColors } from '../../utils/style';
+import { TIME_CONSTANTS, THRESHOLDS } from '../../../constants';
 
 /**
  * MonitorDashboard Props 인터페이스
@@ -51,8 +52,8 @@ export const MonitorDashboard: React.FC<MonitorDashboardProps> = ({ timelineData
   const chartData = useMemo(() => {
     const last7Days = timelineData
       .filter(entry => {
-        const daysDiff = (new Date().getTime() - new Date(entry.date).getTime()) / (1000 * 60 * 60 * 24);
-        return daysDiff <= 7;
+        const daysDiff = (new Date().getTime() - new Date(entry.date).getTime()) / TIME_CONSTANTS.MILLISECONDS_PER_DAY;
+        return daysDiff <= TIME_CONSTANTS.DAYS_IN_WEEK;
       })
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
@@ -65,14 +66,21 @@ export const MonitorDashboard: React.FC<MonitorDashboardProps> = ({ timelineData
 
   // 패턴 분석
   const patterns = useMemo(() => {
-    if (timelineData.length < 3) return [];
+    if (timelineData.length < THRESHOLDS.MIN_DATA_POINTS_FOR_PATTERN) return [];
 
-    const anxietyCount = timelineData.filter(e => e.emotion === EmotionType.ANXIETY).length;
-    const highIntensityCount = timelineData.filter(e => (e.intensity || 0) >= 8).length;
+    // 단일 reduce로 최적화
+    const { anxietyCount, highIntensityCount } = timelineData.reduce(
+      (acc, e) => {
+        if (e.emotion === EmotionType.ANXIETY) acc.anxietyCount++;
+        if ((e.intensity || 0) >= THRESHOLDS.HIGH_INTENSITY_VALUE) acc.highIntensityCount++;
+        return acc;
+      },
+      { anxietyCount: 0, highIntensityCount: 0 }
+    );
 
     const alerts: Array<{ type: 'warning' | 'info'; message: string; icon: React.ReactNode }> = [];
 
-    if (anxietyCount > timelineData.length * 0.4) {
+    if (anxietyCount > timelineData.length * THRESHOLDS.ANXIETY_RATIO) {
       alerts.push({
         type: 'warning',
         message: '최근 불안한 감정이 자주 기록되고 있어요',
@@ -80,7 +88,7 @@ export const MonitorDashboard: React.FC<MonitorDashboardProps> = ({ timelineData
       });
     }
 
-    if (highIntensityCount > timelineData.length * 0.3) {
+    if (highIntensityCount > timelineData.length * THRESHOLDS.HIGH_INTENSITY_RATIO) {
       alerts.push({
         type: 'info',
         message: '강도가 높은 감정이 자주 나타나고 있어요',
@@ -93,7 +101,8 @@ export const MonitorDashboard: React.FC<MonitorDashboardProps> = ({ timelineData
 
   useEffect(() => {
     // 시뮬레이션: 데이터 로딩
-    setTimeout(() => setIsLoading(false), 500);
+    const timer = setTimeout(() => setIsLoading(false), TIME_CONSTANTS.LOADING_DELAY);
+    return () => clearTimeout(timer);
   }, []);
 
   if (isLoading) {

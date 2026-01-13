@@ -4,12 +4,14 @@
  * 네트워크 오류 감지, 타임아웃, 재시도, 백오프, 폴백 메커니즘 통합 관리
  */
 
+import { TIME_CONSTANTS } from '../../constants';
+
 export interface ApiPolicyOptions {
-  timeout?: number; // 타임아웃 시간 (ms), 기본값: 8000
-  maxRetries?: number; // 최대 재시도 횟수, 기본값: 3
+  timeout?: number; // 타임아웃 시간 (ms), 기본값: TIME_CONSTANTS.API_TIMEOUT
+  maxRetries?: number; // 최대 재시도 횟수, 기본값: TIME_CONSTANTS.MAX_RETRIES
   retryDelay?: number; // 초기 재시도 지연 시간 (ms), 기본값: 1000
   backoffMultiplier?: number; // 백오프 배수, 기본값: 2
-  fallback?: () => any; // 폴백 함수
+  fallback?: () => unknown; // 폴백 함수
 }
 
 export interface ApiResponse<T> {
@@ -23,11 +25,13 @@ export interface ApiResponse<T> {
 /**
  * 네트워크 오류 패턴 감지
  */
-function isNetworkError(error: any): boolean {
+function isNetworkError(error: unknown): boolean {
   if (!error) return false;
 
-  const errorMessage = error.message || error.toString() || '';
-  const errorCode = error.code || '';
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const errorCode = (error && typeof error === 'object' && 'code' in error) 
+    ? String(error.code) 
+    : '';
 
   // 네트워크 오류 패턴
   const networkErrorPatterns = [
@@ -88,14 +92,14 @@ export async function callWithPolicy<T>(
   options: ApiPolicyOptions = {}
 ): Promise<ApiResponse<T>> {
   const {
-    timeout = 8000,
-    maxRetries = 3,
+    timeout = TIME_CONSTANTS.API_TIMEOUT,
+    maxRetries = TIME_CONSTANTS.MAX_RETRIES,
     retryDelay = 1000,
     backoffMultiplier = 2,
     fallback,
   } = options;
 
-  let lastError: any = null;
+  let lastError: unknown = null;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
@@ -113,32 +117,34 @@ export async function callWithPolicy<T>(
         success: true,
         data: result,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       lastError = error;
 
       // 네트워크 오류가 아니면 즉시 실패
       if (!isNetworkError(error)) {
+        const errorMessage = error instanceof Error ? error.message : 'API call failed';
+        
         // 폴백이 있으면 사용
         if (fallback) {
           try {
             const fallbackResult = await Promise.resolve(fallback());
             return {
               success: false,
-              error: error.message || 'API call failed',
+              error: errorMessage,
               fallback: fallbackResult,
               _isMockData: true,
             };
           } catch (fallbackError) {
             return {
               success: false,
-              error: error.message || 'API call failed',
+              error: errorMessage,
             };
           }
         }
 
         return {
           success: false,
-          error: error.message || 'API call failed',
+          error: errorMessage,
         };
       }
 
@@ -154,25 +160,29 @@ export async function callWithPolicy<T>(
   }
 
   // 모든 재시도 실패 시 폴백 사용
+  const finalErrorMessage = lastError instanceof Error 
+    ? lastError.message 
+    : 'All retries failed';
+    
   if (fallback) {
     try {
       const fallbackResult = await Promise.resolve(fallback());
       return {
         success: false,
-        error: lastError?.message || 'All retries failed',
+        error: finalErrorMessage,
         fallback: fallbackResult,
         _isMockData: true,
       };
     } catch (fallbackError) {
       return {
         success: false,
-        error: lastError?.message || 'All retries failed',
+        error: finalErrorMessage,
       };
     }
   }
 
   return {
     success: false,
-    error: lastError?.message || 'All retries failed',
+    error: finalErrorMessage,
   };
 }

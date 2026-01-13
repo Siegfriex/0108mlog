@@ -172,9 +172,9 @@ export function useNightCheckinMachine(options: UseNightCheckinMachineOptions) {
 
       // 저장 처리
       await saveDiaryAndNotify(letter);
-    } catch (error: any) {
-      console.error('Letter generation error:', error);
-      send({ type: 'LETTER_ERROR', error: error.message || '편지 생성 실패' });
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : '편지 생성 실패';
+      send({ type: 'LETTER_ERROR', error: errorMessage });
     }
   }, [state, persona, send, onCrisisDetected]);
 
@@ -220,15 +220,16 @@ export function useNightCheckinMachine(options: UseNightCheckinMachineOptions) {
         onComplete?.(entry);
         
         return;
-      } catch (error: any) {
+      } catch (error: unknown) {
         retryCount++;
+        const errorMessage = error instanceof Error ? error.message : '저장 실패';
 
         if (retryCount <= maxRetries) {
           const delay = Math.pow(2, retryCount - 1) * 1000;
           await new Promise(resolve => setTimeout(resolve, delay));
           send({ type: 'SAVE_RETRY', retryCount });
         } else {
-          send({ type: 'SAVE_ERROR', error: error.message || '저장 실패' });
+          send({ type: 'SAVE_ERROR', error: errorMessage });
         }
       }
     }

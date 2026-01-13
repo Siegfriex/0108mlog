@@ -26,6 +26,7 @@ import {
 import { db } from '../config/firebase';
 import { FIRESTORE_COLLECTIONS } from '../types/firestore';
 import { TimelineEntry, EmotionType } from '../../../types';
+import { toDate } from '../utils/firestore';
 
 /**
  * useRealtime Hook 옵션
@@ -79,9 +80,7 @@ export const useRealtimeTimeline = (
             const docData = doc.data();
             return {
               id: doc.id,
-              date: docData.date instanceof Timestamp
-                ? docData.date.toDate()
-                : docData.date ? new Date(docData.date) : new Date(),
+              date: toDate(docData.date),
               type: docData.type || 'conversation',
               emotion: (docData.emotion as EmotionType) || EmotionType.PEACE,
               intensity: docData.intensity ?? 0,
@@ -164,10 +163,7 @@ export const useRealtimeEmotions = (
               id: doc.id,
               emotion: (docData.emotion as EmotionType) || EmotionType.PEACE,
               intensity: docData.intensity ?? 0,
-              timestamp:
-                docData.timestamp instanceof Timestamp
-                  ? docData.timestamp.toDate()
-                  : docData.timestamp ? new Date(docData.timestamp) : new Date(),
+              timestamp: toDate(docData.timestamp),
             };
           });
           setData(emotions);
@@ -243,10 +239,7 @@ export const useRealtimeMessages = (
               id: doc.id,
               role: docData.role || 'user',
               content: docData.content || '',
-              timestamp:
-                docData.timestamp instanceof Timestamp
-                  ? docData.timestamp.toDate()
-                  : docData.timestamp ? new Date(docData.timestamp) : new Date(),
+              timestamp: toDate(docData.timestamp),
             };
           });
           setData(messages);
