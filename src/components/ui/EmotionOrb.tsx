@@ -97,14 +97,14 @@ export const EmotionOrb: React.FC<EmotionOrbProps> = ({
       )}
 
       {/* 아이콘 */}
-      <div className={`${color} relative z-10 flex justify-center`}>
+      <div className={`${color} relative z-content-base flex justify-center`}>
         {icon}
       </div>
 
       {/* 라벨 */}
       <p 
         id={`${emotionId}-description`}
-        className={`text-xs font-medium relative z-10 ${isSelected ? 'text-slate-900' : 'text-slate-600'}`}
+        className={`text-xs font-medium relative z-content-base ${isSelected ? 'text-slate-900' : 'text-slate-600'}`}
       >
         {label}
       </p>

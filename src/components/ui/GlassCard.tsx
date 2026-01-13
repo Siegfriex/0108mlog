@@ -125,10 +125,10 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       
       {/* 내부 그림자 (깊이감) */}
       <div className="absolute inset-0 shadow-inner pointer-events-none" style={{
-        boxShadow: 'inset 0 2px 8px rgba(0, 0, 0, 0.05)',
+        boxShadow: 'var(--shadow-xs)',
       }} />
 
-      <div className="relative z-10">{children}</div>
+      <div className="relative z-content-base">{children}</div>
     </motion.div>
   );
 };

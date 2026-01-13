@@ -148,7 +148,7 @@ export const TabBar: React.FC<TabBarProps> = ({
             whileTap={{ scale: 0.9 }}
             tabIndex={isActive ? 0 : -1}
             className={`
-              relative z-10 group flex flex-col items-center justify-center
+              relative z-content-base group flex flex-col items-center justify-center
               w-10 h-10 rounded-xl
               transition-all duration-300
               focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2

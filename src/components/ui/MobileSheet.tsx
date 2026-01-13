@@ -106,7 +106,7 @@ export const MobileSheet: React.FC<MobileSheetProps> = ({
             )}
 
             {/* 내용 */}
-            <div className="overflow-y-auto px-6 py-4" style={{ height: 'calc(100% - 80px)' }}>
+            <div className="overflow-y-auto px-6 py-4" style={{ height: 'calc(100% - var(--dock-height))' }}>
               {children}
             </div>
           </motion.div>

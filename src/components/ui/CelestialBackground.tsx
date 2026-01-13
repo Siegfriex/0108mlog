@@ -17,7 +17,7 @@ export const CelestialBackground: React.FC<CelestialBackgroundProps> = ({
   const starCount = intensity === 'low' ? 20 : intensity === 'high' ? 60 : 40;
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-base">
       {/* 별들 */}
       {Array.from({ length: starCount }).map((_, i) => {
         const size = Math.random() * 3 + 1;

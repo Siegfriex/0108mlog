@@ -52,7 +52,7 @@ export const AmbientBackground: React.FC<AmbientBackgroundProps> = ({
   const emotionColor = getEmotionColor(activeEmotion);
 
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-base">
       {/* 구체 1: 상단 왼쪽 */}
       <motion.div
         className="absolute rounded-full blur-3xl opacity-40"

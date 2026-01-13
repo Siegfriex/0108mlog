@@ -131,8 +131,8 @@ export const MonitorDashboard: React.FC<MonitorDashboardProps> = ({ timelineData
               <Tooltip
                 contentStyle={{
                   backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  border: '1px solid #E2E8F0',
-                  borderRadius: '12px',
+                  border: '1px solid rgb(226, 232, 240)',
+                  borderRadius: 'var(--radius-lg)',
                 }}
               />
               <Line

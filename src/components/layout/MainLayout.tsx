@@ -108,7 +108,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
       <NoiseOverlay />
 
       {/* Background Atmosphere */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      <div className="absolute inset-0 pointer-events-none z-base overflow-hidden">
         <div className={`
           absolute top-[-10%] left-1/2 -translate-x-1/2 w-[120vw] h-[60vh] rounded-[100%] blur-[100px] opacity-40 transition-colors duration-1000 
           ${mode === 'day' ? 'bg-gradient-to-b from-brand-secondary to-transparent' : 'bg-gradient-to-b from-brand-dark to-transparent'}
