@@ -248,7 +248,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onEx
         transition={{ duration: 0.4 }}
       >
         <div className="flex items-center gap-3 px-5 py-2.5 bg-white/90 backdrop-blur-xl rounded-full shadow-lg border border-white/80">
-          <span className="text-sm font-bold text-brand-primary min-w-[2rem]">{stepNumber}/6</span>
+          <span className="text-sm font-bold text-brand-primary min-w-progress">{stepNumber}/6</span>
           <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full"

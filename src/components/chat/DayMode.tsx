@@ -255,7 +255,7 @@ export const DayMode: React.FC<DayModeProps> = ({
                 >
                   <motion.div
                     className={`
-                      max-w-[85%] sm:max-w-[75%] rounded-lg px-4 py-3 shadow-sm
+                      max-w-chat-bubble sm:max-w-chat-bubble-sm rounded-lg px-4 py-3 shadow-sm
                       ${msg.role === 'user' 
                         ? 'bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-brand-primary/20' 
                         : 'bg-white/80 backdrop-blur-md text-slate-900 border border-white/60 shadow-slate-200/50'

@@ -3,7 +3,12 @@
     "allow": [
       "Bash(firebase:*)",
       "Bash(gcloud:*)",
-      "Bash(start:*)"
+      "Bash(start:*)",
+      "Bash(npm run build:*)",
+      "Bash(pushd:*)",
+      "Bash(popd:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npx eslint:*)"
     ]
   }
 }

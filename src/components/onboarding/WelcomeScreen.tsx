@@ -81,7 +81,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onExit }) 
         <Button
           onClick={onNext}
           variant="primary"
-          className="w-full max-w-[15rem] h-14 text-lg font-semibold shadow-xl shadow-brand-primary/30 hover:shadow-brand-primary/40 transition-all"
+          className="w-full max-w-button h-14 text-lg font-semibold shadow-xl shadow-brand-primary/30 hover:shadow-brand-primary/40 transition-all"
         >
           대화 시작하기
           <ArrowRight size={20} className="ml-2" />

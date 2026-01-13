@@ -100,7 +100,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
                             className={`
                                 aspect-square p-6 rounded-lg backdrop-blur-md border text-left transition-all duration-300 flex flex-col justify-center items-center gap-4 group
                                 ${machine.emotion === emotion.id 
-                                    ? 'bg-white/20 border-white/60 shadow-[0_0_40px_rgba(255,255,255,0.1)] scale-105 ring-1 ring-white/50' 
+                                    ? 'bg-white/20 border-white/60 shadow-glow-white scale-105 ring-1 ring-white/50' 
                                     : 'bg-white/5 border-white/5 hover:bg-white/10'
                                 }
                             `}
@@ -160,7 +160,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
                   </motion.div>
                 )}
 
-                <GlassCard className="flex-1 !bg-black/20 !border-white/10 !rounded-2xl overflow-hidden min-h-[25rem] shadow-2xl backdrop-blur-md">
+                <GlassCard className="flex-1 !bg-black/20 !border-white/10 !rounded-2xl overflow-hidden min-h-card shadow-2xl backdrop-blur-md">
                     <textarea
                       value={machine.diary}
                       onChange={(e) => machine.updateDiary(e.target.value)}

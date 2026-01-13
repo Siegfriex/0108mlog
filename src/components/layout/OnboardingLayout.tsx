@@ -49,7 +49,7 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = () => {
   };
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden font-sans bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
+    <div className="relative w-full h-screen-dynamic overflow-hidden font-sans bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
       <NoiseOverlay />
       <OnboardingFlow
         onComplete={handleOnboardingComplete}

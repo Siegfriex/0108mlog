@@ -267,6 +267,20 @@
  * 6. 레이아웃 유틸리티
  * ======================================== */
 
+/* Safe Area Padding (Tailwind 호환) */
+.pt-safe {
+  padding-top: var(--safe-top);
+}
+
+.pb-safe {
+  padding-bottom: var(--safe-bottom);
+}
+
+.px-safe {
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+}
+
 .safe-area-top {
   padding-top: var(--safe-top);
 }
@@ -290,8 +304,13 @@
   padding-left: var(--safe-left);
 }
 
+/* Content Area Height */
 .content-height {
   height: var(--vh-content);
+}
+
+.h-content-area {
+  height: calc(100dvh - var(--header-height) - var(--dock-height) - var(--safe-top) - var(--safe-bottom));
 }
 
 .modal-height {

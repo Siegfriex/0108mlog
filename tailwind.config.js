@@ -229,6 +229,7 @@ export default {
         'glass': 'var(--shadow-glass)',
         'glass-hover': 'var(--shadow-glass-hover)',
         'glow': 'var(--shadow-glow)',
+        'glow-white': 'var(--shadow-glow-white)',
         'floating': 'var(--shadow-floating)',
       },
 
@@ -266,6 +267,52 @@ export default {
       maxHeight: {
         'modal': 'var(--vh-modal)',
         'sheet': 'var(--vh-sheet)',
+      },
+
+      /* ========================================
+       * Blur 효과
+       * ======================================== */
+      blur: {
+        'bg-lg': 'var(--bg-blur-lg)',
+        'bg-xl': 'var(--bg-blur-xl)',
+      },
+
+      /* ========================================
+       * Width 확장
+       * ======================================== */
+      width: {
+        'bg-overflow': 'var(--bg-overflow-width)',
+        'bg-blob': 'var(--bg-blob-size)',
+      },
+
+      /* ========================================
+       * Height 확장
+       * ======================================== */
+      height: {
+        'bg-overflow': 'var(--bg-overflow-height)',
+      },
+
+      /* ========================================
+       * Max Width 확장
+       * ======================================== */
+      maxWidth: {
+        'chat-bubble': 'var(--chat-bubble-max-width)',
+        'chat-bubble-sm': 'var(--chat-bubble-max-width-sm)',
+        'button': 'var(--button-max-width)',
+      },
+
+      /* ========================================
+       * Min Width 확장
+       * ======================================== */
+      minWidth: {
+        'progress': 'var(--progress-indicator-width)',
+      },
+
+      /* ========================================
+       * Min Height 확장
+       * ======================================== */
+      minHeight: {
+        'card': 'var(--card-min-height)',
       },
 
       /* ========================================

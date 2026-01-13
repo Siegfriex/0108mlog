@@ -5,9 +5,14 @@
  */
 
 import {SecretManagerServiceClient} from "@google-cloud/secret-manager";
+import {logInfo, logError, logWarn, logPerformance, LogContext} from "../utils/logger";
 
 const client = new SecretManagerServiceClient();
 const PROJECT_ID = "iness-mlog";
+
+const secretContext: LogContext = {
+  functionName: "SecretManager",
+};
 
 let cachedGeminiApiKey: string | null = null;
 let cacheTimestamp = 0;
@@ -28,9 +33,17 @@ export async function getGeminiApiKey(): Promise<string> {
     return cachedGeminiApiKey;
   }
 
+  const startTime = Date.now();
+
   try {
     const [version] = await client.accessSecretVersion({
       name: `projects/${PROJECT_ID}/secrets/GEMINI_API_KEY/versions/latest`,
+    });
+
+    const durationMs = Date.now() - startTime;
+    logPerformance(secretContext, "secret_manager_access", durationMs, {
+      secretName: "GEMINI_API_KEY",
+      success: true,
     });
 
     const apiKey = version.payload?.data?.toString();
@@ -41,13 +54,19 @@ export async function getGeminiApiKey(): Promise<string> {
     // 캐시 업데이트
     cachedGeminiApiKey = apiKey;
     cacheTimestamp = now;
+
+    logInfo(secretContext, "API key retrieved and cached successfully");
     return apiKey;
   } catch (error) {
-    console.error("Error accessing GEMINI_API_KEY:", error);
+    const durationMs = Date.now() - startTime;
+    logError(secretContext, error, {
+      operation: "accessSecretVersion",
+      durationMs,
+    });
 
     // 캐시된 키가 있으면 임시로 사용 (키 로테이션 중에도 서비스 지속)
     if (cachedGeminiApiKey) {
-      console.warn("Using cached API key due to Secret Manager error");
+      logWarn(secretContext, "Using cached API key due to Secret Manager error");
       return cachedGeminiApiKey;
     }
 

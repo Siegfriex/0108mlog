@@ -1,0 +1,511 @@
+openapi: 3.0.3
+info:
+  title: INEESm Firebase Functions API
+  version: 1.0.0
+  description: |
+    Gemini API 기반 감정 일기 및 AI 코칭 서비스.
+    모든 엔드포인트는 Firebase Callable Functions로 구현되어 있으며,
+    asia-northeast3 리전에서 실행됩니다.
+  contact:
+    name: INEESm Team
+  license:
+    name: Private
+
+servers:
+  - url: https://asia-northeast3-iness-mlog.cloudfunctions.net
+    description: Production (Seoul)
+
+tags:
+  - name: Day Mode
+    description: 낮 모드 관련 API
+  - name: Night Mode
+    description: 밤 모드 관련 API
+  - name: Reports
+    description: 리포트 관련 API
+  - name: Content
+    description: 콘텐츠 생성 관련 API
+  - name: Actions
+    description: 마이크로 액션 관련 API
+  - name: Analysis
+    description: 분석 관련 API
+
+paths:
+  /generateDayModeResponse:
+    post:
+      tags:
+        - Day Mode
+      summary: Day Mode 채팅 응답 생성
+      description: |
+        낮 시간대에 사용자의 감정을 빠르게 파악하고 실용적인 피드백을 제공합니다.
+        한국어로 3문장 이내로 짧게 응답합니다.
+      operationId: generateDayModeResponse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userMessage
+                - persona
+              properties:
+                userMessage:
+                  type: string
+                  description: 사용자 메시지
+                  maxLength: 10000
+                  example: "오늘 회의가 너무 힘들었어요"
+                history:
+                  type: array
+                  items:
+                    type: string
+                  description: 이전 대화 기록 (최근 20개까지)
+                  maxItems: 20
+                persona:
+                  $ref: '#/components/schemas/CoachPersona'
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TextResponse'
+        '400':
+          $ref: '#/components/responses/InvalidArgument'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /generateNightModeLetter:
+    post:
+      tags:
+        - Night Mode
+      summary: Night Mode 편지 생성
+      description: |
+        밤 시간대에 사용자의 일기를 읽고 하루를 정리해주는 따뜻한 편지를 작성합니다.
+        서간체(편지 형식)로 작성됩니다.
+      operationId: generateNightModeLetter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - diaryEntry
+                - persona
+              properties:
+                diaryEntry:
+                  type: string
+                  description: 사용자 일기 내용
+                  maxLength: 10000
+                  example: "오늘은 힘든 하루였지만, 저녁에 친구를 만나서 좋았어요."
+                persona:
+                  $ref: '#/components/schemas/CoachPersona'
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TextResponse'
+        '400':
+          $ref: '#/components/responses/InvalidArgument'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /generateMonthlyNarrative:
+    post:
+      tags:
+        - Reports
+      summary: 월간 회고록 생성
+      description: |
+        사용자의 한 달 감정 데이터를 바탕으로 서사적인 회고록을 작성합니다.
+        감성적이고 깊이 있는 에세이 스타일로 200자 내외로 작성됩니다.
+      operationId: generateMonthlyNarrative
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                summary:
+                  type: string
+                  description: 월간 감정 데이터 요약
+                  example: "이번 달은 전반적으로 평온한 날이 많았습니다."
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TextResponse'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /generateHealingContent:
+    post:
+      tags:
+        - Content
+      summary: 큐레이션 콘텐츠 생성
+      description: |
+        Google Search Grounding을 사용하여 사용자의 감정 상태에 맞는
+        시, 명상 가이드, 또는 인사이트 콘텐츠를 생성합니다.
+      operationId: generateHealingContent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - emotionState
+                - persona
+              properties:
+                emotionState:
+                  type: string
+                  description: 사용자의 현재 감정 상태
+                  example: "약간 우울하고 지친 상태"
+                persona:
+                  $ref: '#/components/schemas/CoachPersona'
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+        '400':
+          $ref: '#/components/responses/InvalidArgument'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /generateChatbotResponse:
+    post:
+      tags:
+        - Day Mode
+      summary: AI 챗봇 응답 생성
+      description: |
+        사용자의 질문에 답하고, 고민을 들어주고, 자유롭게 대화하는
+        AI 어시스턴트 응답을 생성합니다.
+      operationId: generateChatbotResponse
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userMessage
+                - persona
+              properties:
+                userMessage:
+                  type: string
+                  description: 사용자 메시지
+                  maxLength: 10000
+                history:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ChatMessage'
+                  description: 이전 대화 기록 (최근 10개까지)
+                  maxItems: 10
+                persona:
+                  $ref: '#/components/schemas/CoachPersona'
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TextResponse'
+        '400':
+          $ref: '#/components/responses/InvalidArgument'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /generateMicroAction:
+    post:
+      tags:
+        - Actions
+      summary: 마이크로 액션 생성
+      description: |
+        사용자의 현재 감정 상태에 맞는 5분 이내에 실행 가능한
+        구체적인 마이크로 액션을 추천합니다.
+      operationId: generateMicroAction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - emotion
+                - intensity
+              properties:
+                emotion:
+                  type: string
+                  description: 현재 감정
+                  example: "불안"
+                intensity:
+                  type: number
+                  description: 감정 강도 (1-10)
+                  minimum: 1
+                  maximum: 10
+                  example: 7
+                userContext:
+                  type: string
+                  description: 최근 대화 요약
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MicroActionResponse'
+        '400':
+          $ref: '#/components/responses/InvalidArgument'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /generateTimelineAnalysis:
+    post:
+      tags:
+        - Analysis
+      summary: 타임라인 분석
+      description: |
+        사용자의 감정 타임라인을 분석하여 패턴, 감정 변화,
+        트리거 등을 식별하고 인사이트를 제공합니다.
+      operationId: generateTimelineAnalysis
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - entries
+              properties:
+                entries:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TimelineEntry'
+                  description: 타임라인 엔트리 배열 (최근 10개까지 분석)
+      responses:
+        '200':
+          description: 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TextResponse'
+        '400':
+          $ref: '#/components/responses/InvalidArgument'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  schemas:
+    CoachPersona:
+      type: object
+      required:
+        - name
+        - role
+        - mbti
+        - traits
+      properties:
+        name:
+          type: string
+          description: 페르소나 이름
+          example: "마음이"
+        role:
+          type: string
+          description: 페르소나 역할
+          enum:
+            - friend
+            - therapist
+            - coach
+          example: "friend"
+        mbti:
+          type: string
+          description: MBTI 성격 유형
+          pattern: "^[IE][NS][TF][JP]$"
+          example: "INFJ"
+        traits:
+          type: object
+          required:
+            - warmth
+            - directness
+          properties:
+            warmth:
+              type: number
+              description: 따뜻함 정도 (0-100)
+              minimum: 0
+              maximum: 100
+              example: 80
+            directness:
+              type: number
+              description: 직설성 정도 (0-100)
+              minimum: 0
+              maximum: 100
+              example: 40
+
+    ChatMessage:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum:
+            - user
+            - assistant
+        content:
+          type: string
+
+    TimelineEntry:
+      type: object
+      required:
+        - date
+        - emotion
+      properties:
+        date:
+          type: string
+          format: date-time
+        emotion:
+          type: string
+        intensity:
+          type: number
+          minimum: 1
+          maximum: 10
+        summary:
+          type: string
+
+    TextResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: string
+          description: 생성된 텍스트 응답
+        error:
+          type: string
+          description: 에러 메시지 (실패 시)
+        fallback:
+          type: string
+          description: 폴백 메시지 (실패 시)
+
+    ContentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/ContentData'
+        error:
+          type: string
+        fallback:
+          type: "null"
+
+    ContentData:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum:
+            - poem
+            - meditation
+            - insight
+        title:
+          type: string
+        body:
+          type: string
+        author:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        commentary:
+          type: string
+        groundingLinks:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+              url:
+                type: string
+                format: uri
+
+    MicroActionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/MicroAction'
+        error:
+          type: string
+        fallback:
+          $ref: '#/components/schemas/MicroAction'
+
+    MicroAction:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          example: "478 호흡법"
+        description:
+          type: string
+          example: "4초 들이쉬고, 7초 참고, 8초 내쉬세요."
+        duration:
+          type: string
+          example: "3 min"
+        type:
+          type: string
+          enum:
+            - breathing
+            - journaling
+            - exercise
+            - mindfulness
+
+  responses:
+    InvalidArgument:
+      description: 잘못된 인자
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "invalid-argument"
+                  message:
+                    type: string
+                    example: "userMessage and persona are required"
+
+    InternalError:
+      description: 내부 서버 오류
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+              fallback:
+                type: string

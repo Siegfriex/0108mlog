@@ -109,14 +109,23 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
 
       {/* Background Atmosphere */}
       <div className="absolute inset-0 pointer-events-none z-base overflow-hidden">
-        <div className={`
-          absolute top-[-10%] left-1/2 -translate-x-1/2 w-[120vw] h-[60vh] rounded-[100%] blur-[100px] opacity-40 transition-colors duration-1000 
-          ${mode === 'day' ? 'bg-gradient-to-b from-brand-secondary to-transparent' : 'bg-gradient-to-b from-brand-dark to-transparent'}
-        `} />
-        <div className={`
-          absolute bottom-[-20%] left-[-10%] w-[80vw] h-[80vw] rounded-full filter blur-[120px] mix-blend-multiply opacity-30 animate-float 
-          ${mode === 'day' ? 'bg-brand-accent' : 'bg-brand-primary/20'}
-        `} />
+        <div 
+          className={`
+            absolute left-1/2 -translate-x-1/2 w-bg-overflow h-bg-overflow rounded-full blur-bg-lg opacity-40 transition-colors duration-1000 
+            ${mode === 'day' ? 'bg-gradient-to-b from-brand-secondary to-transparent' : 'bg-gradient-to-b from-brand-dark to-transparent'}
+          `}
+          style={{ top: 'var(--offset-negative-sm)' }}
+        />
+        <div 
+          className={`
+            absolute w-bg-blob h-bg-blob rounded-full filter blur-bg-xl mix-blend-multiply opacity-30 animate-float 
+            ${mode === 'day' ? 'bg-brand-accent' : 'bg-brand-primary/20'}
+          `}
+          style={{ 
+            bottom: 'var(--offset-negative-md)',
+            left: 'var(--offset-negative-sm)'
+          }}
+        />
       </div>
 
       {/* Global Navigation Bar (GNB) */}
@@ -233,7 +242,7 @@ const IconButton = ({ onClick, icon, label, mode }: { onClick: () => void; icon:
     title={label}
     aria-label={label}
     className={`
-      w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200
+      w-11 h-11 rounded-full flex items-center justify-center transition-all duration-200
       active:scale-95
       ${mode === 'day' 
         ? 'text-slate-500 hover:bg-white hover:text-brand-primary hover:shadow-sm' 

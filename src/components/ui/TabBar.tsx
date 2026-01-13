@@ -149,7 +149,7 @@ export const TabBar: React.FC<TabBarProps> = ({
             tabIndex={isActive ? 0 : -1}
             className={`
               relative z-content-base group flex flex-col items-center justify-center
-              w-10 h-10 rounded-xl
+              w-11 h-11 rounded-xl
               transition-all duration-300
               focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2
               ${isActive 

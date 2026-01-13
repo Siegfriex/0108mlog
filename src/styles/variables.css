@@ -406,6 +406,42 @@
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
+
+  /* ========================================
+   * 13. 배경 효과 시스템
+   * ======================================== */
+  
+  /* Blur 효과 */
+  --bg-blur-lg: 100px;
+  --bg-blur-xl: 120px;
+  
+  /* 오버플로우 크기 (배경 그라데이션용) */
+  --bg-overflow-width: 120vw;
+  --bg-overflow-height: 60vh;
+  --bg-blob-size: 80vw;
+  
+  /* 위치 오프셋 */
+  --offset-negative-sm: -10%;
+  --offset-negative-md: -20%;
+
+  /* ========================================
+   * 14. 컴포넌트 크기 시스템
+   * ======================================== */
+  
+  /* 채팅 버블 */
+  --chat-bubble-max-width: 85%;
+  --chat-bubble-max-width-sm: 75%;
+  
+  /* 카드/컨테이너 */
+  --card-min-height: 25rem;
+  --button-max-width: 15rem;
+  --progress-indicator-width: 2rem;
+
+  /* ========================================
+   * 15. 그림자 확장
+   * ======================================== */
+  
+  --shadow-glow-white: 0 0 40px rgba(255, 255, 255, 0.1);
 }
 
 /* ========================================
@@ -420,13 +456,14 @@
   --color-bg-tertiary: #334155;
   
   /* 텍스트 */
-  --color-text-primary: #F1F5F9;
-  --color-text-secondary: #CBD5E1;
-  --color-text-muted: #94A3B8;
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #94A3B8;
+  --color-text-muted: #64748B;
   
   /* Glass */
-  --color-glass-surface: var(--color-glass-surface-dark);
-  --color-glass-border: var(--color-glass-border-dark);
+  --color-glass-surface: rgba(255, 255, 255, 0.05);
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+  --shadow-glass: 0 0.5rem 2rem -0.5rem rgba(0, 0, 0, 0.5);
   
   /* 액센트 */
   --color-accent-purple: #A78BFA;

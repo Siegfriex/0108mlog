@@ -7,7 +7,11 @@
 import {GoogleGenAI} from "@google/genai";
 import {getGeminiApiKey} from "../config/secrets";
 import retry from "async-retry";
-import * as logger from "firebase-functions/logger";
+import {logInfo, logError, logPerformance, LogContext} from "../utils/logger";
+
+const geminiServiceContext: LogContext = {
+  functionName: "GeminiService",
+};
 
 let geminiClient: GoogleGenAI | null = null;
 
@@ -145,9 +149,18 @@ export async function callGeminiAPI(
   model: "gemini-3-flash-preview" | "gemini-3-pro-preview" = "gemini-3-flash-preview",
   options?: GeminiAPIOptions
 ): Promise<string> {
+  const apiStartTime = Date.now();
+
   return await retry(
     async () => {
+      const initStartTime = Date.now();
       const client = await initializeGeminiClient();
+      const initDuration = Date.now() - initStartTime;
+
+      // 클라이언트 초기화 시간 로깅
+      logPerformance(geminiServiceContext, "client_init", initDuration, {
+        cached: initDuration < 10, // 10ms 이하면 캐시 히트로 간주
+      });
 
       // tools 옵션이 있으면 config로 변환
       const requestOptions: {
@@ -175,7 +188,17 @@ export async function callGeminiAPI(
         requestOptions.maxTokens = options.maxTokens;
       }
 
+      const callStartTime = Date.now();
       const response = await client.models.generateContent(requestOptions);
+      const callDuration = Date.now() - callStartTime;
+
+      // API 호출 시간 로깅
+      logPerformance(geminiServiceContext, "gemini_api_call", callDuration, {
+        model,
+        promptLength: prompt.length,
+        responseLength: response.text?.length || 0,
+      });
+
       return response.text || "";
     },
     {
@@ -186,12 +209,21 @@ export async function callGeminiAPI(
       randomize: true, // 지터 추가
       onRetry: (error: Error, attempt: number) => {
         const errorType = classifyGeminiError(error);
-        logger.info(`Gemini API retry attempt ${attempt} (${errorType}):`, error.message);
+        logInfo(geminiServiceContext, `Gemini API retry attempt ${attempt}`, {
+          errorType,
+          errorMessage: error.message,
+          attempt,
+        });
       },
     }
   ).catch((error: Error) => {
+    const totalDuration = Date.now() - apiStartTime;
     const errorType = classifyGeminiError(error);
-    logger.error(`Gemini API call failed (${errorType}):`, error);
+    logError(geminiServiceContext, error, {
+      errorType,
+      model,
+      totalDurationMs: totalDuration,
+    });
     throw error;
   });
 }
@@ -220,9 +252,17 @@ export async function callGeminiAPIWithResponse(
     };
   }>;
 }> {
+  const apiStartTime = Date.now();
+
   return await retry(
     async () => {
+      const initStartTime = Date.now();
       const client = await initializeGeminiClient();
+      const initDuration = Date.now() - initStartTime;
+
+      logPerformance(geminiServiceContext, "client_init", initDuration, {
+        cached: initDuration < 10,
+      });
 
       // tools 옵션이 있으면 config로 변환
       const requestOptions: {
@@ -250,7 +290,16 @@ export async function callGeminiAPIWithResponse(
         requestOptions.maxTokens = options.maxTokens;
       }
 
+      const callStartTime = Date.now();
       const response = await client.models.generateContent(requestOptions);
+      const callDuration = Date.now() - callStartTime;
+
+      logPerformance(geminiServiceContext, "gemini_api_call_with_response", callDuration, {
+        model,
+        promptLength: prompt.length,
+        hasGrounding: !!options?.tools,
+      });
+
       return response as {
         text?: string;
         candidates?: Array<{
@@ -270,12 +319,21 @@ export async function callGeminiAPIWithResponse(
       randomize: true,
       onRetry: (error: Error, attempt: number) => {
         const errorType = classifyGeminiError(error);
-        logger.info(`Gemini API retry attempt ${attempt} (${errorType}):`, error.message);
+        logInfo(geminiServiceContext, `Gemini API retry attempt ${attempt}`, {
+          errorType,
+          errorMessage: error.message,
+          attempt,
+        });
       },
     }
   ).catch((error: Error) => {
+    const totalDuration = Date.now() - apiStartTime;
     const errorType = classifyGeminiError(error);
-    logger.error(`Gemini API call failed (${errorType}):`, error);
+    logError(geminiServiceContext, error, {
+      errorType,
+      model,
+      totalDurationMs: totalDuration,
+    });
     throw error;
   });
 }
