@@ -8,7 +8,7 @@
  */
 
 import { EmotionType, CoachPersona } from '../../types';
-import { generateChatbotResponse } from './functions';
+import { generateChatbotResponse } from './ai/gemini';
 
 /**
  * 위기 감지 결과
