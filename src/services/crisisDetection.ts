@@ -243,11 +243,11 @@ JSON만 반환하세요:`;
       traits: { warmth: 50, directness: 50 }
     };
 
-    const response = await generateChatbotResponse({
-      userMessage: prompt,
-      history: [],
-      persona: defaultPersona
-    });
+    const response = await generateChatbotResponse(
+      prompt,
+      [],
+      defaultPersona
+    );
     
     // JSON 추출 (```json ... ``` 제거)
     const jsonMatch = response.match(/\{[\s\S]*\}/);
