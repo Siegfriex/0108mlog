@@ -17,7 +17,7 @@ import {logMemoryUsage, logEnvironmentInfo} from "../utils/monitoring";
 export const generateDayModeResponse = onCall(
   {
     region: "asia-northeast3",
-    timeoutSeconds: 90,
+    timeoutSeconds: 30,
     memory: "512MiB",
     maxInstances: 10,
   },
@@ -94,7 +94,7 @@ export const generateDayModeResponse = onCall(
 export const generateNightModeLetter = onCall(
   {
     region: "asia-northeast3",
-    timeoutSeconds: 60,
+    timeoutSeconds: 30,
     memory: "512MiB",
     maxInstances: 10,
   },
@@ -165,7 +165,7 @@ export const generateNightModeLetter = onCall(
 export const generateMonthlyNarrative = onCall(
   {
     region: "asia-northeast3",
-    timeoutSeconds: 60,
+    timeoutSeconds: 30,
     memory: "512MiB",
     maxInstances: 5,
   },
@@ -223,7 +223,7 @@ export const generateMonthlyNarrative = onCall(
 export const generateHealingContent = onCall(
   {
     region: "asia-northeast3",
-    timeoutSeconds: 60,
+    timeoutSeconds: 30,
     memory: "1GiB",
     maxInstances: 10,
   },
@@ -344,7 +344,7 @@ export const generateHealingContent = onCall(
 export const generateChatbotResponse = onCall(
   {
     region: "asia-northeast3",
-    timeoutSeconds: 60,
+    timeoutSeconds: 30,
     memory: "512MiB",
     maxInstances: 10,
   },
