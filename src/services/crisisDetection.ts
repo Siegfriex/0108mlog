@@ -4,19 +4,29 @@
  * FEAT-016: 안전망 시스템
  * PRD 플로우차트 3: 위기 상황 대응
  * 
- * 키워드/강도/패턴 기반 위기 신호 감지
+ * 키워드/강도/패턴 기반 위기 신호 감지 + Gemini API 2차 검증 (FE-C4)
  */
 
-import { EmotionType } from '../../types';
+import { EmotionType, CoachPersona } from '../../types';
+import { generateChatbotResponse } from './functions';
 
 /**
  * 위기 감지 결과
  */
 export interface CrisisDetectionResult {
   isCrisis: boolean;
-  reason: 'keyword' | 'intensity' | 'pattern' | 'none';
+  reason: 'keyword' | 'intensity' | 'pattern' | 'gemini' | 'none';
   confidence: 'high' | 'medium' | 'low';
   details?: string;
+}
+
+/**
+ * Gemini API 위기 감지 결과
+ */
+interface GeminiCrisisResult {
+  isCrisis: boolean;
+  severity: 'none' | 'low' | 'medium' | 'high' | 'critical';
+  reason?: string;
 }
 
 /**
@@ -197,12 +207,71 @@ export function detectCrisisByPattern(
 }
 
 /**
- * 종합 위기 감지
+ * Gemini API를 사용한 정밀 위기 감지 (FE-C4 해결)
+ * 키워드 감지 이후 2차 검증용
+ * 
+ * @param message 분석할 메시지
+ * @returns {Promise<GeminiCrisisResult>} Gemini 분석 결과
+ */
+async function detectCrisisWithGemini(message: string): Promise<GeminiCrisisResult> {
+  try {
+    const prompt = `다음 메시지가 자해/자살 위험을 나타내는지 분석해주세요.
+
+메시지: "${message}"
+
+응답 형식 (JSON만 반환):
+{
+  "isCrisis": true 또는 false,
+  "severity": "none" | "low" | "medium" | "high" | "critical",
+  "reason": "판단 이유 한 줄"
+}
+
+기준:
+- none: 위기 신호 없음
+- low: 막연한 불안, 피로, 일반적인 부정 감정
+- medium: 구체적 부정 감정, "희망 없음" 표현
+- high: 자해/자살 간접 암시 ("더 이상 살 의미가 없어" 등)
+- critical: 자해/자살 직접적 의도 또는 구체적 계획
+
+JSON만 반환하세요:`;
+
+    // 기본 페르소나로 Gemini 호출
+    const defaultPersona: CoachPersona = {
+      name: '분석기',
+      role: 'counselor',
+      mbti: 'INFJ',
+      traits: { warmth: 50, directness: 50 }
+    };
+
+    const response = await generateChatbotResponse({
+      userMessage: prompt,
+      history: [],
+      persona: defaultPersona
+    });
+    
+    // JSON 추출 (```json ... ``` 제거)
+    const jsonMatch = response.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.warn('Gemini 응답이 JSON 형식이 아님:', response);
+      throw new Error('JSON 응답 형식 아님');
+    }
+    
+    const result: GeminiCrisisResult = JSON.parse(jsonMatch[0]);
+    return result;
+  } catch (error) {
+    console.error('Gemini 위기 감지 실패:', error);
+    // 파싱 실패 시 안전하게 false 반환 (키워드 기반으로 폴백)
+    return { isCrisis: false, severity: 'none' };
+  }
+}
+
+/**
+ * 종합 위기 감지 (키워드 + Gemini 2단계)
  * 
  * @param params 감지 파라미터
- * @returns {CrisisDetectionResult} 감지 결과
+ * @returns {Promise<CrisisDetectionResult>} 감지 결과
  */
-export function detectCrisis(params: {
+export async function detectCrisis(params: {
   text?: string;
   emotion?: EmotionType;
   intensity?: number;
@@ -211,13 +280,45 @@ export function detectCrisis(params: {
     intensity: number;
     timestamp: Date;
   }>;
-}): CrisisDetectionResult {
+}): Promise<CrisisDetectionResult> {
   const { text, emotion, intensity, recentEntries = [] } = params;
 
   // 1. 키워드 감지 (최우선)
   if (text) {
     const keywordResult = detectCrisisByKeyword(text);
     if (keywordResult.isCrisis) {
+      // 키워드 감지 시 Gemini로 2차 검증 (FE-C4)
+      console.log('위기 키워드 감지, Gemini로 2차 검증 시작...');
+      const geminiResult = await detectCrisisWithGemini(text);
+      
+      // Gemini가 critical 또는 high → 즉시 개입
+      if (geminiResult.severity === 'critical' || geminiResult.severity === 'high') {
+        return {
+          isCrisis: true,
+          reason: 'gemini',
+          confidence: 'high',
+          details: geminiResult.reason || '심각한 위기 신호 감지 (Gemini 분석)'
+        };
+      }
+      
+      // Gemini가 medium + 감정 강도도 높음 → 개입
+      if (geminiResult.severity === 'medium' && intensity && intensity >= 8) {
+        return {
+          isCrisis: true,
+          reason: 'gemini',
+          confidence: 'medium',
+          details: geminiResult.reason || '위기 신호 + 높은 감정 강도'
+        };
+      }
+      
+      // 키워드 오탐지 (Gemini가 none 또는 low)
+      if (geminiResult.severity === 'none' || geminiResult.severity === 'low') {
+        console.log('키워드 오탐지 (Gemini 분석: 위기 아님)');
+        // 키워드 감지했지만 Gemini가 위기 아니라고 판단 → none으로 처리
+        return { isCrisis: false, reason: 'none', confidence: 'low', details: 'Gemini 검증: 위기 아님' };
+      }
+      
+      // Gemini도 medium → 키워드 결과 반환
       return keywordResult;
     }
   }
@@ -226,6 +327,19 @@ export function detectCrisis(params: {
   if (emotion && intensity !== undefined) {
     const intensityResult = detectCrisisByIntensity(emotion, intensity);
     if (intensityResult.isCrisis) {
+      // 강도 기반 감지 시에도 Gemini로 확인 (text 있을 경우)
+      if (text) {
+        console.log('강도 기반 감지, Gemini로 재확인...');
+        const geminiResult = await detectCrisisWithGemini(text);
+        if (geminiResult.severity === 'critical' || geminiResult.severity === 'high') {
+          return {
+            isCrisis: true,
+            reason: 'gemini',
+            confidence: 'high',
+            details: geminiResult.reason || '간접적 위기 신호 감지 (Gemini 분석)'
+          };
+        }
+      }
       return intensityResult;
     }
   }

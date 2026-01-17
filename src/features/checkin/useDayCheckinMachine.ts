@@ -80,7 +80,7 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
     
     // 위기 감지: 강도 기반
     const intensity = getIntensityFromState(state);
-    const crisisResult = detectCrisis({ emotion, intensity });
+    const crisisResult = await detectCrisis({ emotion, intensity });
     
     if (crisisResult.isCrisis) {
       send({ type: 'CRISIS_DETECTED' });
@@ -97,7 +97,7 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
     // 위기 감지: 강도 기반
     const emotion = getEmotionFromState(state);
     if (emotion) {
-      const crisisResult = detectCrisis({ emotion, intensity });
+      const crisisResult = await detectCrisis({ emotion, intensity });
       
       if (crisisResult.isCrisis) {
         send({ type: 'CRISIS_DETECTED' });
@@ -127,8 +127,8 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
   const sendMessage = useCallback(async (message: string) => {
     if (!message.trim()) return;
 
-    // 위기 감지: 키워드 기반
-    const crisisResult = detectCrisis({ text: message });
+    // 위기 감지: 키워드 기반 + Gemini 2차 검증 (FE-C4)
+    const crisisResult = await detectCrisis({ text: message });
     if (crisisResult.isCrisis) {
       send({ type: 'CRISIS_DETECTED' });
       onCrisisDetected?.();
@@ -176,9 +176,9 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
 
     const detailText = messages.map(m => `[${m.role === 'user' ? '나' : persona.name}]: ${m.content}`).join('\n\n');
 
-    // 위기 감지: 종합 (키워드 + 강도 + 패턴)
+    // 위기 감지: 종합 (키워드 + 강도 + 패턴 + Gemini)
     const recentEntries = await getRecentEmotionEntries(7);
-    const crisisResult = detectCrisis({
+    const crisisResult = await detectCrisis({
       text: detailText,
       emotion,
       intensity,

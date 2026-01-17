@@ -73,7 +73,7 @@ export function useNightCheckinMachine(options: UseNightCheckinMachineOptions) {
     
     // 위기 감지: 강도 기반
     const intensity = getIntensityFromState(state);
-    const crisisResult = detectCrisis({ emotion, intensity });
+    const crisisResult = await detectCrisis({ emotion, intensity });
     
     if (crisisResult.isCrisis) {
       send({ type: 'CRISIS_DETECTED' });
@@ -90,7 +90,7 @@ export function useNightCheckinMachine(options: UseNightCheckinMachineOptions) {
     // 위기 감지: 강도 기반
     const emotion = getEmotionFromState(state);
     if (emotion) {
-      const crisisResult = detectCrisis({ emotion, intensity });
+      const crisisResult = await detectCrisis({ emotion, intensity });
       
       if (crisisResult.isCrisis) {
         send({ type: 'CRISIS_DETECTED' });
@@ -120,9 +120,9 @@ export function useNightCheckinMachine(options: UseNightCheckinMachineOptions) {
   const updateDiary = useCallback(async (diary: string) => {
     send({ type: 'UPDATE_DIARY', diary });
     
-    // 실시간 위기 감지: 키워드 기반 (일정 길이 이상일 때만)
+    // 실시간 위기 감지: 키워드 기반 + Gemini (일정 길이 이상일 때만)
     if (diary.length > 10) {
-      const crisisResult = detectCrisis({ text: diary });
+      const crisisResult = await detectCrisis({ text: diary });
       
       if (crisisResult.isCrisis) {
         send({ type: 'CRISIS_DETECTED' });
@@ -141,8 +141,8 @@ export function useNightCheckinMachine(options: UseNightCheckinMachineOptions) {
     
     if (!diary.trim() || !emotion) return;
 
-    // 위기 감지: 키워드 기반
-    const crisisResult = detectCrisis({ text: diary });
+    // 위기 감지: 키워드 기반 + Gemini 2차 검증
+    const crisisResult = await detectCrisis({ text: diary });
     if (crisisResult.isCrisis) {
       send({ type: 'CRISIS_DETECTED' });
       onCrisisDetected?.();
@@ -155,9 +155,9 @@ export function useNightCheckinMachine(options: UseNightCheckinMachineOptions) {
       const letter = await generateNightModeLetter(diary, persona);
       send({ type: 'LETTER_SUCCESS', letter });
 
-      // 종합 위기 감지 (키워드 + 강도 + 패턴)
+      // 종합 위기 감지 (키워드 + 강도 + 패턴 + Gemini)
       const recentEntries = await getRecentEmotionEntries(7);
-      const finalCrisisResult = detectCrisis({
+      const finalCrisisResult = await detectCrisis({
         text: diary,
         emotion,
         intensity,
