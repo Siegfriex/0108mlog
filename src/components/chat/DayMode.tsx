@@ -33,6 +33,11 @@ const QUICK_CHIPS = [
 ];
 
 /**
+ * 최대 입력 길이 (백엔드 sanitizeUserInput과 일치)
+ */
+const MAX_INPUT_LENGTH = 10000;
+
+/**
  * DayMode 컴포넌트 Props 인터페이스
  */
 interface DayModeProps {
@@ -98,6 +103,7 @@ export const DayMode: React.FC<DayModeProps> = ({
    */
   const handleEmotionComplete = () => {
     machine.confirmEmotion();
+    setImmersive(true); // 채팅 시작 시 immersive 모드 활성화
     triggerHaptic('medium');
   };
 
@@ -204,13 +210,13 @@ export const DayMode: React.FC<DayModeProps> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col h-full w-full"
+            className="flex flex-col h-full w-full bg-gradient-to-b from-white/60 to-white/40"
           >
-            {/* 헤더 */}
-            <motion.div 
+            {/* 헤더 - 더 넓고 여유로운 디자인 */}
+            <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-200/50 bg-white/30 backdrop-blur-md"
+              className="shrink-0 flex items-center justify-between px-6 py-5 sm:px-8 sm:py-6 border-b border-slate-200/30 bg-white/50 backdrop-blur-xl"
             >
               <div className="flex items-center gap-3">
                 {activeEmotionConfig && (
@@ -243,8 +249,8 @@ export const DayMode: React.FC<DayModeProps> = ({
               </button>
             </motion.div>
 
-            {/* 메시지 영역 */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 scrollbar-hide min-h-0">
+            {/* 메시지 영역 - 더 여유로운 간격 */}
+            <div className="flex-1 overflow-y-auto px-6 py-6 sm:px-8 sm:py-8 space-y-5 scrollbar-hide min-h-0">
               {displayMessages.map((msg, index) => (
                 <motion.div
                   key={msg.id}
@@ -255,24 +261,24 @@ export const DayMode: React.FC<DayModeProps> = ({
                 >
                   <motion.div
                     className={`
-                      max-w-chat-bubble sm:max-w-chat-bubble-sm rounded-lg px-4 py-3 shadow-sm
-                      ${msg.role === 'user' 
-                        ? 'bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-brand-primary/20' 
-                        : 'bg-white/80 backdrop-blur-md text-slate-900 border border-white/60 shadow-slate-200/50'
+                      max-w-chat-bubble sm:max-w-chat-bubble-sm rounded-2xl px-5 py-4 shadow-lg
+                      ${msg.role === 'user'
+                        ? 'bg-gradient-to-br from-brand-primary to-brand-secondary text-white shadow-brand-primary/25'
+                        : 'bg-white/90 backdrop-blur-xl text-slate-900 border border-white/70 shadow-slate-300/30'
                       }
                     `}
-                    whileHover={{ scale: 1.02 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                    whileHover={{ scale: 1.01 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
                   >
                     {msg.role === 'assistant' && (
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <div className="w-5 h-5 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center">
-                          <MessageCircle size={12} className="text-white" />
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand-primary to-brand-secondary flex items-center justify-center shadow-sm">
+                          <MessageCircle size={13} className="text-white" />
                         </div>
-                        <span className="text-xs font-semibold text-brand-primary">{persona.name}</span>
+                        <span className="text-xs font-bold text-brand-primary">{persona.name}</span>
                       </div>
                     )}
-                    <p className={`text-sm leading-relaxed ${msg.role === 'user' ? 'text-white' : 'text-slate-800'}`}>
+                    <p className={`text-base leading-relaxed ${msg.role === 'user' ? 'text-white' : 'text-slate-700'}`}>
                       {msg.content}
                     </p>
                   </motion.div>
@@ -294,16 +300,16 @@ export const DayMode: React.FC<DayModeProps> = ({
               <div ref={messagesEndRef} />
             </div>
 
-            {/* 퀵칩 영역 */}
+            {/* 퀵칩 영역 - 더 넓은 간격 */}
             <AnimatePresence>
               {showQuickChips && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="px-4 sm:px-6 pb-2"
+                  className="shrink-0 px-6 sm:px-8 pb-3"
                 >
-                  <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                  <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
                     {QUICK_CHIPS.map((chip) => (
                       <QuickChip
                         key={chip.id}
@@ -316,14 +322,14 @@ export const DayMode: React.FC<DayModeProps> = ({
               )}
             </AnimatePresence>
 
-            {/* 액션 카드 오버레이 */}
+            {/* 액션 카드 오버레이 - 더 여유로운 디자인 */}
             <AnimatePresence>
               {machine.isActionShowing && machine.action && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
-                  className="p-4 sm:p-6 border-t border-slate-200/50 bg-white/30 backdrop-blur-md"
+                  className="shrink-0 px-6 py-5 sm:px-8 sm:py-6 border-t border-slate-200/30 bg-white/50 backdrop-blur-xl"
                 >
                   <GlassCard className="p-4">
                     <div className="flex items-start justify-between mb-3">
@@ -360,7 +366,7 @@ export const DayMode: React.FC<DayModeProps> = ({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 20 }}
-                  className="p-4 sm:p-6 border-t border-slate-200/50 bg-white/30 backdrop-blur-md"
+                  className="shrink-0 px-6 py-5 sm:px-8 sm:py-6 border-t border-slate-200/30 bg-white/50 backdrop-blur-xl"
                 >
                   <ActionFeedback
                     actionTitle={machine.action.title}
@@ -371,12 +377,12 @@ export const DayMode: React.FC<DayModeProps> = ({
               )}
             </AnimatePresence>
 
-            {/* 태그 입력 단계 */}
+            {/* 태그 입력 단계 - 더 여유로운 디자인 */}
             {machine.isTagSelecting && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-4 sm:p-6 border-t border-slate-200/50 bg-white/40 backdrop-blur-md"
+                className="shrink-0 px-6 py-5 sm:px-8 sm:py-6 border-t border-slate-200/30 bg-white/50 backdrop-blur-xl"
               >
                 <SmartContextTag
                   onTagsChange={machine.updateTags}
@@ -402,57 +408,35 @@ export const DayMode: React.FC<DayModeProps> = ({
               </motion.div>
             )}
 
-            {/* 입력 영역 */}
+            {/* 입력 영역 - 더 여유로운 디자인 */}
             {machine.isChatting && !machine.isTagSelecting && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="p-4 sm:p-6 border-t border-slate-200/50 bg-white/40 backdrop-blur-md"
+                className="shrink-0 px-6 py-5 sm:px-8 sm:py-6 border-t border-slate-200/30 bg-white/50 backdrop-blur-xl"
               >
-                <div className="flex gap-2 mb-3">
+                <div className="flex gap-3">
                   <div className="flex-1 relative">
                     <input
                       ref={inputRef}
                       type="text"
+                      maxLength={MAX_INPUT_LENGTH}
                       value={machine.input}
                       onChange={(e) => machine.updateInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
                       placeholder="무엇이든 편하게 말씀해주세요..."
-                      className="w-full px-4 py-3 pr-12 rounded-full bg-white/80 backdrop-blur-sm border border-slate-200/60 focus:outline-none focus:ring-2 focus:ring-brand-primary/50 focus:border-brand-primary/50 text-slate-800 placeholder-slate-400 transition-all"
+                      className="w-full px-5 py-4 pr-14 rounded-2xl bg-white/90 backdrop-blur-sm border border-slate-200/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary/40 text-slate-800 placeholder-slate-400 transition-all text-base shadow-sm"
                       aria-label="메시지 입력"
                     />
                     <button
                       onClick={handleSend}
                       disabled={!machine.input.trim()}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-brand-primary text-white hover:bg-brand-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm hover:shadow-md"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-brand-primary text-white hover:bg-brand-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
                       aria-label="전송"
                     >
-                      <Send size={16} />
+                      <Send size={18} />
                     </button>
                   </div>
-                </div>
-                
-                {/* 완료 및 액션 버튼 */}
-                <div className="flex gap-2">
-                  <Button 
-                    onClick={handleFinishAndSave}
-                    variant="secondary"
-                    className="flex-1"
-                    disabled={machine.isSaved}
-                    aria-label="체크인 완료 및 저장"
-                  >
-                    {machine.isSaved ? '저장 완료 ✓' : '대화 마무리'}
-                  </Button>
-                  <Button 
-                    onClick={handleGenerateAction}
-                    variant="ghost"
-                    isLoading={machine.isActionLoading}
-                    className="px-4"
-                    aria-label="마이크로 액션 생성"
-                    title="오늘의 작은 실천 추천받기"
-                  >
-                    <Sparkles size={18} className={machine.isActionLoading ? 'animate-pulse' : ''} />
-                  </Button>
                 </div>
               </motion.div>
             )}

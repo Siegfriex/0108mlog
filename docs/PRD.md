@@ -8,29 +8,74 @@
 **마음로그 V5.0**은 사용자의 감정을 함께 돌아보고, AI 동반자와의 정서적 공명을 통해 감정 여정을 함께하는 웹 기반 디지털 웰빙 플랫폼입니다. 사용자가 직접 설정한 AI 페르소나와의 대화를 통해 감정을 정리하고, 콘텐츠 큐레이션을 통해 감성적 치유를 경험할 수 있습니다.
 
 ### 핵심 가치 제안 (Value Proposition)
-**"정서적 공명 및 동반자"** - 사용자가 직접 설정한 AI 동반자와의 대화를 통해 감정을 정리하고, 과거 대화 맥락을 기억하는 RAG 기반 기억 시스템으로 "나를 아는" 대화를 구현합니다. 낮에는 빠른 체크인, 밤에는 깊은 성찰을 지원하는 이중 속도 커뮤니케이션과 콘텐츠 매개 대화(Bibliotherapy)를 통해 감성적 치유를 제공합니다.
+**"정서적 공명 및 동반자"** - AI 동반자와의 정서적 공명을 통해 감정 여정을 함께하며, 낮에는 빠른 체크인, 밤에는 깊은 성찰을 지원합니다.
 
-### 주요 기능 (P0 핵심 기능)
-1. **커스텀 AI 페르소나 (RAG 기반 기억)**: 사용자가 직접 설정하는 AI 동반자, 과거 대화 맥락을 기억하여 "나를 아는" 대화 구현
-2. **이중 속도 커뮤니케이션 (Day/Night Mode)**: 낮에는 빠른 체크인(Woebot 스타일), 밤에는 깊은 성찰(답다 스타일)을 지원하는 모드 전환
-3. **콘텐츠 매개 대화 (Bibliotherapy)**: 감정에 맞는 시, 명상, 음악 등을 큐레이션하여 제공하는 감성적 치유 경험
-4. **월간 회고록 (선공감 후분석 UX)**: 사용자의 감정 여정을 따뜻한 서사로 재구성하여 제공하는 월간 회고록
-5. **감정 여정 시각화**: Sankey Flow, Year in Pixels 등 다양한 시각화를 통해 감정 여정을 한눈에 확인
-6. **실시간 모니터**: Youper 스타일의 실시간 감정 모니터링 및 인사이트 제공
-7. **안전망 시스템**: 위기 신호 감지 및 공식 위기 자원 연결
+**(Phase 1 업그레이드 예정, 2026 Q2-Q3)**: RAG 기반 기억 시스템으로 "나를 아는" 대화로 진화 + 48개 기술적 위험요인 해결
 
-### 기술 스택 (확정)
-- **프론트엔드**: TypeScript + Vite + React, Tailwind CSS, Framer Motion, Recharts
-- **백엔드/인프라**: Firebase (Firestore, Cloud Functions, Storage, Auth, Hosting)
-- **AI**: Gemini API (Gemini 3.0 Pro Preview, 서버 사이드 호출, RAG 활용)
-- **벡터 데이터베이스**: Pinecone (RAG 기반 기억 시스템, 선택 근거: 관리형 서비스, 확장성 우수, 무료 티어 제공)[^부록-B-1]
-- **데이터 분석**: Google BigQuery (주간/월간 리포트 배치 전용)
+### 주요 기능
+
+#### Phase 0: MVP 완료 (2026-01 현재)
+1. **이중 속도 커뮤니케이션 (Day/Night Mode)**: 낮에는 빠른 체크인(Woebot 스타일), 밤에는 깊은 성찰(답다 스타일)
+2. **감정 여정 시각화**: Sankey Flow, Year in Pixels 등 다양한 시각화로 감정 여정 확인
+3. **실시간 모니터**: Youper 스타일의 실시간 감정 모니터링 및 인사이트 제공
+4. **콘텐츠 큐레이션 기본**: Google Search Grounding 기반 시/명상/음악 큐레이션
+5. **위기 감지 알고리즘**: 키워드/강도/패턴 3가지 방식의 위기 감지
+
+**주요 한계 및 위험요인** (48개 식별):
+- 프론트-백엔드 타임아웃 불일치 (8초 vs 60-90초)
+- 재시도 중복 (최대 6회 호출, 프론트 3회 + 백엔드)
+- 메모리 누수 위험 (useRealtime cleanup, DayMode 메시지 배열)
+- 위기 감지 오탐지/누락 (키워드 기반 한계)
+- localStorage 의존성 (사생활 보호 모드)
+
+#### Phase 1: 위험요인 해결 + RAG 시스템 (2026 Q2-Q3 목표)
+6. **Critical 위험요인 7개 해결**: useRealtime cleanup, 백엔드 타임아웃 30초, localStorage 폴백 등
+7. **High 위험요인 15개 개선**: API 타임아웃 최적화, 백엔드 재시도 제거, Context 최적화 등
+8. **RAG 기반 기억 시스템**: Firebase Vector Search 또는 Pinecone으로 "나를 아는" 대화 구현
+9. **위기 감지 자동 개입**: Gemini API 전체 문장 분석 + Safety 자동 전환
+10. **외부 서비스 제거**: Sentry → window.onerror, Algolia → Firestore 태그 검색 (비용 절감 $30/월)
+
+### 기술 스택
+
+#### 현재 사용 (Phase 0)
+- **프론트엔드**: React 19.2.3 + TypeScript 5.8.2 + Vite 6.2.0
+- **백엔드/인프라**: Firebase (Firestore, Cloud Functions v2, Auth, Hosting)
+- **AI**: Gemini API (3.0 Pro Preview, Google Search Grounding)
+- **스타일링**: Tailwind CSS 3.4.19, Framer Motion 12.24.11, Recharts 3.6.0
 - **프로젝트**: GCP INEESm (Iiness-mlog)
 
+#### Phase 1 추가 예정 (외부 서비스 제거 전략)
+- **벡터 DB**: Pinecone 또는 Firebase Vector Search (RAG 기반, 결정 필요)
+- **데이터 분석**: BigQuery (Phase 2로 이동 고려)
+- **에러 추적**: window.onerror + localStorage (Sentry 제거)
+- **검색 최적화**: Firestore 태그 기반 색인 (Algolia 제거)
+- **모니터링**: Firebase Analytics + 자체 DebugPanel
+
 ### 개발 단계 (Phase별 로드맵)
-- **Phase 0 (MVP)**: 0-6개월 (2026 Q1-Q2) - 핵심 기능 구현 및 기본 UX 완성
-- **Phase 1 (성장)**: 6-12개월 (2026 Q3-Q4) - 리텐션 강화 및 개인화 고도화
-- **Phase 2 (확장)**: 12-24개월 (2027년) - 생체 데이터 연동 및 고급 분석 기능
+
+#### Phase 0: MVP 완료 (2026-01-16 현재) ✓
+- **기간**: 2025 Q4 - 2026-01 (3개월)
+- **완료**: 프론트엔드 27개 라우트, 백엔드 7개 Functions
+- **완료**: Day/Night Mode, 감정 여정 시각화, 실시간 모니터
+- **한계**: RAG 기억 없음 (히스토리 10-20개), BigQuery 배치 없음
+- **위험요인**: 48개 식별 (Critical 7, High 15, Medium 20, Low 6)
+
+#### Phase 1: 위험요인 해결 + RAG 시스템 (2026 Q2-Q3 목표)
+- **기간**: 2026-02 ~ 2026-04 (11주, 약 2.5개월)
+- **위험요인**: 48개 식별 (Critical 7, High 15, Medium 20, Low 6)
+- **실행 계획** (ACTION_PLAN 기반):
+  - Week 1: 프론트엔드 Critical 7개 해결
+  - Week 2-3: 프론트엔드 High 15개 개선
+  - Week 4: 테스트 및 확정 (커버리지 80%)
+  - Week 5 (Day 1-3): 백엔드 조정 (타임아웃 30초, 재시도 제거)
+  - Week 6-10: RAG 시스템 구축 (4주, Firebase Vector Search)
+- **외부 서비스 전략**: Sentry/Algolia 제거 → Firebase만 사용
+- **완성 시**: PRD P0 기능 100% + 위험요인 해결 + 비용 절감 $30/월
+
+#### Phase 2: 성장 및 확장 (2026 Q4 이후)
+- **Medium/Low 위험요인 개선**: 20개 위험요인 해결
+- **성능 최적화 및 모니터링 강화**
+- **생체 데이터 연동 및 고급 분석 기능**
 
 ### 핵심 성공 지표 (KPI)
 - **North Star Metric**: 주간 유효 감정 여정 세션 수 (Weekly Valid Emotion Journey Sessions) - 사용자가 AI 동반자와 의미 있는 대화를 완료한 세션 수
@@ -45,18 +90,25 @@
 - **부록** - 부록 구조 개요, 데이터 모델 상세 정의, 기술 스택 상세 스펙, 기능 구현 상세 스펙, FRD 상세 명세서, UX 플로우 상세 다이어그램, 기능 ID 매핑표
 
 ### 문서 상태
-- **버전**: 5.6 (PRD 점검 및 수정 완료)
-- **최종 수정일**: 2025-01-15
-- **상태**: 점검 완료 및 수정 완료
-- **개발 준비 상태**: 준비 완료
+- **버전**: 5.8 (최신 위험요인 전면 통합 v4.0)
+- **최종 수정일**: 2026-01-16
+- **상태**: Phase 0 MVP 완료, Phase 1 개발 대기
+- **코드베이스 일치율**: 95.5% (Phase 0 기준)
+- **식별된 위험요인**: 48개 (Critical: 7, High: 15, Medium: 20, Low: 6)
+- **검토 범위**: 프론트엔드 86개 + 백엔드 7개 파일 (총 93개)
+- **참조 문서**: 
+  - IMPLEMENTATION_STATUS_REPORT.md v1.2
+  - CODE_REVIEW_RISKS_FINAL.md v4.0 (최종)
+  - ACTION_PLAN.md (11주 실행 계획)
+- **개발 준비 상태**: Phase 1 착수 준비 완료
 
 ---
 
 ## 문서 정보
-- **버전**: 5.6 (PRD 점검 및 수정 완료)
+- **버전**: 5.8 (최신 위험요인 전면 통합 v4.0)
 - **작성일**: 2025-01-15
-- **최종 수정일**: 2025-01-15
-- **상태**: 점검 완료 및 수정 완료
+- **최종 수정일**: 2026-01-16
+- **상태**: Phase 0 MVP 완료, 기술적 위험요인 48개 식별 (프론트 41 + 백엔드 7), 외부 서비스 제거 전략 수립
 - **프로젝트 정보**:
   - GCP 프로젝트명: INEESm
   - 프로젝트 ID: Iiness-mlog
@@ -102,9 +154,11 @@
 
 ## 1.2 컨셉
 
-### 핵심 가치(Value Proposition) — 정서적 공명 및 동반자 (V5.0 피봇, 확정)
+### 핵심 가치(Value Proposition) — 정서적 공명 및 동반자 (V5.0 피봇, Phase 0 완료)
 
-**정의**: 사용자가 직접 설정한 AI 동반자와의 정서적 공명을 통해 감정 여정을 함께하는 경험. RAG 기반 기억 시스템으로 "나를 아는" 대화를 구현하고, 낮에는 빠른 체크인, 밤에는 깊은 성찰을 지원하는 이중 속도 커뮤니케이션을 제공합니다.
+**정의 (Phase 0)**: 사용자가 직접 설정한 AI 동반자와의 정서적 공명을 통해 감정 여정을 함께하는 경험. 낮에는 빠른 체크인, 밤에는 깊은 성찰을 지원하는 이중 속도 커뮤니케이션을 제공합니다.
+
+**(Phase 1 업그레이드 예정, 2026 Q2-Q3)**: RAG 기반 기억 시스템으로 "나를 아는" 대화로 진화 + 48개 기술적 위험요인 해결
 
 **V4.1에서 V5.0으로의 변화**:
 - **V4.1**: 데이터 기반 행동 코칭 (Data-Driven Coaching)
@@ -3107,7 +3161,459 @@ flowchart TD
 
 # 3부: 개발 및 기능 명세
 
-## 3.1 기술 스택
+## 3.1 Phase별 구현 현황 및 위험요인 (2026-01-16 기준)
+
+### 개요
+- **전체 구현율**: 95.5% (63/66 항목)
+- **식별된 위험요인**: 48개 (프론트 41 + 백엔드 7)
+  - Critical: 7개 (P0 즉시 해결 필요)
+  - High: 15개 (P1 빠른 시일 내 해결)
+  - Medium: 20개 (P2 계획적 개선)
+  - Low: 6개 (P3 향후 고려)
+- **검토 범위**: 프론트엔드 86개 파일, 백엔드 7개 파일 (총 93개)
+- **참조 문서**: 
+  - IMPLEMENTATION_STATUS_REPORT.md v1.2
+  - CODE_REVIEW_RISKS_FINAL.md v4.0 (최종)
+  - ACTION_PLAN.md (11주 실행 계획)
+
+### Phase 0: MVP 완료 상태
+
+#### 완전 구현 항목 (95.5% 완료)
+
+**프론트엔드 (27개 라우트)**
+| 카테고리 | 라우트 수 | 주요 페이지 | 구현 파일 |
+|---------|----------|-----------|----------|
+| 채팅 | 3개 | ChatMain, PersonaSetup, BibliotherapySession | src/pages/chat/*.tsx |
+| 기록 | 5개 | JournalTimeline, ConversationDetail, JournalSearch | src/pages/journal/*.tsx |
+| 리포트 | 5개 | WeeklyReport, MonthlyReport, MonitorDashboard | src/pages/reports/*.tsx |
+| 콘텐츠 | 5개 | ContentMain, ContentGallery | src/pages/content/*.tsx |
+| 프로필 | 7개 | ProfileMain, PersonaSettings, Privacy | src/pages/profile/*.tsx |
+| 안전망 | 3개 | SafetyMain, CrisisSupport, CopingTools | src/pages/safety/*.tsx |
+
+**백엔드 (7개 Cloud Functions)**
+| Function 명 | 용도 | 모델 | 타임아웃 | 구현 위치 |
+|------------|------|------|---------|----------|
+| generateDayModeResponse | Day Mode 응답 | gemini-3-pro | 90s | functions/src/api/gemini.ts:17-89 |
+| generateNightModeLetter | Night Mode 편지 | gemini-3-pro | 60s | functions/src/api/gemini.ts:94-160 |
+| generateMonthlyNarrative | 월간 회고록 | gemini-3-flash | 60s | functions/src/api/gemini.ts:165-218 |
+| generateHealingContent | 콘텐츠 큐레이션 | gemini-3-flash | 60s | functions/src/api/gemini.ts:223-339 |
+| generateChatbotResponse | 챗봇 응답 | gemini-3-pro | 60s | functions/src/api/gemini.ts:344-412 |
+| generateMicroAction | 마이크로 액션 | gemini-3-flash | 30s | functions/src/api/gemini.ts:417-521 |
+| generateTimelineAnalysis | 타임라인 분석 | gemini-3-flash | 30s | functions/src/api/gemini.ts:526-596 |
+
+**핵심 시스템**
+| 시스템 | 구현 상태 | 구현 파일 | 비고 |
+|--------|----------|----------|------|
+| Anonymous Auth | 완료 | src/services/auth.ts | 재시도 로직, 네트워크 오류 처리 |
+| 실시간 동기화 | 완료 | src/hooks/useRealtime.ts | 3개 Hook (Timeline, Emotions, Messages) |
+| 위기 감지 알고리즘 | 완료 | src/services/crisisDetection.ts | 키워드/강도/패턴 3가지 방식 |
+| Firestore 구조 | 완료 | src/types/firestore.ts | 11개 컬렉션 정의 |
+
+#### 부분 구현 항목
+
+| 기능 ID | 기능명 | 구현 현황 | 미구현 부분 | 구현 파일 |
+|--------|-------|----------|-----------|----------|
+| FEAT-013 | Bibliotherapy | generateHealingContent 구현 | Vector 검색, 세션 대화, 개별 페이지 | functions/src/api/gemini.ts:223-339 |
+| FEAT-008 | 위기 감지 시스템 | 감지 알고리즘 구현 | Safety 자동 전환, Character Break | src/services/crisisDetection.ts |
+| FEAT-007 | 리포트 | Firestore 직접 조회 | BigQuery 배치 분석 | src/pages/reports/*.tsx |
+
+#### 미구현 항목 (Phase 1 목표)
+
+| 기능 ID | 기능명 | 우선순위 | 예상 기간 | 필요 기술 |
+|--------|-------|---------|----------|----------|
+| FEAT-012 | RAG 기반 기억 시스템 | P0 블로커 | 4주 | Firebase Vector Search 또는 Pinecone |
+| - | BigQuery 연동 | P2 | - | Phase 2로 이동 고려 |
+
+#### 주요 위험요인 요약 (상세는 섹션 3.2 및 부록 H 참조)
+
+**Critical (7개) - P0 즉시 해결 필요**
+1. localStorage 접근 실패 (OnboardingGuard 무한 리다이렉트)
+2. Firebase Auth 재시도 실패 (오프라인 UI 없음)
+3. ErrorBoundary 자체 에러 (앱 전체 크래시)
+4. 위기 감지 누락 (키워드 기반 한계)
+5. Firestore Batch 500개 제한
+6. **useRealtime cleanup 미비 (메모리 누수)** ← 신규
+7. **백엔드 타임아웃 불일치 (8초 vs 60-90초)** ← 신규 백엔드
+
+**High (15개) - P1 빠른 시일 내 해결**
+1. API 타임아웃 누적 최대 24초
+2. DayMode 메시지 배열 무한 증가
+3. Context 변경 시 전체 리렌더링
+4. AppContext 모드 1분마다 체크
+5. localStorage-Firestore 동기화 불일치
+6. Firestore 클라이언트 사이드 검색
+7-12. 기타 (부록 H 참조)
+13. **프론트-백엔드 타임아웃 불일치** ← 신규
+14. **백엔드 재시도 정책 중복 (최대 6회 호출)** ← 신규 백엔드
+15. **백엔드 입력 길이 검증 부족** ← 신규 백엔드
+
+**Medium (20개) - P2 계획적 개선** (+5개)
+**Low (6개) - P3 향후 고려** (+1개)
+
+### Phase 1: 위험요인 해결 우선 + RAG 시스템 (ACTION_PLAN 기반)
+
+**총 기간**: 11주 (약 2.5개월)
+**전략**: 프론트엔드 먼저 → 확정 → 백엔드 조정
+**원칙**: 외부 서비스 제거, Firebase만 사용
+
+#### Week 1: 프론트엔드 Critical 해결 (7개)
+
+**Day 1: 메모리 누수 + 저장소 폴백 (4시간)**
+- Task 1.1: useRealtime cleanup 전체 검토 (src/hooks/useRealtime.ts)
+- Task 1.2: OnboardingGuard sessionStorage 폴백 (src/router/guards.tsx)
+
+**Day 2: 에러 처리 강화 (4시간)**
+- Task 2.1: window.onerror 핸들러 추가 (index.tsx)
+- Task 2.2: DebugPanel 페이지 생성 (src/pages/profile/DebugPanel.tsx)
+
+**Day 3: 입력 검증 + 메시지 제한 (3시간)**
+- Task 3.1: 입력 길이 검증 maxLength={10000}
+- Task 3.2: DayMode 메시지 100개 제한 (messages.slice(-100))
+
+**Day 4-5: 네트워크 + 오프라인 (6시간)**
+- Task 4.1: UIContext에 isOnline 상태 추가
+- Task 4.2: 오프라인 배너 UI 표시
+
+#### Week 2-3: 프론트엔드 High 개선 (15개)
+
+**Task 5: API 타임아웃 최적화 (2일)**
+- 타임아웃 단계별 조정 (8s → 6s → 4s)
+- 즉시 폴백 옵션 제공
+
+**Task 6: Context 리렌더링 최적화 (2일)**
+- useMemo 적용
+- Context 분리 (ModeContext, PersonaContext)
+
+**Task 7: Firestore 검색 최적화 (2일)**
+- 태그 기반 색인 활용 (array-contains)
+- 감정별 쿼리 병렬 실행
+
+**Task 8: Firestore Batch 자동 분할 (1일)**
+- 500개 제한 자동 처리
+- 진행 상태 UI
+
+#### Week 4: 테스트 및 확정
+
+**Task 9: 단위 테스트 (3일)**
+- Critical Path: auth.ts, crisisDetection.ts, guards.tsx
+- High Priority: modeResolver.ts, DayMode, NightMode
+
+**Task 10: 통합 테스트 (2일)**
+- 온보딩 플로우, Day/Night Mode 플로우
+- 커버리지 80% 목표
+
+#### Week 5 (Day 1-3): 백엔드 조정
+
+**Task 11: 타임아웃 30초로 단축 (1일)**
+- generateDayModeResponse: 90s → 30s
+- generateNightModeLetter: 60s → 30s
+
+**Task 12: 재시도 로직 제거 (1일)**
+- 백엔드 async-retry 제거 (프론트엔드에서만 재시도)
+- Firebase Logging 추가
+
+**Task 13: 입력 검증 강화 + 배포 (1일)**
+- sanitizeUserInput 검증 강화
+- 배포 및 로그 모니터링
+
+#### Week 6-10: RAG 시스템 구축 (4주)
+
+**Week 6: 스마트 컨텍스트 (1주)**
+- Task 16: memoryContext.ts (패턴 분석 기반 프롬프트)
+- Task 17: Firestore memories 컬렉션
+
+**Week 7-8: Vector Search (2주)**
+- Task 18: Gemini Embedding API 통합
+- Task 19: Firebase Vector Search 또는 Pinecone
+
+**Week 9-10: 최적화 (1주)**
+- Task 20: Security Rules 업데이트
+- Task 21: 만료 기억 정리 배치
+- Task 22: Context Caching 최적화
+
+**참조**: ACTION_PLAN.md, 부록 I (실행 계획 상세)
+
+---
+
+## 3.2 기술적 위험요인 및 개선 계획 (v4.0 최종)
+
+### 개요
+코드 리뷰 과정에서 **48개의 기술적 위험요인**을 식별했습니다:
+- **Critical**: 7개 (프론트 6 + 백엔드 1) - P0 즉시 해결
+- **High**: 15개 (프론트 12 + 백엔드 3) - P1 빠른 시일 내 해결
+- **Medium**: 20개 (프론트 17 + 백엔드 3) - P2 계획적 개선
+- **Low**: 6개 (프론트 6) - P3 향후 고려
+
+**검토 범위**: 프론트엔드 86개 파일, 백엔드 7개 파일 (총 93개)  
+**검토 방법**: 파일 시스템 직접 확인, 코드 분석, PRD 명세 대조  
+**참조 문서**: CODE_REVIEW_RISKS_FINAL.md v4.0  
+**상세 내용**: 부록 H 참조
+
+**핵심 이슈 (v4.0)**:
+1. 프론트-백엔드 타임아웃 불일치 (8초 vs 60-90초)
+2. 재시도 중복 (최대 6회 호출)
+3. 메모리 누수 (useRealtime cleanup, DayMode 메시지)
+4. 위기 감지 정확도 (키워드 기반 한계)
+5. 레거시 코드 (13개 파일)
+
+**해결 전략 (v4.0)**:
+- 외부 서비스 제거: Sentry, Algolia 등 제거
+- Firebase 내장 기능 활용: Firestore, Functions, Analytics
+- 자체 구현: window.onerror, 태그 기반 검색, DebugPanel
+- 비용 절감: ~$30/월
+
+### Critical 위험요인 (7개) - P0
+
+#### 1. OnboardingGuard localStorage 접근 실패
+- **위치**: src/router/guards.tsx:14-20
+- **문제**: localStorage 접근 실패 시 기본값 false → 무한 리다이렉트
+- **영향**: 사생활 보호 모드 사용자 앱 접근 불가
+- **해결 방안**:
+  - sessionStorage 폴백 추가
+  - 쿠키 기반 대안 검토
+  - 3회 리다이렉트 후 강제 통과 로직
+- **Phase 1 적용**: ✓ (우선순위 1)
+
+#### 2. Firebase Auth 재시도 실패 시 앱 동작
+- **위치**: src/services/auth.ts:44-56
+- **문제**: 3회 재시도 실패 시 Firestore 쓰기 불가, 앱은 계속 실행
+- **영향**: 오프라인 모드로 동작하나 UI 표시 없음
+- **해결 방안**:
+  - UI에 오프라인 모드 표시
+  - localStorage 백업 강화
+  - 재연결 시 자동 동기화
+- **Phase 1 적용**: ✓ (우선순위 1)
+
+#### 3. ErrorBoundary 자체 에러
+- **위치**: src/components/ui/ErrorBoundary.tsx:30-38
+- **문제**: ErrorBoundary 자체에서 에러 발생 시 캐치 불가
+- **영향**: 앱 전체 크래시
+- **해결 방안** (Sentry 제거):
+  - window.onerror 핸들러 추가 (index.tsx)
+  - localStorage에 에러 로그 저장 (최대 50개)
+  - DebugPanel 페이지에서 조회
+- **Phase 1 적용**: ✓ (Week 1 Day 2)
+
+#### 4. 위기 감지 누락 (False Negative)
+- **위치**: src/services/crisisDetection.ts:26-46
+- **문제**: 키워드 미포함 표현 누락 (예: "더 이상 살 의미가 없어")
+- **영향**: 심각한 위기 상황 감지 실패
+- **해결 방안**:
+  - Gemini API로 전체 문장 분석
+  - 키워드 목록 정기 업데이트 (분기 1회)
+  - 맥락 기반 분석 추가
+- **Phase 1 적용**: ✓ (우선순위 1, FEAT-008 통합)
+
+#### 5. Firestore Batch 500개 제한
+- **위치**: src/services/firestore.ts:537-554
+- **문제**: 대량 삭제 시 500개 제한 초과 시 에러
+- **영향**: 데이터 삭제 실패
+- **해결 방안**:
+  - 여러 배치로 자동 분할
+  - 백그라운드 큐 작업
+  - 진행 상태 표시
+- **Phase 1 적용**: ✓ (Week 2-3)
+
+#### 6. useRealtime cleanup 미비 (메모리 누수) ← 신규
+- **위치**: src/hooks/useRealtime.ts, src/features/checkin/useDayCheckinMachine.ts 등
+- **문제**: onSnapshot 리스너 cleanup 함수 누락
+- **영향**: 페이지 이동 시 메모리 누수, 장시간 사용 시 성능 저하
+- **해결 방안**:
+  - 모든 useEffect cleanup에서 unsubscribe() 호출 확인
+  - onSnapshot 사용처 전체 검토 (rg "onSnapshot" src/)
+- **Phase 1 적용**: ✓ (Week 1 Day 1)
+
+#### 7. 백엔드 타임아웃 불일치 ← 신규 백엔드
+- **위치**: functions/src/api/gemini.ts
+- **문제**: 백엔드 타임아웃 60-90초, 프론트엔드 기대치 8초
+- **영향**: 프론트 타임아웃 후 백엔드 계속 실행 → 리소스 낭비, 비용 증가
+- **해결 방안**:
+  - 모든 Functions 타임아웃 30초로 단축
+  - generateDayModeResponse: timeout: { seconds: 30 }
+  - generateNightModeLetter: timeout: { seconds: 30 }
+- **Phase 1 적용**: ✓ (Week 5 Day 1)
+
+### High 위험요인 (12개) - P1
+
+#### 1. API 타임아웃 누적 시간
+- **위치**: src/services/apiPolicy.ts:104-114
+- **문제**: 3회 재시도 시 최대 24초 소요 (8초 × 3)
+- **영향**: 사용자 대기 시간 증가, UX 저하
+- **해결 방안**:
+  - 스트리밍 응답 도입 (SSE/WebSocket)
+  - 타임아웃 단계별 조정 (8s → 5s → 3s)
+  - 즉시 폴백 옵션 제공
+- **Phase 1 적용**: ✓ (우선순위 2)
+
+#### 2. DayMode 메시지 배열 무한 증가
+- **위치**: src/components/chat/DayMode.tsx
+- **문제**: messages 배열 제한 없음, 메모리 누수 가능
+- **영향**: 장시간 대화 시 메모리 소모 증가
+- **해결 방안**:
+  - 최대 100개 메시지로 제한
+  - 오래된 메시지 자동 제거
+  - Virtualized List 도입
+- **Phase 1 적용**: ✓ (우선순위 2)
+
+#### 3. Context 값 변경 시 리렌더링 범위
+- **위치**: src/contexts/AppContext.tsx
+- **문제**: mode 변경 시 모든 소비자 리렌더링
+- **영향**: 성능 저하
+- **해결 방안**:
+  - 상태별 Context 분리 (ModeContext, PersonaContext 등)
+  - useMemo, useCallback 최적화
+  - 선택적 구독 (use-context-selector)
+- **Phase 1 적용**: ✓ (우선순위 2)
+
+#### 4. AppContext 모드 주기적 체크 (1분)
+- **위치**: src/contexts/AppContext.tsx:66-72
+- **문제**: 1분마다 resolveMode() 호출, 성능 영향
+- **영향**: 백그라운드 네트워크 요청 증가
+- **해결 방안**:
+  - 간격 조정 (5분)
+  - requestIdleCallback 사용
+  - override 시 완전 중지
+- **Phase 1 적용**: ✓ (우선순위 2)
+
+#### 5. localStorage 동기화 불일치
+- **위치**: src/services/consent.ts:120-140
+- **문제**: Firestore 저장 실패 시 localStorage만 저장
+- **영향**: 다기기 동기화 실패
+- **해결 방안**:
+  - 재시도 로직 추가
+  - 동기화 상태 UI 표시
+  - 백그라운드 동기화 작업
+- **Phase 1 적용**: ✓ (우선순위 2)
+
+#### 6. Firestore searchConversations 클라이언트 사이드 필터링
+- **위치**: src/services/firestore.ts:615-654
+- **문제**: Firestore 전체 텍스트 검색 미지원, 모든 데이터 가져온 후 필터링
+- **영향**: 대량 데이터 시 성능 저하
+- **해결 방안** (Algolia 제거):
+  - Firestore 태그 기반 색인 활용 (array-contains)
+  - 감정별, contextTags별 쿼리 병렬 실행
+  - 클라이언트에서 통합 정렬
+- **Phase 1 적용**: ✓ (Week 2-3)
+
+#### 7-12. 기타 프론트엔드 High 위험요인
+(MainLayout URL 파싱, EmotionSelectModal 레이아웃, TabBar refs, NightMode textarea, ErrorBoundary 재시도, CelestialBackground 성능)
+- **상세 내용**: 부록 H.1.2 참조
+- **Phase 1 적용**: ✓ (Week 2-3)
+
+#### 13. 프론트-백엔드 타임아웃 불일치 ← 신규
+- **위치**: src/services/apiPolicy.ts (8초) vs functions/src/api/gemini.ts (60-90초)
+- **문제**: 프론트 타임아웃 후 백엔드는 계속 실행
+- **영향**: 불필요한 API 호출, 비용 증가
+- **해결**: 백엔드 타임아웃 30초로 단축
+- **Phase 1 적용**: ✓ (Week 5)
+
+#### 14. 백엔드 재시도 정책 중복 ← 신규 백엔드
+- **위치**: functions/src/services/gemini.ts
+- **문제**: 프론트 재시도 (3회) + 백엔드 async-retry
+- **영향**: 최대 6회 호출, API 비용 증가
+- **해결**: 백엔드 재시도 완전 제거 (프론트에서만 재시도)
+- **Phase 1 적용**: ✓ (Week 5 Day 2)
+
+#### 15. 백엔드 입력 길이 검증 부족 ← 신규 백엔드
+- **위치**: functions/src/services/gemini.ts:sanitizeUserInput
+- **문제**: 10,000자 제한이지만 프론트 검증 없음
+- **영향**: 백엔드 에러 발생 가능
+- **해결**: 프론트엔드에 maxLength={10000} 추가 (DayMode, NightMode)
+- **Phase 1 적용**: ✓ (Week 1 Day 3)
+
+### Medium/Low 위험요인 (26개) - P2/P3
+- **Medium (20개)**: routes.tsx 경로 중복, Provider 중첩, OnboardingLayout 데이터 미저장, modeResolver 복잡도, crisisDetection 키워드 하드코딩 등 (+5개)
+- **Low (6개)**: Router.tsx 로그, guards.tsx 경로 하드코딩, modeResolver 비동기, consent 버전 마이그레이션 등 (+1개)
+- **상세 내용**: 부록 H.1.3, H.1.4 참조
+- **Phase 2 적용**: Medium 20개
+- **Phase 3 적용**: Low 6개
+
+### 아키텍처 개선 권장사항 (외부 서비스 제거 전략)
+
+#### 1. 에러 추적 자체 구현 (Sentry 제거)
+- **도구**: window.onerror + localStorage (외부 서비스 제거)
+- **구현**:
+  - index.tsx에 window.onerror 핸들러
+  - localStorage에 최대 50개 로그 저장
+  - DebugPanel 페이지 (src/pages/profile/DebugPanel.tsx)
+- **이점**: 외부 의존성 제거, 비용 절감 ($26/월)
+- **Phase 1 적용**: ✓ (Week 1 Day 2)
+
+#### 2. 검색 최적화 (Algolia 제거)
+- **현재**: 클라이언트 사이드 필터링
+- **제안**: Firestore 태그 기반 검색 (외부 서비스 제거)
+- **구현**:
+  - contextTags, emotionTags 배열 색인
+  - array-contains 쿼리 활용
+  - 여러 쿼리 병렬 실행 후 통합
+- **이점**: 외부 의존성 제거, 비용 절감 ($1-50/월)
+- **Phase 1 적용**: ✓ (Week 2-3)
+
+#### 3. AI 응답 최적화 (스트리밍 제거)
+- **현재**: 일괄 응답 (8초 타임아웃)
+- **제안**: 타임아웃 단계별 조정 + 즉시 폴백
+- **구현**:
+  - 타임아웃: 8s → 6s → 4s
+  - 폴백 메시지 즉시 제공
+- **이점**: 구현 간단, SSE/WebSocket 불필요
+- **Phase 1 적용**: ✓ (Week 2-3)
+
+#### 4. 상태 관리 최적화
+- **현재**: Context + XState
+- **제안**: useMemo + Context 분리 (외부 라이브러리 제거)
+- **구현**:
+  - Context 값 useMemo로 최적화
+  - ModeContext, PersonaContext 분리
+- **이점**: 외부 의존성 없이 성능 개선
+- **Phase 1 적용**: ✓ (Week 2-3)
+
+#### 5. 모니터링 자체 구현
+- **현재**: 모니터링 없음
+- **제안**: Firebase Analytics + 자체 PerformanceDashboard
+- **구현**:
+  - Firebase Analytics 이벤트 추가
+  - src/pages/profile/PerformanceDashboard.tsx
+- **이점**: 외부 서비스 없이 성능 추적
+- **Phase 1 적용**: (Week 5-6, 선택)
+
+### 테스트 커버리지 권장사항
+
+#### Critical Path (P0)
+1. **auth.ts**: ensureAnonymousAuth() 재시도 로직
+2. **crisisDetection.ts**: 위기 감지 알고리즘
+3. **guards.tsx**: OnboardingGuard 리다이렉트
+4. **apiPolicy.ts**: 재시도 및 폴백 로직
+5. **firestore.ts**: Batch 작업
+
+#### High Priority (P1)
+1. **modeResolver.ts**: 자정 넘김 시간 계산
+2. **DayMode/NightMode**: 상태 머신 플로우
+3. **AppContext**: 모드 주기적 체크
+4. **EmotionSelectModal**: 키보드 네비게이션
+5. **TabBar**: 터치 제스처
+
+### 모니터링 메트릭 제안
+
+#### 성능 메트릭
+- **API 응답 시간**: 평균, P95, P99
+- **재시도 횟수**: 네트워크 오류 빈도
+- **메모리 사용량**: DayMode 메시지 배열
+- **렌더링 성능**: Context 변경 시 리렌더링 횟수
+
+#### 오류 메트릭
+- **위기 감지**: 오탐지/누락 비율
+- **localStorage 실패**: 사생활 보호 모드 사용자
+- **Firebase Auth 실패**: 네트워크 오류 빈도
+- **ErrorBoundary 트리거**: 에러 발생 빈도
+
+#### 사용자 경험 메트릭
+- **온보딩 완료율**: OnboardingGuard 통과율
+- **대화 저장 성공률**: Firestore 쓰기 성공률
+- **AI 응답 만족도**: 타임아웃 대비 성공률
+
+---
+
+## 3.3 기술 스택
 
 ### 프론트엔드
 - **프레임워크**: React 19.x
@@ -3253,7 +3759,7 @@ npm install -D @types/node
 firebase init
 ```
 
-## 3.2 요구 기능 명세
+## 3.4 요구 기능 명세
 
 ### 기능 명세 개요
 
@@ -3271,31 +3777,47 @@ firebase init
 - 사용자 관리: 인증, 리마인드, 대화 저장/삭제
 - 안전망: 위기 감지 및 대응
 
-### 기능별 요구 목표 통합표
+**참고**: Phase별 구현 현황은 섹션 3.1 참조, 기술적 위험요인은 섹션 3.2 참조
 
-| 기능 ID | 기능명 | 우선순위 | 핵심 목표 | 측정 지표 | 목표값 | FRD ID |
-|--------|--------|---------|----------|----------|--------|--------|
-| FEAT-001 | 대화형 감정 체크인 + Day/Night Mode | P0 | 체크인 완료 시간 최소화 | 체크인 완료 시간 (P95) | 측정 및 추적 | FRD-001 |
-| FEAT-002 | 실시간 데이터 동기화 | P0 | 지연 시간 최소화 | 지연 시간, 재연결 시간 | 측정 및 추적 | - |
-| FEAT-003 | AI 페르소나 기반 대화 | P0 | 대화 품질 및 속도 | 생성 시간 (P95), 만족도 | 측정 및 추적 | FRD-002 |
-| FEAT-004 | 게이미피케이션 | P1 | 사용자 참여 유도 | 리텐션 (7일/30일) | 측정 및 추적 | - |
-| FEAT-005 | 기록 관리 | P1 | 기록 조회 성능 | 로딩 시간 | 측정 및 추적 | FRD-003 |
-| FEAT-006 | 기록 조회/검색 | P1 | 검색 성능 | 검색 결과 표시 시간 | 측정 및 추적 | FRD-003 |
-| FEAT-007 | 주간/월간 리포트 + 월간 회고록 | P1 | 리포트 생성/조회 성능 | 리포트 조회, 생성 시간 | 측정 및 추적 | FRD-006 |
-| FEAT-008 | 안전망 시스템 | P2 | 위기 대응 속도 | 위기 감지 → 도구 제공 시간 | 측정 및 추적 | - |
-| FEAT-009 | 마이크로 액션 | P1 | 액션 실행률 | 노출률, 실행률, 완료율, Before/After 참여율 | 측정 및 추적 | FRD-004 |
-| FEAT-010 | 리마인드 설정 | P2 | 알림 차단율 최소화 | 알림 차단율/수신거부율, 예측 넛지 클릭률 | 측정 및 추적 | FRD-005 |
-| FEAT-011 | 온보딩 | P0 | 온보딩 완료율 | 온보딩 완료 수 / 온보딩 시작 수 | 측정 및 추적 | - |
-| FEAT-017 | 대화 저장/삭제 | P0 | 동의 완료 시간 및 동의율 | 동의 UI → 동의 완료 시간, 동의율 | 측정 및 추적 | FRD-007 |
-| FEAT-012 | AI 페르소나 설정 (RAG 기반 기억) | P0 | 페르소나 설정 완료율 | 설정 완료율, 기억 활용률 | 측정 및 추적 | FRD-008 |
-| FEAT-013 | 콘텐츠 매개 대화 (Bibliotherapy) | P0 | 콘텐츠 열람률 | 콘텐츠 노출률, 열람률 | 측정 및 추적 | FRD-010 |
-| FEAT-014 | 감각적 몰입 및 사회적 연대 | P1 | 몰입 경험 만족도 | 만족도 | 측정 및 추적 | - |
-| FEAT-015 | 감정 여정 시각화 (Sankey Flow) | P0 | 시각화 조회율 | 조회율, 만족도 | 측정 및 추적 | FRD-012 |
-| FEAT-016 | 실시간 모니터 (Youper 스타일) | P0 | 모니터 조회율 | 조회율, 만족도 | 측정 및 추적 | - |
+### 기능별 요구 목표 통합표 (Phase별 분류 + 위험요인 포함)
 
-## 3.2 요구 기능 명세
+#### Phase 0 완료 (현재)
+| 기능 ID | 기능명 | 우선순위 | 구현 상태 | 주요 위험요인 | 측정 지표 | FRD ID |
+|--------|--------|---------|----------|-------------|----------|--------|
+| FEAT-001 | Day/Night Mode | P0 | 완료 | 메시지 배열 무한 증가 (High #2) | 체크인 완료율 | FRD-001 |
+| FEAT-002 | 실시간 데이터 동기화 | P0 | 완료 | - | 지연 시간, 재연결 시간 | - |
+| FEAT-003 | AI 페르소나 기반 대화 | P0 | 완료 | API 타임아웃 24초 (High #1) | 생성 시간 (P95) | FRD-002 |
+| FEAT-015 | 감정 여정 시각화 | P0 | 완료 | - | 시각화 조회율 | FRD-012 |
+| FEAT-016 | 실시간 모니터 | P0 | 완료 | - | 모니터 조회율 | - |
+| FEAT-011 | 온보딩 | P0 | 완료 | localStorage 무한 리다이렉트 (Critical #1) | 온보딩 완료율 | - |
+| FEAT-017 | 대화 저장/삭제 | P0 | 완료 | - | 동의 완료율 | FRD-007 |
+| FEAT-013 | Bibliotherapy | P0 | 부분 구현 | Vector 검색 미구현 | 콘텐츠 열람률 | FRD-010 |
+| FEAT-008 | 안전망 시스템 | P2 | 부분 구현 | 위기 감지 누락 (Critical #4), 자동 전환 없음 | 위기 대응 속도 | - |
+| FEAT-005 | 기록 관리 | P1 | 완료 | - | 로딩 시간 | FRD-003 |
+| FEAT-006 | 기록 조회/검색 | P1 | 완료 | 클라이언트 사이드 필터링 (High #6) | 검색 결과 시간 | FRD-003 |
+| FEAT-007 | 주간/월간 리포트 | P1 | 부분 구현 | BigQuery 배치 없음 | 리포트 조회/생성 시간 | FRD-006 |
+| FEAT-009 | 마이크로 액션 | P1 | 완료 | - | 노출률, 실행률, 완료율 | FRD-004 |
+| - | Anonymous Auth | - | 완료 | 재시도 실패 UI 없음 (Critical #2) | 인증 성공률 | - |
+| - | 에러 처리 | - | 완료 | ErrorBoundary 자체 에러 (Critical #3) | 에러 복구율 | - |
 
-### 기능 1: 대화형 감정 체크인 시스템 + Day/Night Mode (메인) + 폼 기반 체크인 (옵션)
+#### Phase 1 목표 (2026 Q2-Q3) - 위험요인 해결 우선 (11주)
+| 항목 | 기능명 | 우선순위 | 예상 기간 | 해결 위험요인 | 필요 리소스 | 블로커 |
+|--------|--------|---------|----------|-------------|-----------|--------|
+| Week 1 | Critical 위험요인 7개 해결 | P0 | 1주 | FE-C1~6, BE-C1 | sessionStorage, window.onerror | 블로커 |
+| Week 2-3 | High 위험요인 15개 개선 | P1 | 2주 | FE-H1~12, BE-H1~3 | Firestore 최적화 | 블로커 |
+| Week 4 | 테스트 및 확정 | P0 | 1주 | - | 단위/통합 테스트 | 블로커 |
+| Week 5 (Day 1-3) | 백엔드 조정 | P0 | 3일 | 타임아웃 30초, 재시도 제거 | Firebase Logging | 블로커 |
+| Week 6-10 | RAG 기반 기억 시스템 | P0 | 4주 | - | Firebase Vector Search | 블로커 |
+| - | BigQuery 연동 | P2 | - | Phase 2로 이동 | - | - |
+| FEAT-013 | Bibliotherapy 고도화 | P2 | - | Phase 2로 이동 | - | - |
+| FEAT-004 | 게이미피케이션 | P2 | - | Phase 2로 이동 | - | - |
+
+총 기간: 11주 (vs 기존 13주)
+외부 서비스: Sentry/Algolia 제거 → 비용 절감 ~$30/월
+
+### 기능 상세 명세
+
+#### 기능 1: 대화형 감정 체크인 시스템 + Day/Night Mode (메인) + 폼 기반 체크인 (옵션)
 
 **기능 ID**: FEAT-001
 
@@ -4248,7 +4770,7 @@ firebase init
 
 **참고**: 상세 대시보드 스펙은 부록 C 참조
 
-## 3.3 기능 명세 목표 및 Phase별 로드맵 (환경분석 v1.1 반영)
+## 3.5 기능 명세 목표 및 Phase별 로드맵 (환경분석 v1.1 반영)
 
 ### Phase 0: MVP (0-6개월, 2026 Q1-Q2)
 
@@ -4319,7 +4841,7 @@ firebase init
 
 **예상 기간**: 12개월 (2027년)
 
-## 3.4 기술 명세서 (TSD)
+## 3.6 기술 명세서 (TSD)
 
 ### 데이터 모델
 
@@ -5021,7 +5543,7 @@ service cloud.firestore {
 - 입력 필드가 키보드 위에 표시되도록 스크롤
 - 키보드 닫기 제스처 (스와이프 다운)
 
-## 3.5 기능 요구사항 명세서 (FRD)
+## 3.7 기능 요구사항 명세서 (FRD)
 
 ### FRD-001: 감정 체크인 기능 + Day/Night Mode
 
@@ -5473,12 +5995,14 @@ service cloud.firestore {
 
 | 부록 | 제목 | 주요 내용 | 참조 문서 및 섹션 | 구체적 매핑 위치 |
 |------|------|----------|------------------|----------------|
-| **부록 A** | 데이터 모델 상세 정의 | 모든 데이터 모델의 상세 TypeScript 인터페이스 정의 | 본문 섹션 3.4 TSD | PRD.md 섹션 3.4 (라인 3519~3921) |
-| **부록 B** | 기술 스택 상세 스펙 | Vector DB 선택 기준, RAG 파이프라인 아키텍처, 통합 아키텍처 다이어그램 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 3 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 3 (라인 3443~3641) |
-| **부록 C** | 기능 구현 상세 스펙 | 각 기능별 상세 구현 가이드, 알고리즘 상세 설명, 코드 예시 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 2 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 2 (라인 62~3109) |
-| **부록 D** | FRD 상세 명세서 | 모든 FRD의 전체 템플릿 및 상세 요구사항 | 본문 섹션 3.5 FRD | PRD.md 섹션 3.5 (라인 4136~4570) |
-| **부록 E** | UX 플로우 상세 다이어그램 | Day/Night Mode 상세 플로우, Bibliotherapy 세션 플로우 등 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 5 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 5 (라인 4079~4417) |
-| **부록 F** | 기능 ID 매핑표 | V5.0 피봇 계획 문서와 PRD.md 간 기능 ID 매핑표 | 본 섹션 | PRD.md 부록 F (라인 4817~4873) |
+| **부록 A** | 데이터 모델 상세 정의 | 모든 데이터 모델의 상세 TypeScript 인터페이스 정의 | 본문 섹션 3.6 TSD | PRD.md 섹션 3.6 |
+| **부록 B** | 기술 스택 상세 스펙 | Vector DB 선택 기준, RAG 파이프라인 아키텍처, 통합 아키텍처 다이어그램 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 3 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 3 |
+| **부록 C** | 기능 구현 상세 스펙 | 각 기능별 상세 구현 가이드, 알고리즘 상세 설명, 코드 예시 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 2 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 2 |
+| **부록 D** | FRD 상세 명세서 | 모든 FRD의 전체 템플릿 및 상세 요구사항 | 본문 섹션 3.7 FRD | PRD.md 섹션 3.7 |
+| **부록 E** | UX 플로우 상세 다이어그램 | Day/Night Mode 상세 플로우, Bibliotherapy 세션 플로우 등 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 5 | `PRD_V5.0_PLAN_BACKUP.md` 섹션 5 |
+| **부록 F** | 기능 ID 매핑표 | V5.0 피봇 계획 문서와 PRD.md 간 기능 ID 매핑표 | 본 섹션 | PRD.md 부록 F |
+| **부록 G** | Phase 1 구현 상세 스펙 | RAG 기반 기억 시스템, BigQuery 연동 상세 설계 및 구현 가이드 | 본 섹션 | PRD.md 부록 G (신규) |
+| **부록 H** | 기술적 위험요인 상세 | CODE_REVIEW_RISKS 48개 위험요인 전체 목록 및 개선 방안 | CODE_REVIEW_RISKS.md v4.0 | PRD.md 부록 H (신규) |
 
 ### 부록별 상세 내용
 
@@ -5486,8 +6010,8 @@ service cloud.firestore {
 - EmotionData, ChatMessage, CoachPersona, MemoryData, ContentData, DiaryData, AICoachSettings, ContentReadLog 등 모든 데이터 모델의 TypeScript 인터페이스
 - 각 모델의 필드 정의, 타입, 제약 조건
 - Firestore 컬렉션 구조 및 인덱스 정의
-- **참조 위치**: 본문 섹션 3.4 기술 명세서 (TSD)의 데이터 모델 섹션
-- **구체적 매핑**: PRD.md 섹션 3.4 (라인 3519~3921)
+- **참조 위치**: 본문 섹션 3.6 기술 명세서 (TSD)의 데이터 모델 섹션
+- **구체적 매핑**: PRD.md 섹션 3.6
   - 3.4.1 데이터 모델 (라인 3519~3921)
   - 각 데이터 모델의 TypeScript 인터페이스 정의 포함
 
@@ -5552,8 +6076,8 @@ service cloud.firestore {
 - FRD-010: 콘텐츠 큐레이션 (신규)
 - FRD-012: 감정 여정 시각화 (신규)
 - 각 FRD의 전체 템플릿 및 상세 요구사항
-- **참조 위치**: 본문 섹션 3.5 기능 요구사항 명세서 (FRD)
-- **구체적 매핑**: PRD.md 섹션 3.5 (라인 4136~4570)
+- **참조 위치**: 본문 섹션 3.7 기능 요구사항 명세서 (FRD)
+- **구체적 매핑**: PRD.md 섹션 3.7
   - FRD-001: 감정 체크인 기능 + Day/Night Mode (라인 4136~4199)
   - FRD-002: AI 페르소나 기반 대화 (라인 4200~4234)
   - FRD-003: 기록 관리 기능 (라인 4235~4258)
@@ -5582,10 +6106,33 @@ service cloud.firestore {
 - V5.0 피봇 계획 문서(`PRD_V5.0_PLAN_BACKUP.md`)의 기능 ID와 PRD.md의 기능 ID 간 매핑표
 - 기능 통합 정보 및 참조 경로
 - **참조 위치**: 본 섹션
-- **구체적 매핑**: PRD.md 부록 F (라인 4817~4873)
-  - 기능 ID 매핑표 (라인 4821~4831)
-  - 매핑 설명 (라인 4833~4865)
-  - 참고사항 (라인 4867~4873)
+- **구체적 매핑**: PRD.md 부록 F
+
+**부록 G: Phase 1 구현 상세 스펙 (신규, 2026-01-16)**
+- RAG 기반 기억 시스템 상세 설계
+  - Pinecone 아키텍처, 임베딩 생성 플로우, 검색 알고리즘
+  - 데이터 모델 (MemoryData)
+  - 3주 구현 가이드 (Pinecone 설정, 임베딩 생성, 통합)
+- BigQuery 연동 상세 설계
+  - 데이터 동기화 플로우, 집계 쿼리
+  - BigQuery 스키마 (emotions_daily 등)
+  - 2주 구현 가이드 (BigQuery 설정, 동기화 함수, 리포트 생성)
+- **참조 위치**: 본 섹션 부록 G
+- **구체적 매핑**: PRD.md 부록 G
+
+**부록 H: 기술적 위험요인 상세 (신규, 2026-01-16, 최종 업데이트 2026-01-17)**
+- CODE_REVIEW_RISKS.md v4.0 전체 통합
+- 48개 위험요인 상세 목록 (프론트 41 + 백엔드 7)
+  - Critical 7개: localStorage 폴백, Firebase Auth UI, ErrorBoundary, 위기 감지 누락, Batch 제한, useRealtime cleanup, 백엔드 타임아웃 불일치
+  - High 16개: API 타임아웃, 메시지 배열, Context 리렌더링, CoachPersona 타입 불일치 등
+  - Medium 20개, Low 6개
+- 개선 제안 우선순위별 (P0/P1/P2/P3)
+- 외부 서비스 제거 전략 (Sentry, Algolia → Firebase)
+- 아키텍처 개선 권장사항 (Sentry, Algolia, 스트리밍, 상태 관리, 오프라인)
+- 테스트 커버리지 권장사항 (Critical Path, High Priority)
+- 모니터링 메트릭 제안 (성능, 오류, 사용자 경험)
+- **참조 위치**: 본 섹션 부록 H, CODE_REVIEW_RISKS.md
+- **구체적 매핑**: PRD.md 부록 H
 
 ---
 
@@ -8000,6 +8547,819 @@ flowchart LR
 
 ---
 
+## 부록 G: Phase 1 구현 상세 스펙 (미구현 기능)
+
+### G.1 RAG 기반 기억 시스템 상세 설계
+
+#### G.1.1 개요
+- **우선순위**: P0 블로커
+- **예상 기간**: 4주 (Week 6-10)
+- **기술 스택**: Firebase Vector Search 또는 Pinecone + Gemini Embedding API
+- **참조**: 기존 PRD 섹션 2641-2719 (플로우 9), ACTION_PLAN Phase 6
+
+#### G.1.2 아키텍처 다이어그램
+
+**임베딩 생성 플로우**:
+```
+대화 저장 → 텍스트 전처리 → Gemini Embedding API (768차원) 
+→ Pinecone 저장 → Firestore memories 메타데이터
+```
+
+**검색 플로우**:
+```
+사용자 메시지 → 쿼리 임베딩 생성 → Pinecone Cosine Similarity 검색 
+→ 상위 K개 결과 (K=5-10) → 시간/중요도/감정 가중치 랭킹 
+→ 프롬프트 컨텍스트 주입
+```
+
+#### G.1.3 기술 스택 상세 (v4.0 업데이트)
+
+**옵션 1: Firebase Vector Search (권장, 외부 서비스 제거)**
+| 항목 | 기술 | 스펙 |
+|------|------|------|
+| Vector DB | Firestore Vector Search | Preview/Beta 기능 |
+| 임베딩 | Gemini Embedding API | 768차원 벡터 |
+| 메타데이터 저장 | Firestore | memories 컬렉션 (통합) |
+| 검색 방식 | Cosine Similarity | 상위 K=5-10 |
+| 만료 정책 | Cloud Scheduler | 주간 배치 정리 |
+| 비용 | Firestore 범위 내 | +$0-10/월 |
+
+**옵션 2: Pinecone (원안)**
+| 항목 | 기술 | 스펙 |
+|------|------|------|
+| Vector DB | Pinecone | 무료 티어 (100K 벡터, 1 Pod) |
+| 임베딩 | Gemini Embedding API | 768차원 벡터 |
+| 메타데이터 저장 | Firestore | memories 컬렉션 |
+| 검색 방식 | Cosine Similarity | 상위 K=5-10 |
+| 만료 정책 | 자동 정리 | 90일 이후 |
+| 비용 | 무료 티어 | +$0 |
+
+**선택 기준**: 외부 서비스 최소화 원칙에 따라 Firebase Vector Search 우선 시도, 성능 부족 시 Pinecone 전환
+
+#### G.1.4 데이터 모델 (MemoryData)
+
+```typescript
+interface MemoryData {
+  id: string;
+  userId: string;
+  conversationId: string;
+  messageId: string;
+  content: string;
+  embedding: number[]; // 768차원 벡터
+  emotionTags: string[];
+  contextTags: string[];
+  importance: number; // 1-10
+  createdAt: Timestamp;
+  expiresAt: Timestamp; // createdAt + 90일
+  vectorId: string; // Pinecone vector ID
+}
+```
+
+#### G.1.5 구현 가이드 (v4.0 업데이트, 4주)
+
+**Week 6: 스마트 컨텍스트 + Firestore 메모리 (1주)**
+1. `functions/src/services/memoryContext.ts` 구현
+   - 패턴 분석 기반 프롬프트 개선
+   - 최근 7일 감정 데이터 빈도 분석
+   - 요일별 패턴 감지
+2. Firestore `memories` 컬렉션 추가 (FIRESTORE_COLLECTIONS 업데이트)
+3. Gemini 프롬프트에 패턴 정보 주입
+
+**Week 7-8: Vector Search 통합 (2주)**
+4. `functions/src/services/embeddingService.ts` 구현
+   - Gemini Embedding API 통합
+   - `generateEmbedding(text): Promise<number[]>`
+5. Firebase Vector Search 설정
+   - gcloud CLI로 Vector Index 생성
+   - `searchMemoriesWithVector(queryEmbedding, topK)`
+   - (대안) Pinecone 연동 시 `pinecone.ts` 구현
+6. Gemini 프롬프트에 Vector 검색 결과 주입
+
+**Week 9-10: 최적화 및 배포 (1주)**
+7. Firestore Security Rules 업데이트
+8. Cloud Scheduler로 만료 기억 정리 배치
+9. Context Caching 최적화
+10. 테스트 및 최종 배포
+
+**참조**: ACTION_PLAN.md Phase 6 (Task 16-22 상세 코드 포함)
+
+### G.2 BigQuery 연동 상세 설계
+
+#### G.2.1 개요 (v4.0 업데이트)
+- **우선순위**: P1 → **P2 (Phase 2로 이동 고려)**
+- **사유**: Phase 1은 위험요인 해결 + RAG 시스템 우선
+- **대안**: Firestore 직접 집계로 MVP 운영 가능
+- **예상 기간**: 2주 (Phase 2에서 수행 시)
+- **기술 스택**: BigQuery Client + Cloud Scheduler
+- **참조**: 기존 PRD 섹션 2565-2639, 2833-2839
+
+#### G.2.2 아키텍처 다이어그램
+
+**데이터 동기화 플로우**:
+```
+Firestore (원본 데이터) → Cloud Function (일일 배치) 
+→ BigQuery 테이블 → 집계 쿼리 → 리포트 생성
+```
+
+**리포트 생성 플로우**:
+```
+Cloud Scheduler (주간/월간) → BigQuery 집계 쿼리 
+→ 패턴 분석 → (선택) Gemini API 내러티브 생성 
+→ Firestore reports 저장 → UI 조회
+```
+
+#### G.2.3 BigQuery 스키마
+
+**테이블: emotions_daily**
+| 필드명 | 타입 | 설명 |
+|--------|------|------|
+| user_id_hash | STRING | SHA-256 해싱된 사용자 ID |
+| date | DATE | 감정 기록 날짜 |
+| emotion_type | STRING | 감정 타입 (기쁨/평온/불안/슬픔/분노) |
+| intensity | INT64 | 강도 (1-10) |
+| context_tags | ARRAY<STRING> | 상황 태그 |
+| mode | STRING | Day/Night |
+| created_at | TIMESTAMP | 생성 시간 |
+
+#### G.2.4 구현 가이드
+
+**단계 1: BigQuery 설정 (3일)**
+1. BigQuery 데이터셋 생성 (`analytics`)
+2. 테이블 스키마 정의 (emotions_daily, conversations_daily 등)
+3. `functions/src/services/bigquery.ts` 구현
+   - BigQuery 클라이언트 초기화
+   - `insertRows(tableName, rows)`
+   - `query(sql): Promise<any[]>`
+
+**단계 2: 동기화 함수 (5일)**
+4. `functions/src/bigquery/sync.ts` 구현
+   - `syncFirestoreToBigQueryDaily()`: Firestore → BigQuery 일일 동기화
+   - 데이터 변환 로직 (Timestamp → DATE)
+   - 사용자 ID 해싱 (SHA-256)
+   - 에러 처리 및 재시도 로직 (최대 2회)
+5. Cloud Scheduler 설정 (매일 오전 2시)
+
+**단계 3: 리포트 생성 함수 (5일)**
+6. 주간 리포트 배치 함수 구현
+   - BigQuery 집계 쿼리 (감정 분포, 평균 강도, 패턴 등)
+   - Gemini API로 내러티브 생성 (선택)
+   - Firestore `weeklyReports` 저장
+7. 월간 리포트 배치 함수 구현
+8. Cloud Scheduler 설정 (주간: 월요일 오전, 월간: 매월 1일)
+
+---
+
+### G.3 외부 서비스 대체 전략 (v4.0 핵심) ← 신규
+
+#### G.3.1 개요
+- **원칙**: React + Firebase만 사용, 외부 서비스 의존 최소화
+- **사유**: 비용 절감 (~$30/월), 복잡도 감소, 통합 관리
+- **참조**: CODE_REVIEW_RISKS_FINAL.md v4.0 "해결 전략"
+
+#### G.3.2 에러 추적 (Sentry 제거)
+
+**v1.0 제안**: Sentry 통합 ($26/월)  
+**v4.0 대체**: window.onerror + localStorage (자체 구현)
+
+**구현 예시**:
+```typescript
+// index.tsx
+window.onerror = (msg, src, line, col, error) => {
+  const log = {
+    timestamp: new Date().toISOString(),
+    message: String(msg),
+    source: src,
+    line, col,
+    stack: error?.stack,
+  };
+  try {
+    const logs = JSON.parse(localStorage.getItem('error_logs') || '[]');
+    logs.push(log);
+    localStorage.setItem('error_logs', JSON.stringify(logs.slice(-50)));
+  } catch {}
+};
+```
+
+**장점**: 외부 의존성 제거, 비용 절감 ($26/월), 구현 간단 (1일)  
+**단점**: 고급 기능 없음, 서버 사이드 에러는 Firebase Logging 수동 확인
+
+#### G.3.3 검색 서비스 (Algolia 제거)
+
+**v1.0 제안**: Algolia 또는 Typesense 통합 ($1-50/월)  
+**v4.0 대체**: Firestore 태그 기반 검색
+
+**구현 예시**:
+```typescript
+// Firestore array-contains 쿼리 활용
+const tagQuery = query(
+  collection(db, 'conversations'),
+  where('contextTags', 'array-contains', searchQuery.toLowerCase()),
+  limit(50)
+);
+```
+
+**장점**: 외부 의존성 제거, 비용 절감 ($1-50/월)  
+**단점**: 전체 텍스트 검색 불가, 태그 기반만
+
+#### G.3.4 비용 절감 효과
+
+| 서비스 | v1.0 | v4.0 대체 | 절감 |
+|--------|------|----------|------|
+| Sentry | $26/월 | window.onerror | $26/월 |
+| Algolia | $1-50/월 | Firestore 태그 | $1-50/월 |
+| **합계** | - | - | **~$30-80/월** |
+
+---
+
+## 부록 H: 기술적 위험요인 상세 (v4.0 최종)
+
+### 개요
+- **총 위험요인**: 48개 (프론트 41 + 백엔드 7)
+- **검토 범위**: 프론트엔드 86개 + 백엔드 7개 파일 (총 93개)
+- **검토 방법**: 파일 시스템 직접 확인, 코드 분석, PRD 명세 대조
+- **참조 문서**: CODE_REVIEW_RISKS_FINAL.md v4.0
+- **검토 시점**: 2026-01-16 (최종 업데이트 2026-01-17)
+
+### H.1 프론트엔드 위험요인 (41개)
+
+#### H.1.1 Critical (6개) - P0
+
+#### 1. OnboardingGuard localStorage 접근 실패
+- **위치**: src/router/guards.tsx:14-20
+- **문제**: localStorage 접근 실패 시 기본값 false → 무한 리다이렉트 가능
+- **영향**: 사생활 보호 모드 사용자 앱 접근 불가
+- **해결 방안**:
+  1. sessionStorage 폴백 추가
+  2. 쿠키 기반 대안 검토
+  3. 3회 리다이렉트 후 강제 통과 로직
+- **우선순위**: P0
+- **예상 해결 시간**: 1일
+
+#### 2. Firebase Auth 재시도 실패 시 앱 동작
+- **위치**: src/services/auth.ts:44-56
+- **문제**: 3회 재시도 실패 시 Firestore 쓰기 불가, 앱은 계속 실행
+- **영향**: 오프라인 모드로 동작하나 사용자에게 알림 없음
+- **해결 방안**:
+  1. UI에 오프라인 모드 표시 (배너 또는 토스트)
+  2. localStorage 백업 강화
+  3. 재연결 시 자동 동기화 로직
+- **우선순위**: P0
+- **예상 해결 시간**: 2일
+
+#### 3. ErrorBoundary 자체 에러
+- **위치**: src/components/ui/ErrorBoundary.tsx:30-38
+- **문제**: ErrorBoundary 자체에서 에러 발생 시 캐치 불가
+- **영향**: 앱 전체 크래시, 복구 불가
+- **해결 방안**:
+  1. 최상위 try-catch 추가
+  2. window.onerror 핸들러 구현
+  3. Sentry 등 외부 에러 추적 서비스 통합
+- **우선순위**: P0
+- **예상 해결 시간**: 2일
+
+#### 4. 위기 감지 누락 (False Negative)
+- **위치**: src/services/crisisDetection.ts:26-46
+- **문제**: 키워드 미포함 표현 누락 (예: "더 이상 살 의미가 없어")
+- **영향**: 심각한 위기 상황 감지 실패
+- **해결 방안**:
+  1. Gemini API로 전체 문장 위기도 분석 (1-10 점수)
+  2. 키워드 목록 정기 업데이트 (분기 1회)
+  3. 맥락 기반 분석 추가 (이전 대화 히스토리 참조)
+- **우선순위**: P0
+- **예상 해결 시간**: 3일
+
+#### 5. Firestore Batch 500개 제한
+- **위치**: src/services/firestore.ts:537-554
+- **문제**: 대량 삭제 시 500개 제한 초과 시 에러
+- **영향**: 사용자 데이터 삭제 실패
+- **해결 방안**:
+  1. 자동 배치 분할 로직 (500개씩 청크)
+  2. 백그라운드 큐 작업
+  3. 진행 상태 UI 표시 (0% → 100%)
+- **우선순위**: P1 (긴급도 낮음)
+- **예상 해결 시간**: 2일
+
+#### H.1.2 High (12개) - P1
+
+#### 1. API 타임아웃 누적 시간
+- **위치**: src/services/apiPolicy.ts:104-114
+- **문제**: 3회 재시도 시 최대 24초 소요 (8초 × 3)
+- **영향**: 사용자 대기 시간 증가, UX 저하
+- **해결 방안**:
+  1. SSE 또는 WebSocket 스트리밍 응답 도입
+  2. 타임아웃 단계별 조정 (8s → 5s → 3s)
+  3. 즉시 폴백 옵션 제공 ("기본 응답 보기" 버튼)
+- **우선순위**: P1
+- **예상 해결 시간**: 1주
+
+#### 2. DayMode 메시지 배열 무한 증가
+- **위치**: src/components/chat/DayMode.tsx
+- **문제**: messages 배열 제한 없음, 메모리 누수 가능
+- **영향**: 장시간 대화 시 메모리 소모 증가
+- **해결 방안**:
+  1. 최대 100개 메시지로 제한
+  2. 오래된 메시지 자동 제거 (FIFO)
+  3. react-window 등 Virtualized List 도입
+- **우선순위**: P1
+- **예상 해결 시간**: 2일
+
+#### 3. Context 값 변경 시 리렌더링 범위
+- **위치**: src/contexts/AppContext.tsx
+- **문제**: mode 변경 시 모든 소비자 리렌더링
+- **영향**: 성능 저하
+- **해결 방안**:
+  1. 상태별 Context 분리 (ModeContext, PersonaContext 등)
+  2. useMemo, useCallback 최적화
+  3. use-context-selector 라이브러리 도입
+- **우선순위**: P1
+- **예상 해결 시간**: 3일
+
+#### 4. AppContext 모드 주기적 체크 (1분)
+- **위치**: src/contexts/AppContext.tsx:66-72
+- **문제**: 1분마다 resolveMode() 호출, 성능 영향
+- **영향**: 백그라운드 네트워크 요청 증가
+- **해결 방안**:
+  1. 간격 조정 (1분 → 5분)
+  2. requestIdleCallback 사용 (유휴 시간에만 실행)
+  3. modeOverride 시 완전 중지
+- **우선순위**: P1
+- **예상 해결 시간**: 1일
+
+#### 5. localStorage 동기화 불일치
+- **위치**: src/services/consent.ts:120-140
+- **문제**: Firestore 저장 실패 시 localStorage만 저장됨
+- **영향**: 다기기 동기화 실패
+- **해결 방안**:
+  1. 재시도 로직 추가 (최대 3회)
+  2. 동기화 상태 UI 표시 (동기화 중/완료/실패)
+  3. 백그라운드 동기화 작업 (온라인 복귀 시)
+- **우선순위**: P1
+- **예상 해결 시간**: 2일
+
+#### 6. Firestore searchConversations 클라이언트 사이드 필터링
+- **위치**: src/services/firestore.ts:615-654
+- **문제**: Firestore 전체 텍스트 검색 미지원, 모든 데이터 가져온 후 필터링
+- **영향**: 대량 데이터 시 성능 저하 및 네트워크 비용 증가
+- **해결 방안**:
+  1. Algolia 또는 Typesense 검색 서비스 통합
+  2. Firestore Extensions (Search with Algolia) 사용
+  3. 태그 기반 색인 (emotionTags, contextTags)
+- **우선순위**: P1
+- **예상 해결 시간**: 1주
+
+#### 7. MainLayout URL 기반 탭 활성화
+- **위치**: src/components/layout/MainLayout.tsx:39-47
+- **문제**: location.pathname 파싱으로 매 렌더링마다 실행
+- **영향**: 불필요한 계산, 성능 미미한 영향
+- **해결 방안**:
+  1. useMemo로 최적화
+  2. 라우트 메타데이터 활용
+- **우선순위**: P2
+- **예상 해결 시간**: 1일
+
+#### 8. EmotionSelectModal 2열 레이아웃 고정
+- **위치**: src/components/ui/EmotionSelectModal.tsx:65
+- **문제**: columns=2 고정, 반응형 미지원
+- **영향**: 대화면에서 레이아웃 비효율
+- **해결 방안**:
+  1. useMediaQuery로 동적 열 수 조정
+  2. Tailwind: grid-cols-2 md:grid-cols-3 lg:grid-cols-5
+- **우선순위**: P2
+- **예상 해결 시간**: 1일
+
+#### 9. TabBar buttonRefs 배열 길이 고정
+- **위치**: src/components/ui/TabBar.tsx:34
+- **문제**: 5개 고정, 탭 수 변경 시 수동 수정 필요
+- **영향**: 유지보수성 저하
+- **해결 방안**:
+  1. allTabs.length로 동적 할당
+  2. useRef<HTMLButtonElement[]>([])로 변경
+- **우선순위**: P2
+- **예상 해결 시간**: 0.5일
+
+#### 10. NightMode Textarea 높이 미설정
+- **위치**: src/components/chat/NightMode.tsx
+- **문제**: 긴 일기 작성 시 레이아웃 깨짐 가능
+- **영향**: UX 저하
+- **해결 방안**:
+  1. maxHeight + overflow-y-auto 설정
+  2. react-textarea-autosize 라이브러리 사용
+- **우선순위**: P2
+- **예상 해결 시간**: 1일
+
+#### 11. ErrorBoundary handleRetry 에러 재발
+- **위치**: src/components/ui/ErrorBoundary.tsx:57-63
+- **문제**: 에러 원인 미해결 시 무한 루프 위험
+- **영향**: 사용자 불편
+- **해결 방안**:
+  1. 재시도 횟수 제한 (최대 3회)
+  2. 에러 원인 분석 로직
+  3. 3회 실패 후 강제 홈 이동
+- **우선순위**: P2
+- **예상 해결 시간**: 1일
+
+#### 12. CelestialBackground 애니메이션 성능
+- **위치**: src/components/ui/CelestialBackground.tsx
+- **문제**: 저사양 기기에서 프레임 드롭 가능
+- **영향**: 성능 저하, 배터리 소모
+- **해결 방안**:
+  1. CSS will-change 속성 추가
+  2. transform: translate3d (GPU 가속)
+  3. intensity 레벨별 애니메이션 조정
+- **우선순위**: P2
+- **예상 해결 시간**: 1일
+
+#### H.1.3 Medium (17개) - P2
+
+#### 주요 항목 요약
+1. **routes.tsx /reports 경로 중복** (src/router/routes.tsx:77-81)
+2. **Router.tsx Provider 중첩 깊이 4단계** (src/router/Router.tsx:34-38)
+3. **OnboardingLayout handleExit 데이터 미저장** (src/components/layout/OnboardingLayout.tsx:45-49)
+4. **modeResolver 자정 넘김 로직 복잡도** (src/services/modeResolver.ts:42-53)
+5. **crisisDetection 키워드 하드코딩** (src/services/crisisDetection.ts:26-46)
+6. **apiPolicy Promise.race 타임아웃 후 계속 실행** (src/services/apiPolicy.ts:107-113)
+7. **firestore saveOnboardingData localStorage 백업** (src/services/firestore.ts:450-451)
+8. **gemini.ts 폴백 메시지 한국어 하드코딩** (src/services/ai/gemini.ts)
+9. **EmotionSelectModal Portal SSR 호환성** (src/components/ui/EmotionSelectModal.tsx:84)
+10. **TabBar 스와이프 제스처 스크롤 충돌** (src/components/ui/TabBar.tsx:38-48)
+11. **DayMode 위기 감지 오탐지** (src/components/chat/DayMode.tsx)
+12. **NightMode VoicePlayer TTS 브라우저 호환성** (src/components/chat/NightMode.tsx)
+13. **ErrorBoundary 개발 모드 에러 노출** (src/components/ui/ErrorBoundary.tsx:94-107)
+14. **MainLayout AIChatbot 레거시 경로** (src/components/layout/MainLayout.tsx:13)
+15. **AppContext timelineData INITIAL_TIMELINE mock** (src/contexts/AppContext.tsx:53)
+
+**상세 내용**: CODE_REVIEW_RISKS.md 섹션 198-305 참조
+
+#### H.1.4 Low (6개) - P3
+
+#### 주요 항목 요약
+1. **Router.tsx Anonymous Auth 로그만 출력** (src/router/Router.tsx:28-30)
+2. **guards.tsx OnboardingGuard 경로 하드코딩** (src/router/guards.tsx:31)
+3. **modeResolver getUserSettings 비동기** (src/services/modeResolver.ts:92-93)
+4. **consent CONSENT_VERSION 마이그레이션** (src/services/consent.ts:12)
+5. **EmotionSelectModal EMOTIONS_CONFIG 다국어** (src/components/ui/EmotionSelectModal.tsx:14-19)
+
+**상세 내용**: CODE_REVIEW_RISKS.md 섹션 307-343 참조
+
+### H.2 백엔드 위험요인 (7개) ← 신규
+
+#### H.2.1 Critical (1개)
+
+**BE-C1. 프론트-백엔드 타임아웃 불일치**
+- **위치**: 프론트 (src/services/apiPolicy.ts: 8초) vs 백엔드 (functions/src/api/gemini.ts: 60-90초)
+- **문제**: 프론트 타임아웃 후 백엔드 계속 실행
+- **영향**: 리소스 낭비, API 비용 증가
+- **해결**: 모든 Functions 타임아웃 30초로 단축
+- **Phase 1 적용**: Week 5 Day 1
+
+#### H.2.2 High (3개)
+
+**BE-H1. 재시도 정책 중복**
+- **위치**: functions/src/services/gemini.ts
+- **문제**: 프론트 재시도 (3회) + 백엔드 async-retry
+- **영향**: 최대 6회 호출, API 비용 증가
+- **해결**: 백엔드 재시도 제거 (프론트에서만)
+- **Phase 1 적용**: Week 5 Day 2
+
+**BE-H2. 에러 로깅 부재**
+- **위치**: functions/src/utils/logger.ts
+- **문제**: logError가 console.error만 호출
+- **영향**: 프로덕션 에러 추적 불가
+- **해결**: Firebase Logging 통합
+- **Phase 1 적용**: Week 5 Day 2
+
+**BE-H3. 입력 길이 검증 부족**
+- **위치**: functions/src/services/gemini.ts:sanitizeUserInput
+- **문제**: 10,000자 제한이지만 프론트 검증 없음
+- **영향**: 백엔드 에러 발생 가능
+- **해결**: 프론트 maxLength={10000} 추가
+- **Phase 1 적용**: Week 1 Day 3
+
+#### H.2.3 Medium (3개)
+- 플레이스홀더 폴백 메시지 일관성
+- Min Instances 설정 부재 (콜드 스타트)
+- 프롬프트 한글 하드코딩 (i18n 미지원)
+
+**상세**: CODE_REVIEW_RISKS_FINAL.md v4.0 섹션 2.3 참조
+
+---
+
+### H.3 외부 서비스 제거 전략 (v4.0 핵심) ← 신규
+
+#### H.3.1 전략 개요
+- **원칙**: React + Firebase만 사용
+- **사유**: 비용 절감, 복잡도 감소, 통합 관리
+
+#### H.3.2 제거된 외부 서비스
+
+| 서비스 | v1.0 제안 | v4.0 대체 방안 | 절감 비용 |
+|--------|----------|--------------|----------|
+| Sentry | Phase 1 통합 | window.onerror + localStorage | $26/월 |
+| Algolia | Phase 1 통합 | Firestore 태그 검색 | $1/월~ |
+| Typesense | Phase 1 통합 | Firestore 태그 검색 | 서버 비용 |
+| SSE/WebSocket | 스트리밍 응답 | 타임아웃 최적화 + 폴백 | 구현 비용 |
+| **합계** | - | - | **~$30-80/월** |
+
+#### H.3.3 유지된 외부 서비스
+- Gemini API (필수)
+- Firebase 서비스 (필수)
+- Pinecone (선택, 무료 티어 또는 Firebase Vector Search로 대체)
+
+---
+
+### H.4 개선 제안 우선순위별 (v4.0 업데이트)
+
+#### P0 (즉시 해결 필요) - 7개
+1. **useRealtime cleanup 확인** ← 추가
+2. OnboardingGuard sessionStorage 폴백
+3. Firebase Auth 실패 UI (오프라인 배너)
+4. window.onerror 핸들러 (Sentry 대체)
+5. 위기 감지 Gemini 통합
+6. Firestore Batch 자동 분할
+7. **백엔드 타임아웃 30초** ← 추가
+
+#### P1 (빠른 시일 내 해결) - 15개
+1. API 타임아웃 최적화 (8s→6s→4s, 스트리밍 제거)
+2. DayMode 메시지 제한 (최대 100개)
+3. Context 최적화 (useMemo, 분리)
+4. Firestore 검색 최적화 (Algolia 대체)
+5. **백엔드 재시도 제거** ← 추가
+6-15. 기타 (부록 H.1.2 참조)
+
+#### P2 (계획적 개선) - 20개
+1. routes.tsx 리다이렉트 정리
+2. OnboardingLayout 진행 상태 저장
+3. modeResolver 단위 테스트
+4. crisisDetection Firestore 관리
+5. 레거시 코드 마이그레이션
+
+#### P3 (향후 고려) - 6개
+1. 다국어 지원 (i18n)
+2. SSR 호환성 (Next.js)
+3. 개발 도구 패널
+4. 버전별 마이그레이션 로직
+5-6. 기타
+
+---
+
+### H.5 아키텍처 개선 권장사항 (v4.0 업데이트)
+
+#### 1. 에러 추적 자체 구현 (Sentry 제거)
+- **도구**: window.onerror + localStorage (외부 서비스 제거)
+- **이점**: 비용 절감 ($26/월), 구현 간단
+- **Phase 1 적용**: ✓ (Week 1 Day 2)
+
+#### 2. 검색 최적화 (Algolia 제거)
+- **현재**: 클라이언트 사이드 필터링
+- **제안**: Firestore 태그 기반 검색 (외부 서비스 제거)
+- **이점**: 비용 절감 ($1-50/월), Firebase 통합
+- **Phase 1 적용**: ✓ (Week 2-3)
+
+#### 3. AI 응답 최적화 (스트리밍 제거)
+- **현재**: 일괄 응답 (8초 타임아웃)
+- **제안**: 타임아웃 단계별 조정 + 즉시 폴백
+- **이점**: 구현 간단, 복잡한 인프라 불필요
+- **Phase 1 적용**: ✓ (Week 2-3)
+
+#### 4. 상태 관리 최적화
+- **현재**: Context + XState
+- **제안**: useMemo + Context 분리 (외부 라이브러리 제거)
+- **이점**: 성능 향상, 외부 의존성 제거
+- **Phase 1 적용**: ✓ (Week 2-3)
+
+#### 5. 모니터링 자체 구현
+- **현재**: 모니터링 없음
+- **제안**: Firebase Analytics + PerformanceDashboard
+- **이점**: 외부 서비스 없이 성능 추적
+- **Phase 1 적용**: (Week 5-6, 선택)
+
+### H.7 테스트 커버리지 권장사항
+
+#### Critical Path (P0) - 필수 단위 테스트
+1. **auth.ts**: ensureAnonymousAuth() 재시도 로직
+   - 네트워크 오류 시나리오
+   - 3회 재시도 동작 검증
+   - 지수 백오프 검증
+2. **crisisDetection.ts**: 위기 감지 알고리즘
+   - 키워드 매칭 정확도
+   - 강도 임계값 테스트
+   - 패턴 분석 테스트
+3. **guards.tsx**: OnboardingGuard 리다이렉트
+   - localStorage 접근 실패 시나리오
+   - 무한 리다이렉트 방지
+4. **apiPolicy.ts**: 재시도 및 폴백 로직
+   - 타임아웃 동작 검증
+   - 재시도 횟수 검증
+   - 폴백 메시지 검증
+5. **firestore.ts**: Batch 작업
+   - 500개 제한 처리
+   - 배치 분할 로직
+
+#### High Priority (P1) - 통합 테스트
+1. **modeResolver.ts**: 자정 넘김 시간 계산
+2. **DayMode/NightMode**: 상태 머신 플로우
+3. **AppContext**: 모드 주기적 체크
+4. **EmotionSelectModal**: 키보드 네비게이션
+5. **TabBar**: 터치 제스처
+
+### H.8 모니터링 메트릭 제안
+
+#### 성능 메트릭
+- **API 응답 시간**: 평균, P95, P99 (목표: P95 < 3초)
+- **재시도 횟수**: 네트워크 오류 빈도 (목표: < 5% 세션)
+- **메모리 사용량**: DayMode 메시지 배열 (목표: < 50MB)
+- **렌더링 성능**: Context 변경 시 리렌더링 횟수 (목표: < 10개 컴포넌트)
+
+#### 오류 메트릭
+- **위기 감지**: 오탐지/누락 비율 (목표: 오탐 < 5%, 누락 < 1%)
+- **localStorage 실패**: 사생활 보호 모드 사용자 비율 (추적용)
+- **Firebase Auth 실패**: 네트워크 오류 빈도 (목표: < 2% 세션)
+- **ErrorBoundary 트리거**: 에러 발생 빈도 (목표: < 0.1% 세션)
+
+#### 사용자 경험 메트릭
+- **온보딩 완료율**: OnboardingGuard 통과율 (목표: > 80%)
+- **대화 저장 성공률**: Firestore 쓰기 성공률 (목표: > 99%)
+- **AI 응답 만족도**: 타임아웃 대비 성공률 (목표: > 95%)
+
+---
+
+## 부록 I: 위험요인 해결 실행 계획 (ACTION_PLAN) ← 신규
+
+### 개요
+- **총 기간**: 11주 (Phase 1-6)
+- **총 Task 수**: 22개
+- **실행 전략**: 프론트엔드 먼저 → 확정 → 백엔드 조정
+- **원칙**: 외부 서비스 제거, Firebase만 사용
+- **참조 문서**: ACTION_PLAN.md (1480라인 상세 계획)
+
+### I.1 Phase별 실행 계획 요약
+
+#### Phase 1: 프론트엔드 Critical (Week 1)
+
+**Day 1: 메모리 누수 + 저장소 폴백 (4시간)**
+- Task 1.1: useRealtime cleanup 전체 검토 (src/hooks/useRealtime.ts)
+- Task 1.2: OnboardingGuard sessionStorage 폴백 (src/router/guards.tsx)
+
+**Day 2: 에러 처리 강화 (4시간)**
+- Task 2.1: window.onerror 핸들러 (index.tsx)
+- Task 2.2: DebugPanel 페이지 (src/pages/profile/DebugPanel.tsx)
+
+**Day 3: 입력 검증 + 메시지 제한 (3시간)**
+- Task 3.1: maxLength={10000} 추가 (DayMode, NightMode)
+- Task 3.2: messages.slice(-100) (useDayCheckinMachine.ts)
+
+**Day 4-5: 네트워크 + 오프라인 (6시간)**
+- Task 4.1: UIContext.isOnline 추가
+- Task 4.2: 오프라인 배너 UI
+
+#### Phase 2: 프론트엔드 High (Week 2-3)
+
+**Task 5: 타임아웃 최적화 (2일)**
+- 타임아웃 단계별: 8s → 6s → 4s
+- 즉시 폴백 옵션
+
+**Task 6: Context 리렌더링 (2일)**
+- useMemo 적용
+- Context 분리
+
+**Task 7: Firestore 검색 (2일)**
+- 태그 기반 색인 (array-contains)
+- 병렬 쿼리 통합
+
+**Task 8: Batch 자동 분할 (1일)**
+
+#### Phase 3: 테스트 및 확정 (Week 4)
+
+**Task 9: 단위 테스트 (3일)**
+- Critical Path 테스트
+- 커버리지 80% 목표
+
+**Task 10: 통합 테스트 (2일)**
+
+#### Phase 4: 백엔드 조정 (Week 5, Day 1-3)
+
+**Task 11: 타임아웃 30초 (1일)**
+**Task 12: 재시도 제거 (1일)**
+**Task 13: 입력 검증 + 배포 (1일)**
+
+#### Phase 5: 추가 개선 (Week 5-6, 선택)
+
+**Task 14: 위기 감지 AI (3일)**
+**Task 15: PerformanceDashboard (2일)**
+
+#### Phase 6: RAG 시스템 (Week 6-10)
+
+**Week 6: 스마트 컨텍스트 (1주)**
+- Task 16: memoryContext.ts (패턴 분석)
+- Task 17: Firestore memories 컬렉션
+
+**Week 7-8: Vector Search (2주)**
+- Task 18: Gemini Embedding API
+- Task 19: Firebase Vector Search 또는 Pinecone
+
+**Week 9-10: 최적화 (1주)**
+- Task 20: Security Rules
+- Task 21: 만료 정리 배치
+- Task 22: Context Caching
+
+### I.2 체크리스트 (순서대로 실행)
+
+#### Week 1: Critical (7개)
+- [ ] useRealtime cleanup 검토
+- [ ] OnboardingGuard sessionStorage
+- [ ] window.onerror + localStorage
+- [ ] DebugPanel 페이지 생성
+- [ ] 입력 길이 검증 (maxLength)
+- [ ] 메시지 100개 제한
+- [ ] 오프라인 배너 UI
+- [ ] 빌드 테스트: npm run build
+
+#### Week 2-3: High (15개)
+- [ ] 타임아웃 단계별 (8s→6s→4s)
+- [ ] Context 최적화 (useMemo, 분리)
+- [ ] Firestore 검색 (태그 기반)
+- [ ] Batch 자동 분할
+- [ ] 기타 11개 (부록 H.1.2 참조)
+- [ ] 빌드 테스트
+
+#### Week 4: 테스트
+- [ ] 단위 테스트 (커버리지 80%)
+- [ ] 통합 테스트
+- [ ] 빌드 및 배포 테스트
+
+#### Week 5 (Day 1-3): 백엔드
+- [ ] 타임아웃 30초로 단축
+- [ ] 재시도 로직 제거
+- [ ] Firebase Logging 추가
+- [ ] 입력 검증 강화
+- [ ] 배포 및 로그 모니터링
+
+#### Week 6-10: RAG (선택)
+- [ ] Week 6: 패턴 분석 + Firestore memories
+- [ ] Week 7-8: Embedding + Vector Search
+- [ ] Week 9-10: 최적화 + 배포
+
+### I.3 주요 Task 코드 예시
+
+**Task 1.2: OnboardingGuard 폴백**
+```typescript
+// src/router/guards.tsx
+export const useOnboardingStatus = (): boolean => {
+  try {
+    return localStorage.getItem('onboarding_completed') === 'true';
+  } catch {
+    try {
+      return sessionStorage.getItem('onboarding_completed') === 'true';
+    } catch {
+      const count = parseInt(sessionStorage.getItem('redirect_count') || '0');
+      if (count >= 3) return true;
+      sessionStorage.setItem('redirect_count', String(count + 1));
+      return false;
+    }
+  }
+};
+```
+
+**Task 2.1: window.onerror 핸들러**
+```typescript
+// index.tsx
+window.onerror = (msg, src, line, col, error) => {
+  const log = {
+    timestamp: new Date().toISOString(),
+    message: String(msg),
+    source: src,
+    line, col,
+    stack: error?.stack,
+  };
+  try {
+    const logs = JSON.parse(localStorage.getItem('error_logs') || '[]');
+    logs.push(log);
+    localStorage.setItem('error_logs', JSON.stringify(logs.slice(-50)));
+  } catch {}
+};
+```
+
+**기타 Task 코드 예시**: ACTION_PLAN.md 참조 (전체 22개 Task 상세 코드 포함)
+
+### I.4 예상 비용 (v4.0 업데이트)
+
+#### Phase 1-5 완료 시 (Week 1-5)
+- Firebase: $45-80/월 (기존 범위)
+- Gemini API: $50-100/월 (기존 범위)
+- 외부 서비스: **$0** (Sentry, Algolia 제거)
+- 합계: $95-180/월
+
+#### Phase 6 RAG 완료 시 (Week 6-10)
+- Firebase Vector Search: +$0-10/월 (또는 Pinecone 무료 티어: +$0)
+- 합계: $95-190/월
+
+#### 절감 효과
+- Sentry: $26/월 절감
+- Algolia: $1-50/월 절감
+- 총 절감: **~$30-80/월**
+
+---
+
 ## 참고 문서
 
 - [사이트맵](docs/sitemap.md) - 참고용 (구조 재검토 필요)
@@ -8197,35 +9557,43 @@ firebase deploy --only functions
 | 5.4 | 2025-01-15 | 근거 없는 수치 삭제 완료: 비즈니스 목표, 만족도 목표, 기능별 목표값 등 근거 없는 수치들을 모두 삭제하고 "측정 및 추적"으로 대체, 기술적 성능 지표는 유지 | AI Assistant |
 | 5.5 | 2025-01-15 | PRD 개선 작업 완료: P0 Critical 이슈 7개 수정 완료(하단 탭 위치 수정, FEAT-014 스크린 매핑 추가, FEAT-011 기능 분리→FEAT-017 신규 생성, 위기 감지 알고리즘 상세 스펙 추가, 상태 관리 라이브러리 Zustand 결정, 콘텐츠 탭 일관성 확보, 확장성 요구사항 추가), P1 Medium 이슈 4개 수정 완료(누락된 컴포넌트 5개 추가, 플로우차트 Mermaid 다이어그램 교체 2개, FRD 중복 제거 FRD-009/FRD-011), ID 매핑 무결성 검증 완료(FEAT-001~017, FRD-001~012), 문서 일관성 검증 완료 | AI Assistant |
 | 5.6 | 2025-01-15 | PRD 점검 리포트 기반 전면 수정: Critical 논리적 무결성 흠결 8개 수정(중복 섹션 제거 3개, 섹션 번호 수정, 감정 타입 정의 통일, 하단 탭 위치 수정), Critical 위험요인 12개 해결(위기 감지 알고리즘 상세 스펙 확장, GPS 기반 스마트 태그 확정, Gemini API 세이프티 설정 확정, Firestore 보안 규칙 상세 스펙 작성, 데이터 암호화 전략 확정, Vector DB 선택 확정, BigQuery 동기화 주기 확정, 수익 모델 확정, KPI 수치 설정, Day/Night Mode 전환 UI 추가), Medium/Low 문제점 50개 수정(FEAT-005 스크린 매핑 추가, FEAT-015/016 스크린 경로 명시, FRD-003 다중 매핑 해결, ChatMessage 인터페이스 필드 명확화, AI 인사이트 생성 시간 통일, 용어 통일, 수치 명시), ID 매핑 무결성 검증 완료, 문서 일관성 확보 | AI Assistant |
+| 5.7 | 2026-01-16 | Phase 0 MVP 완료 상태 반영 (v1.0): 위험요인 37개 식별, Phase 1 로드맵 13주, Sentry/Algolia 통합 권장 (이후 v4.0으로 전면 재작성) | AI Assistant |
+| 5.8 | 2026-01-16 | 최신 위험요인 전면 통합 (v4.0): 위험요인 37→48개 업데이트 (프론트 41 + 백엔드 7), Critical 5→7 (useRealtime cleanup, 백엔드 타임아웃 추가), High 12→15 (프론트-백엔드 불일치, 재시도 중복, 입력 검증 추가), Medium 15→20, Low 5→6, 검토 범위 확대 (22→93개 파일), **외부 서비스 전략 변경** (Sentry/Algolia 제거 → Firebase만 사용), 백엔드 위험요인 7개 추가 (섹션 3.2, 부록 H.2), Phase 1 로드맵 재조정 (13주→11주, ACTION_PLAN 기반), 부록 G.3 '외부 서비스 대체 전략' 추가 (window.onerror, Firestore 태그 검색), 부록 H 전면 교체 (v4.0, 외부 서비스 제거), 부록 I '실행 계획' 신규 추가 (22개 Task, 체크리스트), CODE_REVIEW_RISKS_FINAL.md v4.0 + ACTION_PLAN.md 통합, 일자별 실행 계획 명세, 비용 절감 ~$30/월 | AI Assistant |
 
 ---
 
-**문서 상태**: 개발 스펙 확정
-**개발 준비 상태**: 준비 완료
-**다음 단계**: 프로젝트 초기 설정 및 개발 시작
+**문서 상태**: Phase 0 MVP 완료 (95.5%), Phase 1 개발 대기
+**코드베이스 일치율**: 95.5%
+**식별된 위험요인**: 37개 (Critical 5, High 12, Medium 15, Low 5)
+**다음 단계**: Phase 1 구현 (RAG 시스템, BigQuery, 위험요인 해결)
 
 ---
 
 ## 최종 기술 스택 요약
 
-### 프론트엔드
-- **TypeScript + Vite + React**
-- Tailwind CSS, Framer Motion, Lucide React, Recharts
+### Phase 0: 현재 사용 중
+**프론트엔드**
+- React 19.2.3 + TypeScript 5.8.2 + Vite 6.2.0
+- Tailwind CSS 3.4.19, Framer Motion 12.24.11, Recharts 3.6.0
 
-### 백엔드 및 인프라
-- **GCP 프로젝트**: INEESm (Iiness-mlog)
-- **Firebase**: Firestore, Cloud Functions, Storage, Auth, Hosting
-- **AI**: Gemini API (키 기반, Gemini 3.0 Pro Preview, 서버 사이드 호출, RAG 활용)
-- **벡터 데이터베이스**: Pinecone 또는 Weaviate (RAG 기반 기억 시스템)
-- **임베딩**: Gemini Embedding API 또는 OpenAI Embedding
-- **데이터 분석**: Google BigQuery (주간/월간 리포트 배치 전용)
+**백엔드 및 인프라**
+- GCP 프로젝트: INEESm (Iiness-mlog)
+- Firebase: Firestore, Cloud Functions v2, Auth, Hosting
+- AI: Gemini API (3.0 Pro Preview, Google Search Grounding)
+
+### Phase 1: 추가 예정 (2026 Q2-Q3)
+- 벡터 데이터베이스: Pinecone (RAG 기반 기억 시스템, 무료 티어)
+- 임베딩: Gemini Embedding API (768차원)
+- 데이터 분석: Google BigQuery (주간/월간 리포트 배치)
+- 에러 추적: Sentry (실시간 에러 모니터링)
+- 검색 서비스: Algolia 또는 Typesense
 
 ### 제외된 기술
 - Neo4j (폐기)
-- CI/CD 자동화 (폐기)
+- CI/CD 자동화 (수동 배포)
 - Next.js (Vite로 대체)
 
-**모든 기술 스택이 확정되었으며, 개발을 시작할 준비가 완료되었습니다.**
+**Phase 0 MVP 완료 (95.5%), Phase 1 개발 대기 중. 48개 위험요인 식별 완료 (2026-01-17 최종 업데이트).**
 
 ---
 

@@ -212,7 +212,7 @@ export function dayCheckinReducer(
           type: 'ai_responding', 
           emotion: state.emotion, 
           intensity: state.intensity,
-          messages: [...state.messages, userMessage]
+          messages: [...state.messages, userMessage].slice(-100) // 최근 100개만 유지 (FE-H2)
         };
       }
       if (event.type === 'SHOW_TAG_STEP') {
@@ -257,7 +257,7 @@ export function dayCheckinReducer(
           type: 'chatting', 
           emotion: state.emotion, 
           intensity: state.intensity,
-          messages: [...state.messages, aiMessage],
+          messages: [...state.messages, aiMessage].slice(-100), // 최근 100개만 유지 (FE-H2)
           input: ''
         };
       }

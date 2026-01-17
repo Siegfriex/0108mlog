@@ -27,14 +27,35 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = () => {
   const navigate = useNavigate();
 
   /**
-   * 온보딩 완료 핸들러
+   * 온보딩 완료 핸들러 (FE-C1 해결)
+   * 
+   * localStorage 우선, 실패 시 sessionStorage 폴백
    * 
    * @param data 온보딩 데이터
    */
   const handleOnboardingComplete = (data: OnboardingData) => {
     // 온보딩 데이터 저장
     console.log('온보딩 완료:', data);
-    localStorage.setItem('onboarding_completed', 'true');
+    
+    // localStorage 우선 저장
+    try {
+      localStorage.setItem('onboarding_completed', 'true');
+    } catch (error) {
+      console.warn('localStorage 저장 실패, sessionStorage 사용:', error);
+      try {
+        sessionStorage.setItem('onboarding_completed', 'true');
+      } catch (sessionError) {
+        console.error('sessionStorage 저장도 실패:', sessionError);
+      }
+    }
+    
+    // 리다이렉트 카운터 초기화
+    try {
+      sessionStorage.removeItem('onboarding_redirect_count');
+    } catch (error) {
+      console.warn('리다이렉트 카운터 초기화 실패:', error);
+    }
+    
     // 메인 화면으로 이동
     navigate('/chat');
   };
@@ -49,7 +70,7 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = () => {
   };
 
   return (
-    <div className="relative w-full h-screen-dynamic overflow-hidden font-sans bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
+    <div className="relative w-full min-h-screen h-screen-dynamic overflow-hidden font-sans bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
       <NoiseOverlay />
       <OnboardingFlow
         onComplete={handleOnboardingComplete}

@@ -2,10 +2,10 @@
  * UI Context
  * 
  * 전역 UI 상태 관리 Context
- * isImmersive, showChatbot, showSafetyLayer를 관리
+ * isImmersive, showChatbot, showSafetyLayer, isOnline을 관리
  */
 
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 
 /**
  * UIContext 값 인터페이스
@@ -14,6 +14,7 @@ interface UIContextValue {
   isImmersive: boolean;
   showChatbot: boolean;
   showSafetyLayer: boolean;
+  isOnline: boolean;
   
   setIsImmersive: (active: boolean) => void;
   setShowChatbot: (show: boolean) => void;
@@ -41,6 +42,30 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
   const [isImmersive, setIsImmersiveState] = useState(false);
   const [showChatbot, setShowChatbotState] = useState(false);
   const [showSafetyLayer, setShowSafetyLayerState] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  /**
+   * 네트워크 상태 감지 (FE-C2 해결)
+   */
+  useEffect(() => {
+    const handleOnline = () => {
+      console.log('✅ 네트워크 연결됨');
+      setIsOnline(true);
+    };
+    
+    const handleOffline = () => {
+      console.warn('⚠️ 네트워크 끊김');
+      setIsOnline(false);
+    };
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   /**
    * 몰입 모드 설정
@@ -67,6 +92,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     isImmersive,
     showChatbot,
     showSafetyLayer,
+    isOnline,
     setIsImmersive,
     setShowChatbot,
     setShowSafetyLayer,
