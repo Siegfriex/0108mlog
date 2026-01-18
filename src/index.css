@@ -6,10 +6,63 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Chiron GoRound TC 폰트 로드 */
+@font-face {
+  font-family: 'Chiron GoRound TC';
+  src: url('https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2') format('woff2-variations'),
+       url('https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   body {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-    font-feature-settings: 'cv01', 'cv02', 'cv03', 'cv04';
+    font-family: 'Chiron GoRound TC', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+  }
+
+  /* 영문 폰트 유틸리티 */
+  .font-en, [lang="en"] {
+    font-family: var(--font-en);
+  }
+
+  /* ========================================
+   * 전역 포커스 스타일 - WCAG 2.4.13 준수
+   * ======================================== */
+
+  /* 마우스 클릭 시 포커스 아웃라인 숨김 */
+  *:focus {
+    outline: none;
+  }
+
+  /* 키보드 포커스만 표시 */
+  *:focus-visible {
+    outline: 3px solid var(--color-brand-700);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* 다크 모드 포커스 */
+  [data-theme="night"] *:focus-visible,
+  .dark *:focus-visible {
+    outline-color: var(--color-brand-300);
+  }
+
+  /* 입력 필드 특화 포커스 */
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline-offset: 0;
+    box-shadow: 0 0 0 3px var(--color-brand-700);
+  }
+
+  [data-theme="night"] input:focus-visible,
+  [data-theme="night"] textarea:focus-visible,
+  [data-theme="night"] select:focus-visible,
+  .dark input:focus-visible,
+  .dark textarea:focus-visible,
+  .dark select:focus-visible {
+    box-shadow: 0 0 0 3px var(--color-brand-300);
   }
 }
 
@@ -130,4 +183,83 @@ input[type=range].slider::-moz-range-thumb {
   box-shadow: var(--shadow-brand);
   cursor: pointer;
   transition: all var(--transition-fast);
+}
+
+/* ========================================
+ * 모바일 레이아웃 최적화
+ * ======================================== */
+
+@media (max-width: 767px) {
+  /* 레이아웃 애니메이션만 비활성화 (필수 피드백 유지) */
+  .layout-animate {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* 버튼 피드백은 유지 */
+  button:active,
+  .touch-feedback:active {
+    transition: transform 0.1s, opacity 0.1s;
+  }
+
+  /* 모바일에서 레이아웃 트랜지션 선택적 비활성화 */
+  .mobile-no-transition {
+    transition: none !important;
+  }
+}
+
+/* 모바일 Safe Area 강화 */
+@media (max-width: 767px) {
+  .mobile-header {
+    padding-top: calc(env(safe-area-inset-top, 0px) + 0.75rem);
+  }
+
+  .mobile-dock {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* 모바일 레이아웃 클래스 */
+.mobile-layout {
+  /* 모바일 전용 스타일 */
+}
+
+/* ========================================
+ * 데스크탑 타이포그래피 스케일업 (md 이상)
+ * ======================================== */
+
+@media (min-width: 768px) {
+  :root {
+    /* 폰트 사이즈 스케일업 */
+    --text-xs: 0.8125rem;      /* 13px */
+    --text-sm: 0.9375rem;      /* 15px */
+    --text-base: 1.0625rem;    /* 17px */
+    --text-lg: 1.1875rem;      /* 19px */
+    --text-xl: 1.375rem;       /* 22px */
+    --text-2xl: 1.625rem;      /* 26px */
+    --text-3xl: 2rem;          /* 32px */
+    --text-4xl: 2.5rem;        /* 40px */
+
+    /* 행간 조정 (살짝 여유롭게) */
+    --leading-tight: 1.3;
+    --leading-snug: 1.4;
+    --leading-normal: 1.55;
+    --leading-relaxed: 1.7;
+  }
+
+  /* 데스크탑 본문 기본 스타일 */
+  body {
+    letter-spacing: -0.01em;
+    font-weight: 400;
+  }
+
+  /* 제목 스타일 강화 */
+  h1, h2, h3, .font-bold {
+    letter-spacing: -0.02em;
+  }
+
+  /* 소제목/본문 강조 */
+  h4, h5, h6, .font-semibold {
+    letter-spacing: -0.015em;
+  }
 }

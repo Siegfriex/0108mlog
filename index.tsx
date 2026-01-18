@@ -4,6 +4,19 @@ import { AppRouter } from './src/router/Router';
 import './src/index.css';
 
 /**
+ * 개발 환경에서 axe-core 접근성 검사 활성화
+ * 설치 필요: npm install -D @axe-core/react
+ */
+if (import.meta.env.DEV) {
+  import('@axe-core/react').then((axe) => {
+    axe.default(React, ReactDOM, 1000);
+  }).catch(() => {
+    // axe-core가 설치되지 않은 경우 무시
+    console.log('[A11Y] axe-core not installed. Run: npm install -D @axe-core/react');
+  });
+}
+
+/**
  * 전역 에러 핸들러 (FE-C3 해결)
  * ErrorBoundary 밖의 에러도 캐치하여 localStorage에 로깅
  */

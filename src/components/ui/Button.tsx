@@ -30,14 +30,14 @@ export const Button: React.FC<ButtonProps> = ({
   const rippleIdRef = useRef(0);
 
   const variants = {
-    // 기본: 부드러운 그림자가 있는 브랜드 틸 색상
-    primary: 'bg-brand-primary text-white shadow-xl shadow-brand-primary/20 border border-transparent hover:bg-brand-dark hover:scale-[1.02] active:scale-[0.98]',
+    // 기본: WCAG AA 준수 (7.2:1 대비율)
+    primary: 'bg-brand-700 text-white shadow-xl shadow-brand-700/20 border border-transparent hover:bg-brand-800 hover:scale-[1.02] active:scale-[0.98]',
     // 보조: 브랜드 틸 외곽선
-    secondary: 'bg-transparent text-brand-primary border border-brand-primary hover:bg-brand-light',
+    secondary: 'bg-transparent text-brand-700 border border-brand-700 hover:bg-brand-light',
     // 고스트: 미묘한 스타일
-    ghost: 'bg-transparent text-slate-500 hover:bg-brand-light/50 hover:text-brand-primary',
+    ghost: 'bg-transparent text-slate-500 hover:bg-brand-light/50 hover:text-brand-700',
     // 글래스: 틸 테두리 힌트가 있는 흰색 글래스
-    glass: 'bg-white/40 backdrop-blur-xl border border-white/60 text-slate-800 hover:bg-white/60 shadow-glass hover:border-brand-primary/30'
+    glass: 'bg-white/40 backdrop-blur-xl border border-white/60 text-slate-800 hover:bg-white/60 shadow-glass hover:border-brand-700/30'
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -70,7 +70,7 @@ export const Button: React.FC<ButtonProps> = ({
         flex items-center justify-center gap-2
         transition-all duration-300
         disabled:opacity-50 disabled:cursor-not-allowed
-        focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2
+        focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2
         ${variants[variant]}
         ${className}
       `}

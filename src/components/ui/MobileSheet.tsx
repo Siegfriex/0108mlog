@@ -88,9 +88,12 @@ export const MobileSheet: React.FC<MobileSheetProps> = ({
               style={{ opacity }}
             />
 
-            {/* 시트 */}
+            {/* 시트 - WCAG 접근성 */}
             <motion.div
               ref={sheetRef}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby={title ? 'mobile-sheet-title' : undefined}
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
@@ -104,19 +107,19 @@ export const MobileSheet: React.FC<MobileSheetProps> = ({
             >
               {/* 드래그 핸들 바 */}
               <div className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing">
-                <div className="w-12 h-1.5 bg-slate-300 rounded-full" />
+                <div className="w-12 h-1.5 bg-slate-300 rounded-full" aria-hidden="true" />
               </div>
 
               {/* 헤더 */}
               {title && (
                 <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-                  <h2 className="text-lg font-bold text-slate-900">{title}</h2>
+                  <h2 id="mobile-sheet-title" className="text-lg font-bold text-slate-900">{title}</h2>
                   <button
                     onClick={onClose}
                     className="p-2 rounded-full hover:bg-slate-100 transition-colors"
-                    aria-label="닫기"
+                    aria-label="시트 닫기"
                   >
-                    <X size={20} className="text-slate-600" />
+                    <X size={20} className="text-slate-600" aria-hidden="true" />
                   </button>
                 </div>
               )}

@@ -36,6 +36,7 @@ const QUICK_CHIPS = [
  * 최대 입력 길이 (백엔드 sanitizeUserInput과 일치)
  */
 const MAX_INPUT_LENGTH = 10000;
+const WARNING_THRESHOLD = 9000;
 
 /**
  * DayMode 컴포넌트 Props 인터페이스
@@ -409,37 +410,57 @@ export const DayMode: React.FC<DayModeProps> = ({
             )}
 
             {/* 입력 영역 - 더 여유로운 디자인 */}
-            {machine.isChatting && !machine.isTagSelecting && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="shrink-0 px-6 py-5 sm:px-8 sm:py-6 border-t border-slate-200/30 bg-white/50 backdrop-blur-xl"
-              >
-                <div className="flex gap-3">
-                  <div className="flex-1 relative">
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      maxLength={MAX_INPUT_LENGTH}
-                      value={machine.input}
-                      onChange={(e) => machine.updateInput(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
-                      placeholder="무엇이든 편하게 말씀해주세요..."
-                      className="w-full px-5 py-4 pr-14 rounded-2xl bg-white/90 backdrop-blur-sm border border-slate-200/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary/40 text-slate-800 placeholder-slate-400 transition-all text-base shadow-sm"
-                      aria-label="메시지 입력"
-                    />
-                    <button
-                      onClick={handleSend}
-                      disabled={!machine.input.trim()}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-brand-primary text-white hover:bg-brand-secondary disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
-                      aria-label="전송"
-                    >
-                      <Send size={18} />
-                    </button>
+            {machine.isChatting && !machine.isTagSelecting && (() => {
+              const remaining = MAX_INPUT_LENGTH - machine.input.length;
+              const showWarning = remaining <= MAX_INPUT_LENGTH - WARNING_THRESHOLD;
+              const isMaxReached = remaining <= 0;
+
+              return (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="shrink-0 px-6 py-5 sm:px-8 sm:py-6 border-t border-slate-200/30 bg-white/50 backdrop-blur-xl"
+                >
+                  <div className="flex gap-3">
+                    <div className="flex-1 relative">
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        maxLength={MAX_INPUT_LENGTH}
+                        value={machine.input}
+                        onChange={(e) => machine.updateInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
+                        placeholder="무엇이든 편하게 말씀해주세요..."
+                        className="w-full px-5 py-4 pr-14 rounded-2xl bg-white/90 backdrop-blur-sm border border-slate-200/50 focus:outline-none focus:ring-2 focus:ring-brand-primary/40 focus:border-brand-primary/40 text-slate-800 placeholder-slate-400 transition-all text-base shadow-sm"
+                        aria-label="메시지 입력"
+                        aria-describedby={showWarning ? 'char-warning-day' : undefined}
+                      />
+                      <button
+                        onClick={handleSend}
+                        disabled={!machine.input.trim()}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 p-2.5 rounded-xl bg-brand-700 text-white hover:bg-brand-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md hover:shadow-lg"
+                        aria-label="전송"
+                      >
+                        <Send size={18} />
+                      </button>
+                      {/* 글자 수 경고 - WCAG 접근성 */}
+                      {showWarning && (
+                        <p
+                          id="char-warning-day"
+                          role="status"
+                          aria-live="polite"
+                          className={`absolute -bottom-5 right-2 text-xs ${
+                            isMaxReached ? 'text-status-error' : 'text-status-warning'
+                          }`}
+                        >
+                          {isMaxReached ? '최대 글자 수에 도달했습니다' : `${remaining}자 남음`}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            )}
+                </motion.div>
+              );
+            })()}
           </motion.div>
         )}
       </AnimatePresence>

@@ -27,6 +27,7 @@ const NIGHT_EMOTIONS = [
  * 최대 입력 길이 (백엔드 sanitizeUserInput과 일치)
  */
 const MAX_INPUT_LENGTH = 10000;
+const WARNING_THRESHOLD = 9000;
 
 /**
  * NightMode 컴포넌트
@@ -207,7 +208,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
                   </motion.div>
                 )}
 
-                <GlassCard className="flex-1 !bg-black/20 !border-white/10 !rounded-2xl overflow-hidden min-h-card shadow-2xl backdrop-blur-md">
+                <GlassCard className="flex-1 !bg-black/20 !border-white/10 !rounded-2xl overflow-hidden min-h-card shadow-2xl backdrop-blur-md relative">
                     <textarea
                       maxLength={MAX_INPUT_LENGTH}
                       value={machine.diary}
@@ -215,7 +216,24 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
                       placeholder="오늘 하루를 기록해보세요..."
                       className="w-full h-full bg-transparent resize-none focus:outline-none text-white placeholder:text-white/20 text-xl leading-relaxed p-4 font-sans"
                       autoFocus
+                      aria-label="오늘의 일기 작성"
+                      aria-describedby={(MAX_INPUT_LENGTH - machine.diary.length) <= (MAX_INPUT_LENGTH - WARNING_THRESHOLD) ? 'char-warning-night' : undefined}
                     />
+                    {/* 글자 수 경고 - WCAG 접근성 */}
+                    {(MAX_INPUT_LENGTH - machine.diary.length) <= (MAX_INPUT_LENGTH - WARNING_THRESHOLD) && (
+                      <p
+                        id="char-warning-night"
+                        role="status"
+                        aria-live="polite"
+                        className={`absolute bottom-2 right-4 text-xs ${
+                          machine.diary.length >= MAX_INPUT_LENGTH ? 'text-red-400' : 'text-amber-400'
+                        }`}
+                      >
+                        {machine.diary.length >= MAX_INPUT_LENGTH
+                          ? '최대 글자 수에 도달했습니다'
+                          : `${MAX_INPUT_LENGTH - machine.diary.length}자 남음`}
+                      </p>
+                    )}
                 </GlassCard>
 
                 <Button 

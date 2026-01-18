@@ -18,17 +18,25 @@ export const SafetyLayer: React.FC<SafetyLayerProps> = ({ onClose }) => {
         return (
           <div className="space-y-6">
              <div className="flex items-center gap-2 mb-2">
-                <button onClick={() => setView('main')} className="p-2 -ml-2 hover:bg-red-50 rounded-full text-red-600 transition-colors">
-                    <ArrowLeft size={20} />
+                <button
+                    onClick={() => setView('main')}
+                    aria-label="메인 화면으로 돌아가기"
+                    className="p-2 -ml-2 hover:bg-red-50 rounded-full text-red-600 transition-colors"
+                >
+                    <ArrowLeft size={20} aria-hidden="true" />
                 </button>
                 <h3 className="text-lg font-bold text-slate-800">Crisis Support</h3>
              </div>
              
              <div className="space-y-4">
-                <a href="tel:1577-0199" className="block w-full p-6 bg-red-50 border border-red-100 rounded-2xl hover:bg-red-100 transition-colors group">
+                <a
+                    href="tel:1577-0199"
+                    aria-label="정신건강 위기 상담 핫라인 1577-0199로 전화하기"
+                    className="block w-full p-6 bg-red-50 border border-red-100 rounded-2xl hover:bg-red-100 transition-colors group"
+                >
                     <div className="flex items-center gap-4 mb-2">
                         <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-600 group-hover:bg-white group-hover:shadow-sm transition-all">
-                            <Phone size={20} />
+                            <Phone size={20} aria-hidden="true" />
                         </div>
                         <div className="text-left">
                             <h4 className="font-bold text-red-900">Mental Health Crisis Hotline</h4>
@@ -38,10 +46,14 @@ export const SafetyLayer: React.FC<SafetyLayerProps> = ({ onClose }) => {
                     <div className="text-2xl font-bold text-red-600">1577-0199</div>
                 </a>
 
-                <a href="tel:1393" className="block w-full p-6 bg-red-50 border border-red-100 rounded-2xl hover:bg-red-100 transition-colors group">
+                <a
+                    href="tel:1393"
+                    aria-label="자살예방상담전화 1393으로 전화하기"
+                    className="block w-full p-6 bg-red-50 border border-red-100 rounded-2xl hover:bg-red-100 transition-colors group"
+                >
                     <div className="flex items-center gap-4 mb-2">
                         <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center text-red-600 group-hover:bg-white group-hover:shadow-sm transition-all">
-                            <Phone size={20} />
+                            <Phone size={20} aria-hidden="true" />
                         </div>
                         <div className="text-left">
                             <h4 className="font-bold text-red-900">Suicide Prevention Hotline</h4>
@@ -51,11 +63,15 @@ export const SafetyLayer: React.FC<SafetyLayerProps> = ({ onClose }) => {
                     <div className="text-2xl font-bold text-red-600">1393</div>
                 </a>
 
-                <a href="tel:119" className="block w-full p-6 bg-slate-900 text-white rounded-2xl hover:bg-slate-800 transition-colors shadow-lg">
+                <a
+                    href="tel:119"
+                    aria-label="긴급 상황 119 신고하기"
+                    className="block w-full p-6 bg-slate-900 text-white rounded-2xl hover:bg-slate-800 transition-colors shadow-lg"
+                >
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                             <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                                <ShieldAlert size={20} />
+                                <ShieldAlert size={20} aria-hidden="true" />
                             </div>
                             <div className="text-left">
                                 <h4 className="font-bold">Emergency</h4>
@@ -73,8 +89,12 @@ export const SafetyLayer: React.FC<SafetyLayerProps> = ({ onClose }) => {
         return (
           <div className="space-y-6">
              <div className="flex items-center gap-2 mb-2">
-                <button onClick={() => setView('main')} className="p-2 -ml-2 hover:bg-indigo-50 rounded-full text-indigo-600 transition-colors">
-                    <ArrowLeft size={20} />
+                <button
+                    onClick={() => setView('main')}
+                    aria-label="메인 화면으로 돌아가기"
+                    className="p-2 -ml-2 hover:bg-indigo-50 rounded-full text-indigo-600 transition-colors"
+                >
+                    <ArrowLeft size={20} aria-hidden="true" />
                 </button>
                 <h3 className="text-lg font-bold text-slate-800">Coping Tools</h3>
              </div>
@@ -107,10 +127,10 @@ export const SafetyLayer: React.FC<SafetyLayerProps> = ({ onClose }) => {
         return (
           <div className="text-center py-4">
              <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-                <ShieldAlert size={40} className="text-red-500" strokeWidth={1.5} />
+                <ShieldAlert size={40} className="text-red-500" strokeWidth={1.5} aria-hidden="true" />
              </div>
-             <h2 className="text-2xl font-bold text-slate-800 mb-2">Are you feeling safe?</h2>
-             <p className="text-slate-500 mb-8 max-w-xs mx-auto leading-relaxed text-sm">
+             <h2 id="safety-title" className="text-2xl font-bold text-slate-800 mb-2">Are you feeling safe?</h2>
+             <p id="safety-desc" className="text-slate-500 mb-8 max-w-xs mx-auto leading-relaxed text-sm">
                 If you are in immediate danger or feeling overwhelmed, please reach out.
              </p>
 
@@ -144,6 +164,10 @@ export const SafetyLayer: React.FC<SafetyLayerProps> = ({ onClose }) => {
         className="fixed inset-0 z-safety bg-slate-900/40 backdrop-blur-md flex items-end sm:items-center justify-center sm:p-6"
       >
         <motion.div
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="safety-title"
+            aria-describedby="safety-desc"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -152,11 +176,12 @@ export const SafetyLayer: React.FC<SafetyLayerProps> = ({ onClose }) => {
         >
             <div className="p-6 flex-1 overflow-y-auto scrollbar-hide relative">
                 {view === 'main' && (
-                    <button 
+                    <button
                         onClick={onClose}
+                        aria-label="안전 레이어 닫기"
                         className="absolute top-6 right-6 p-2 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
                     >
-                        <X size={20} />
+                        <X size={20} aria-hidden="true" />
                     </button>
                 )}
                 

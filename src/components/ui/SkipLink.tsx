@@ -56,10 +56,10 @@ export const SkipLink: React.FC<SkipLinkProps> = ({
       onClick={handleClick}
       className={`
         sr-only focus:not-sr-only
-        absolute top-4 left-4 z-skip-link
-        px-4 py-2 bg-brand-primary text-white rounded-lg
+        absolute top-4 left-4 z-max
+        px-4 py-2 bg-brand-700 text-white rounded-lg
         font-bold text-sm
-        focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2
+        focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2
         ${className}
       `}
       initial={{ opacity: 0, y: -10 }}

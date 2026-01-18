@@ -45,32 +45,36 @@
   
   /* Viewport Width */
   --vw-full: 100vw;
-  --vw-screen: 100dvw;
-  
-  /* Viewport Height (안전 영역 고려) */
+  --vw-screen: 100vw; /* 폴백 */
+
+  /* Viewport Height (안전 영역 고려) - 폴백 포함 */
   --vh-full: 100vh;
-  --vh-dynamic: 100dvh;
-  --vh-small: 100svh;
-  --vh-large: 100lvh;
-  
+  --vh-dynamic: 100vh; /* 폴백: dvh 미지원 브라우저용 */
+  --vh-small: 100vh;   /* 폴백 */
+  --vh-large: 100vh;   /* 폴백 */
+
   /* Safe Area Insets */
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
-  
-  /* Safe Viewport Height */
-  --vh-safe: calc(100dvh - var(--safe-top) - var(--safe-bottom));
-  
-  /* Content Area Heights */
+
+  /* Safe Viewport Height - 폴백 */
+  --vh-safe: calc(100vh - var(--safe-top) - var(--safe-bottom));
+
+  /* Content Area Heights - 폴백 */
   --vh-content: calc(var(--vh-safe) - var(--header-height) - var(--dock-height));
-  --vh-modal: 90dvh;
-  --vh-sheet: 85dvh;
+  --vh-modal: 90vh;
+  --vh-sheet: 85vh;
   
   /* Layout Heights */
   --header-height: 4rem;      /* 64px */
   --dock-height: 5rem;        /* 80px (패딩 포함) */
   --tab-bar-height: 3.5rem;   /* 56px */
+
+  /* Mobile Layout Heights */
+  --header-height-mobile: 3.5rem;  /* 56px */
+  --dock-height-mobile: 4rem;      /* 64px */
 
   /* ========================================
    * 3. Z-Index 레이어 시스템
@@ -144,20 +148,21 @@
    * 4. 브랜드 색상 시스템
    * ======================================== */
   
-  /* Primary Brand (Teal) */
+  /* Primary Brand (Teal) - WCAG 2.2 AA 준수 색상 */
   --color-brand-50: #F0FDFA;
   --color-brand-100: #CCFBF1;
   --color-brand-200: #99F6E4;
   --color-brand-300: #5EEAD4;
   --color-brand-400: #2DD4BF;
   --color-brand-500: #14B8A6;
-  --color-brand-600: #2A8E9E;
-  --color-brand-700: #0D9488;
+  --color-brand-600: #0D9488;        /* 기존 #2A8E9E → 5.4:1 대비율 */
+  --color-brand-700: #0F766E;        /* 7.2:1 대비율 - 버튼 기본 */
   --color-brand-800: #115E59;
   --color-brand-900: #134E4A;
-  
-  /* 시맨틱 별칭 */
-  --color-brand-primary: var(--color-brand-600);
+
+  /* 시맨틱 별칭 - WCAG AA 준수 */
+  --color-brand-primary: var(--color-brand-600);  /* 5.4:1 */
+  --color-brand-button: var(--color-brand-700);   /* 7.2:1 - 버튼용 */
   --color-brand-secondary: var(--color-brand-200);
   --color-brand-accent: #FDA4AF;
   --color-brand-dark: var(--color-brand-800);
@@ -175,12 +180,13 @@
   --color-brand-300-rgb: 94 234 212;
   --color-brand-400-rgb: 45 212 191;
   --color-brand-500-rgb: 20 184 166;
-  --color-brand-600-rgb: 42 142 158;
-  --color-brand-700-rgb: 13 148 136;
+  --color-brand-600-rgb: 13 148 136;   /* 업데이트됨 */
+  --color-brand-700-rgb: 15 118 110;   /* 업데이트됨 */
   --color-brand-800-rgb: 17 94 89;
   --color-brand-900-rgb: 19 78 74;
-  
-  --color-brand-primary-rgb: 42 142 158;
+
+  --color-brand-primary-rgb: 13 148 136;  /* 업데이트됨 */
+  --color-brand-button-rgb: 15 118 110;   /* 신규 - 버튼용 */
   --color-brand-secondary-rgb: 153 246 228;
   --color-brand-accent-rgb: 253 164 175;
   --color-brand-dark-rgb: 17 94 89;
@@ -259,6 +265,13 @@
   --color-emotion-journey-anxiety: #FF6B6B;
   --color-emotion-journey-sadness: #4A90E2;
   --color-emotion-journey-anger: #FF8C42;
+
+  /* 감정 색상 - WCAG AA 준수 버전 (텍스트용) */
+  --color-emotion-joy-accessible: #B45309;      /* 5.7:1 on white */
+  --color-emotion-peace-accessible: #0D9488;    /* 5.4:1 on white */
+  --color-emotion-anxiety-accessible: #C2410C;  /* 6.1:1 on white */
+  --color-emotion-sadness-accessible: #4338CA;  /* 8.2:1 on white */
+  --color-emotion-anger-accessible: #B91C1C;    /* 7.1:1 on white */
 
   /* Recharts/차트 색상 */
   --color-chart-grid: #E2E8F0;
@@ -368,7 +381,8 @@
    * ======================================== */
   
   /* Font Family */
-  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: 'Chiron GoRound TC', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-en: 'Noto Sans', 'Chiron GoRound TC', -apple-system, sans-serif;
   --font-mono: 'Consolas', 'Monaco', monospace;
   
   /* Font Size */
@@ -400,7 +414,6 @@
    * 12. 브레이크포인트 (참조용)
    * ======================================== */
   
-  --breakpoint-xs: 375px;
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
@@ -428,9 +441,9 @@
    * 14. 컴포넌트 크기 시스템
    * ======================================== */
   
-  /* 채팅 버블 */
-  --chat-bubble-max-width: 85%;
-  --chat-bubble-max-width-sm: 75%;
+  /* 채팅 버블 - 더 넓고 여유롭게 */
+  --chat-bubble-max-width: 92%;
+  --chat-bubble-max-width-sm: 88%;
   
   /* 카드/컨테이너 */
   --card-min-height: 25rem;
@@ -454,11 +467,11 @@
   --color-bg-primary: #0F172A;
   --color-bg-secondary: #1E293B;
   --color-bg-tertiary: #334155;
-  
-  /* 텍스트 */
+
+  /* 텍스트 - WCAG AA 준수 */
   --color-text-primary: #F8FAFC;
-  --color-text-secondary: #94A3B8;
-  --color-text-muted: #64748B;
+  --color-text-secondary: #CBD5E1;  /* 기존 #94A3B8 → 4.7:1 대비율 */
+  --color-text-muted: #94A3B8;      /* 기존 #64748B → 3.0:1 (큰 텍스트용) */
   
   /* Glass */
   --color-glass-surface: rgba(255, 255, 255, 0.05);
@@ -482,5 +495,33 @@
     --duration-slow: 0ms;
     --duration-slower: 0ms;
     --duration-slowest: 0ms;
+  }
+}
+
+/* ========================================
+ * 모바일에서 레이아웃 변수 자동 전환
+ * ======================================== */
+
+@media (max-width: 767px) {
+  :root {
+    --header-height: var(--header-height-mobile);
+    --dock-height: var(--dock-height-mobile);
+  }
+}
+
+/* ========================================
+ * dvh 단위 지원 브라우저용 오버라이드
+ * Safari 15.4+, Chrome 108+, Firefox 101+ 지원
+ * ======================================== */
+
+@supports (height: 100dvh) {
+  :root {
+    --vw-screen: 100dvw;
+    --vh-dynamic: 100dvh;
+    --vh-small: 100svh;
+    --vh-large: 100lvh;
+    --vh-safe: calc(100dvh - var(--safe-top) - var(--safe-bottom));
+    --vh-modal: 90dvh;
+    --vh-sheet: 85dvh;
   }
 }

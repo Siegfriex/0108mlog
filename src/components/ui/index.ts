@@ -34,3 +34,5 @@ export { AIThinkingAnimation } from './AIThinkingAnimation';
 export { SkipLink } from './SkipLink';
 export type { SkipLinkProps } from './SkipLink';
 export { Portal } from './Portal';
+export { ToastProvider, useToast } from './Toast';
+export { ErrorRecovery } from './ErrorRecovery';
