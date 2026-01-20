@@ -10,6 +10,8 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Target, Heart, Brain, Zap } from 'lucide-react';
 import { Button } from '../ui';
 import { OnboardingData } from './OnboardingFlow';
+import { OnboardingContainer } from '../layout/OnboardingContainer';
+import { OnboardingSection } from './OnboardingSection';
 
 /**
  * GoalSetting Props 인터페이스
@@ -80,19 +82,20 @@ export const GoalSetting: React.FC<GoalSettingProps> = ({
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto space-y-6 flex flex-col justify-center min-h-0 flex-1">
-      {/* 헤더 */}
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-slate-900 mb-2">
-          목표 설정
-        </h2>
-        <p className="text-base text-slate-500">
-          어떤 목표로 시작하시겠어요?
-        </p>
-      </div>
+    <OnboardingContainer maxWidth="lg">
+      <OnboardingSection spacing="normal" align="center">
+        {/* 헤더 */}
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-slate-900 mb-2">
+            목표 설정
+          </h2>
+          <p className="text-base text-slate-500">
+            어떤 목표로 시작하시겠어요?
+          </p>
+        </div>
 
-      {/* 목표 카드 그리드 */}
-      <div className="space-y-4">
+        {/* 목표 카드 그리드 */}
+        <div className="space-y-4">
         {GOAL_CARDS.map((card, index) => (
           <motion.button
             key={card.id}
@@ -152,32 +155,33 @@ export const GoalSetting: React.FC<GoalSettingProps> = ({
         ))}
       </div>
 
-      {/* 네비게이션 버튼 */}
-      <div className="flex gap-3 pt-4">
-        <Button
-          onClick={onBack}
-          variant="ghost"
-          className="flex-1"
-        >
-          <ArrowLeft size={18} className="mr-2" />
-          뒤로
-        </Button>
-        <Button
-          onClick={onSkip}
-          variant="ghost"
-          className="flex-1"
-        >
-          스킵
-        </Button>
-        <Button
-          onClick={onNext}
-          variant="primary"
-          className="flex-1"
-        >
-          다음
-          <ArrowRight size={18} className="ml-2" />
-        </Button>
-      </div>
-    </div>
+        {/* 네비게이션 버튼 */}
+        <div className="flex gap-3 pt-4">
+          <Button
+            onClick={onBack}
+            variant="ghost"
+            className="flex-1"
+          >
+            <ArrowLeft size={18} className="mr-2" />
+            뒤로
+          </Button>
+          <Button
+            onClick={onSkip}
+            variant="ghost"
+            className="flex-1"
+          >
+            스킵
+          </Button>
+          <Button
+            onClick={onNext}
+            variant="primary"
+            className="flex-1"
+          >
+            다음
+            <ArrowRight size={18} className="ml-2" />
+          </Button>
+        </div>
+      </OnboardingSection>
+    </OnboardingContainer>
   );
 };

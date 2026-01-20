@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Smile, Frown, Meh } from 'lucide-react';
 import { Button } from '../ui';
 import { OnboardingData } from './OnboardingFlow';
+import { OnboardingContainer } from '../layout/OnboardingContainer';
+import { OnboardingSection } from './OnboardingSection';
 
 /**
  * InitialAssessment Props 인터페이스
@@ -114,16 +116,17 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto space-y-6 flex flex-col justify-center min-h-0 flex-1">
-      {/* 헤더 */}
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-slate-900 mb-2">
-          초기 평가
-        </h2>
-        <p className="text-base text-slate-500">
-          {currentQuestion}/3
-        </p>
-      </div>
+    <OnboardingContainer maxWidth="lg">
+      <OnboardingSection spacing="normal" align="center">
+        {/* 헤더 */}
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-slate-900 mb-2">
+            초기 평가
+          </h2>
+          <p className="text-base text-slate-500">
+            {currentQuestion}/3
+          </p>
+        </div>
 
       <AnimatePresence mode="wait">
         {/* 질문 1: 감정 상태 */}
@@ -260,47 +263,48 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
         )}
       </AnimatePresence>
 
-      {/* 네비게이션 버튼 */}
-      <div className="flex gap-3 pt-4">
-        <Button
-          onClick={currentQuestion === 1 ? onBack : () => setCurrentQuestion((currentQuestion - 1) as 1 | 2 | 3)}
-          variant="ghost"
-          className="flex-1"
-        >
-          <ArrowLeft size={18} className="mr-2" />
-          뒤로
-        </Button>
-        {currentQuestion === 3 ? (
-          <>
+        {/* 네비게이션 버튼 */}
+        <div className="flex gap-3 pt-4">
+          <Button
+            onClick={currentQuestion === 1 ? onBack : () => setCurrentQuestion((currentQuestion - 1) as 1 | 2 | 3)}
+            variant="ghost"
+            className="flex-1"
+          >
+            <ArrowLeft size={18} className="mr-2" />
+            뒤로
+          </Button>
+          {currentQuestion === 3 ? (
+            <>
+              <Button
+                onClick={onSkip}
+                variant="ghost"
+                className="flex-1"
+              >
+                스킵
+              </Button>
+              <Button
+                onClick={onNext}
+                variant="primary"
+                className="flex-1"
+                disabled={!checkinGoal}
+              >
+                다음
+                <ArrowRight size={18} className="ml-2" />
+              </Button>
+            </>
+          ) : (
             <Button
-              onClick={onSkip}
-              variant="ghost"
-              className="flex-1"
-            >
-              스킵
-            </Button>
-            <Button
-              onClick={onNext}
+              onClick={handleNextQuestion}
               variant="primary"
               className="flex-1"
-              disabled={!checkinGoal}
+              disabled={currentQuestion === 1 && !emotionState}
             >
               다음
               <ArrowRight size={18} className="ml-2" />
             </Button>
-          </>
-        ) : (
-          <Button
-            onClick={handleNextQuestion}
-            variant="primary"
-            className="flex-1"
-            disabled={currentQuestion === 1 && !emotionState}
-          >
-            다음
-            <ArrowRight size={18} className="ml-2" />
-          </Button>
-        )}
-      </div>
-    </div>
+          )}
+        </div>
+      </OnboardingSection>
+    </OnboardingContainer>
   );
 };

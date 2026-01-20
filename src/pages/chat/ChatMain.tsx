@@ -6,7 +6,7 @@
  * 기존 DayMode와 NightMode 컴포넌트 활용
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DayMode } from '../../components/chat/DayMode';
 import { NightMode } from '../../components/chat/NightMode';
@@ -58,7 +58,7 @@ export const ChatMain: React.FC<ChatMainProps> = () => {
     checkConsent();
   }, [consentChecked]);
   
-  const handleSaveEntry = async (entry: TimelineEntry) => {
+  const handleSaveEntry = useCallback(async (entry: TimelineEntry) => {
     try {
       await saveEmotionEntry({
         emotion: entry.emotion,
@@ -72,32 +72,32 @@ export const ChatMain: React.FC<ChatMainProps> = () => {
       logError('ChatMain.handleSaveEntry', error);
       // 에러 토스트 표시 (추후 구현)
     }
-  };
+  }, [mode, addTimelineEntry]);
 
-  const handleNavigateToReports = () => {
+  const handleNavigateToReports = useCallback(() => {
     navigate('/reports/weekly');
-  };
+  }, [navigate]);
 
-  const handleOpenSafety = () => {
+  const handleOpenSafety = useCallback(() => {
     navigate('/safety?returnTo=' + encodeURIComponent('/chat'));
-  };
+  }, [navigate]);
 
   /**
    * 위기 감지 핸들러
    * 위기 감지 시 Safety 화면으로 자동 전환 (PRD: < 10초, 페이드 인 0.3초)
    */
-  const handleCrisisDetected = () => {
+  const handleCrisisDetected = useCallback(() => {
     // 현재 경로를 returnTo로 전달
     navigate('/safety?returnTo=' + encodeURIComponent('/chat'));
-  };
+  }, [navigate]);
 
-  const handleConsentComplete = () => {
+  const handleConsentComplete = useCallback(() => {
     setShowConsentModal(false);
-  };
+  }, []);
 
-  const handleConsentSkip = () => {
+  const handleConsentSkip = useCallback(() => {
     setShowConsentModal(false);
-  };
+  }, []);
 
   return (
     <>
@@ -108,6 +108,7 @@ export const ChatMain: React.FC<ChatMainProps> = () => {
       />
       {mode === 'day' 
         ? <DayMode 
+            key="day-mode-singleton"
             persona={persona} 
             onSave={handleSaveEntry} 
             setImmersive={setIsImmersive}
@@ -116,6 +117,7 @@ export const ChatMain: React.FC<ChatMainProps> = () => {
             onCrisisDetected={handleCrisisDetected}
           /> 
         : <NightMode 
+            key="night-mode-singleton"
             persona={persona} 
             onSave={handleSaveEntry}
             onCrisisDetected={handleCrisisDetected}

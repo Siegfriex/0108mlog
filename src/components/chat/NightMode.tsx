@@ -99,7 +99,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto h-full flex flex-col px-4 text-white relative overflow-hidden">
+    <div className="w-full max-w-4xl mx-auto flex-1 flex flex-col px-4 text-white relative overflow-hidden">
       {/* 천체 배경 */}
       <CelestialBackground intensity="medium" />
       

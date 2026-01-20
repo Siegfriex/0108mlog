@@ -129,8 +129,9 @@ export type DayCheckinEvent =
 
 /**
  * 초기 상태
+ * emotion_modal_open으로 시작하여 자동으로 모달을 표시
  */
-export const initialDayCheckinState: DayCheckinState = { type: 'idle' };
+export const initialDayCheckinState: DayCheckinState = { type: 'emotion_modal_open' };
 
 /**
  * 상태 전환 함수
@@ -151,7 +152,7 @@ export function dayCheckinReducer(
 
   // 리셋은 모든 상태에서 가능
   if (event.type === 'RESET') {
-    return { type: 'idle' };
+    return { type: 'emotion_modal_open' }; // idle 대신 emotion_modal_open으로
   }
 
   switch (state.type) {

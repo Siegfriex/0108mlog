@@ -57,6 +57,7 @@ export interface OnboardingData {
 export interface OnboardingFlowProps {
   onComplete: (data: OnboardingData) => void;
   onExit?: () => void;
+  onStepChange?: (step: number) => void;
 }
 
 /**
@@ -84,7 +85,7 @@ const getStepNumber = (step: OnboardingStep): number => {
  * @param {OnboardingFlowProps} props - 컴포넌트 props
  * @returns {JSX.Element} OnboardingFlow 컴포넌트
  */
-export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onExit }) => {
+export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onExit, onStepChange }) => {
   const {
     currentStep,
     data: onboardingData,
@@ -201,6 +202,15 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onEx
   const stepNumber = currentStep ? getStepNumber(currentStep) : 1;
 
   /**
+   * 진행률 변경 시 부모에 알림
+   */
+  useEffect(() => {
+    if (onStepChange) {
+      onStepChange(stepNumber);
+    }
+  }, [stepNumber, onStepChange]);
+
+  /**
    * 브라우저 뒤로가기 버튼 처리
    * Step 1에서 뒤로가기 시 종료 확인 다이얼로그 표시
    */
@@ -224,7 +234,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onEx
   }, [currentStep, requestExit]);
 
   return (
-    <div className="w-full min-h-screen h-full flex flex-col items-center justify-center bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
+    <div className="w-full min-h-screen h-full flex flex-col bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
       {/* 종료 확인 다이얼로그 */}
       <ExitConfirm
         isOpen={isExitConfirm}
@@ -252,39 +262,6 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onEx
         </motion.div>
       )}
 
-      {/* 진행률 표시 (개선) */}
-      <motion.div 
-        className="absolute top-12 sm:top-8 left-1/2 -translate-x-1/2 z-content-base"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
-        <div className="flex items-center gap-3 px-5 py-2.5 bg-white/90 backdrop-blur-xl rounded-full shadow-lg border border-white/80">
-          <span className="text-sm font-bold text-brand-primary min-w-progress">{stepNumber}/6</span>
-          <div className="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${(stepNumber / 6) * 100}%` }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            />
-          </div>
-          <div className="flex gap-1">
-            {[1, 2, 3, 4, 5, 6].map((step) => (
-              <motion.div
-                key={step}
-                className={`w-1.5 h-1.5 rounded-full ${
-                  step <= stepNumber ? 'bg-brand-primary' : 'bg-slate-300'
-                }`}
-                initial={{ scale: 0 }}
-                animate={{ scale: step <= stepNumber ? 1 : 0.8 }}
-                transition={{ delay: step * 0.05, duration: 0.3 }}
-              />
-            ))}
-          </div>
-        </div>
-      </motion.div>
-
       {/* 단계별 컴포넌트 렌더링 */}
       <AnimatePresence mode="wait">
         <motion.div
@@ -293,7 +270,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onEx
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
-          className="w-full flex-1 flex flex-col items-center justify-center px-6 sm:px-8 py-8"
+          className="flex-1 w-full flex flex-col items-center justify-center"
         >
           {currentStep === 'welcome' && (
             <WelcomeScreen

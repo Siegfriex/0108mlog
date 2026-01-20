@@ -5,7 +5,7 @@
  * mode, persona, timelineData, currentEmotion을 관리
  */
 
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import { CoachPersona, TimelineEntry, EmotionType } from '../../types';
 import { DEFAULT_PERSONA } from '../../constants';
 import { INITIAL_TIMELINE } from '../mock/data';
@@ -137,7 +137,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setCurrentEmotion(emotion);
   }, []);
 
-  const value: AppContextValue = {
+  const value: AppContextValue = useMemo(() => ({
     mode,
     persona,
     timelineData,
@@ -147,7 +147,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     addTimelineEntry,
     deleteTimelineEntry,
     setCurrentEmotion: setCurrentEmotionHandler,
-  };
+  }), [mode, persona, timelineData, currentEmotion, setMode, setPersonaHandler, addTimelineEntry, deleteTimelineEntry, setCurrentEmotionHandler]);
 
   return (
     <AppContext.Provider value={value}>

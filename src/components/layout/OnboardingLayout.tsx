@@ -5,11 +5,11 @@
  * 기존 App.tsx의 온보딩 렌더링 구조 보존
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { OnboardingFlow } from '../onboarding';
-import type { OnboardingData } from '../onboarding';
 import { NoiseOverlay } from '../ui';
+import { OnboardingGNB } from './OnboardingGNB';
 
 /**
  * OnboardingLayout Props 인터페이스
@@ -25,6 +25,7 @@ interface OnboardingLayoutProps {}
  */
 export const OnboardingLayout: React.FC<OnboardingLayoutProps> = () => {
   const navigate = useNavigate();
+  const [currentStep, setCurrentStep] = useState(1);
 
   /**
    * 온보딩 완료 핸들러 (FE-C1 해결)
@@ -33,7 +34,16 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = () => {
    * 
    * @param data 온보딩 데이터
    */
-  const handleOnboardingComplete = (data: OnboardingData) => {
+  const handleOnboardingComplete = (data: {
+    notificationPermission: 'granted' | 'denied' | 'default';
+    locationPermission: 'granted' | 'denied' | 'default';
+    initialEmotionState?: number;
+    neededHelp?: string[];
+    checkinGoal?: string;
+    selectedGoal?: string;
+    notificationTime?: string;
+    notificationFrequency?: 'daily' | 'twice' | 'weekly';
+  }) => {
     // 온보딩 데이터 저장
     console.log('온보딩 완료:', data);
     
@@ -69,13 +79,28 @@ export const OnboardingLayout: React.FC<OnboardingLayoutProps> = () => {
     navigate('/chat');
   };
 
+  /**
+   * 진행률 변경 핸들러
+   */
+  const handleStepChange = (step: number) => {
+    setCurrentStep(step);
+  };
+
   return (
     <div className="relative w-full min-h-screen h-screen-dynamic overflow-hidden font-sans bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
       <NoiseOverlay />
-      <OnboardingFlow
-        onComplete={handleOnboardingComplete}
-        onExit={handleExit}
-      />
+      
+      {/* 통합 GNB */}
+      <OnboardingGNB onExit={handleExit} progress={currentStep} />
+      
+      {/* 메인 콘텐츠 - GNB 높이만큼 패딩 */}
+      <main className="pt-[calc(var(--header-height)+var(--safe-top)+1.5rem)] pb-safe-bottom">
+        <OnboardingFlow
+          onComplete={handleOnboardingComplete}
+          onExit={handleExit}
+          onStepChange={handleStepChange}
+        />
+      </main>
     </div>
   );
 };

@@ -371,13 +371,10 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
   }, []);
 
   /**
-   * 자동으로 감정 모달 열기 (idle 상태에서)
+   * 자동 모달 열기 로직은 제거 - 초기 상태가 emotion_modal_open이므로 불필요
+   * 이전에는 idle 상태에서 자동으로 모달을 열었지만, 
+   * 이제는 initialDayCheckinState를 emotion_modal_open으로 설정하여 처음부터 모달이 열려있음
    */
-  useEffect(() => {
-    if (isIdle(state)) {
-      openEmotionModal();
-    }
-  }, []);
 
   return {
     // 상태

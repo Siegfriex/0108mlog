@@ -5,7 +5,7 @@
  * isImmersive, showChatbot, showSafetyLayer, isOnline을 관리
  */
 
-import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useMemo, ReactNode } from 'react';
 
 /**
  * UIContext 값 인터페이스
@@ -88,7 +88,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     setShowSafetyLayerState(show);
   }, []);
 
-  const value: UIContextValue = {
+  const value: UIContextValue = useMemo(() => ({
     isImmersive,
     showChatbot,
     showSafetyLayer,
@@ -96,7 +96,7 @@ export const UIProvider: React.FC<UIProviderProps> = ({ children }) => {
     setIsImmersive,
     setShowChatbot,
     setShowSafetyLayer,
-  };
+  }), [isImmersive, showChatbot, showSafetyLayer, isOnline, setIsImmersive, setShowChatbot, setShowSafetyLayer]);
 
   return (
     <UIContext.Provider value={value}>

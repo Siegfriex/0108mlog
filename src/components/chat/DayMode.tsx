@@ -94,18 +94,18 @@ const DayModeComponent: React.FC<DayModeProps> = ({
 
   useEffect(scrollToBottom, [machine.messages, machine.isAIResponding]);
 
-  useEffect(() => {
-    return () => {
-      setImmersive(false);
-    };
-  }, [setImmersive]);
+  // cleanup effect 제거 - setImmersive 호출이 컴포넌트 리마운트 유발
+  // useEffect(() => {
+  //   return () => {
+  //     setImmersive(false);
+  //   };
+  // }, [setImmersive]);
 
   /**
    * 감정 선택 완료 후 채팅 시작
    */
   const handleEmotionComplete = () => {
     machine.confirmEmotion();
-    setImmersive(true); // 채팅 시작 시 immersive 모드 활성화
     triggerHaptic('medium');
   };
 
@@ -173,21 +173,22 @@ const DayModeComponent: React.FC<DayModeProps> = ({
     await machine.completeActionFeedback(before, after);
   };
 
-  // 감정 모달이 열려있거나 감정이 선택된 상태
-  const showEmotionModal = machine.isEmotionModalOpen || machine.isEmotionSelected;
-  // 채팅 가능한 상태
+  // 채팅 가능한 상태 (먼저 정의 - showEmotionModal에서 사용)
   const showChat = machine.isChatting || machine.isAIResponding || machine.isTagSelecting || 
                    machine.isSaving || machine.isSaved || machine.isActionLoading || 
                    machine.isActionShowing || machine.isActionFeedback;
+  
+  // 감정 모달 표시 조건: 
+  // 1. chatting 상태가 아니어야 함 (가장 중요!)
+  // 2. 채팅 관련 상태가 아니어야 함
+  // 3. 모달이 열려있거나 감정이 선택된 상태여야 함
+  const showEmotionModal = !machine.isChatting && !showChat && (machine.isEmotionModalOpen || machine.isEmotionSelected);
   // 퀵칩 표시 여부
   const showQuickChips = machine.isChatting && machine.messages.length > 0 && !machine.isAIResponding;
 
-  // showChat 상태와 isImmersive 동기화 (새로고침/복귀 시에도 immersive 모드 유지)
-  useEffect(() => {
-    if (showChat) {
-      setImmersive(true);
-    }
-  }, [showChat, setImmersive]);
+  // setImmersive 호출은 완전히 제거 - 컴포넌트 리마운트를 유발함
+  // 대신 showChat 상태에 따라 DayMode 자체가 fullscreen 레이아웃을 처리
+  // MainLayout의 isImmersive와는 독립적으로 동작
 
   // 인사 메시지 추가 (채팅 시작 시)
   const displayMessages = showChat && machine.messages.length === 0 
@@ -219,7 +220,7 @@ const DayModeComponent: React.FC<DayModeProps> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col h-screen w-screen bg-gradient-to-b from-white/60 to-white/40"
+            className="fixed inset-0 z-[100] flex flex-col h-full w-full bg-gradient-to-b from-white/60 to-white/40 pt-safe-top pb-safe-bottom"
           >
             {/* 헤더 - 더 넓고 여유로운 디자인 */}
             <motion.div
@@ -481,4 +482,19 @@ const DayModeComponent: React.FC<DayModeProps> = ({
 };
 
 // P2 최적화: React.memo로 불필요한 리렌더 방지
-export const DayMode = React.memo(DayModeComponent);
+// 깊은 비교를 위한 커스텀 비교 함수
+export const DayMode = React.memo(DayModeComponent, (prevProps, nextProps) => {
+  // persona는 객체이므로 깊은 비교
+  const personaEqual = prevProps.persona.name === nextProps.persona.name &&
+                       prevProps.persona.tone === nextProps.persona.tone &&
+                       prevProps.persona.emoji === nextProps.persona.emoji;
+  
+  // 모든 props가 동일하면 리렌더링 방지
+  return personaEqual &&
+         prevProps.onSave === nextProps.onSave &&
+         prevProps.setImmersive === nextProps.setImmersive &&
+         prevProps.onNavigateToReports === nextProps.onNavigateToReports &&
+         prevProps.onOpenSafety === nextProps.onOpenSafety &&
+         prevProps.onCrisisDetected === nextProps.onCrisisDetected &&
+         prevProps.onEmotionChange === nextProps.onEmotionChange;
+});

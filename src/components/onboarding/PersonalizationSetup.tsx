@@ -10,6 +10,8 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Clock, Bell } from 'lucide-react';
 import { Button } from '../ui';
 import { OnboardingData } from './OnboardingFlow';
+import { OnboardingContainer } from '../layout/OnboardingContainer';
+import { OnboardingSection } from './OnboardingSection';
 
 /**
  * PersonalizationSetup Props 인터페이스
@@ -83,16 +85,17 @@ export const PersonalizationSetup: React.FC<PersonalizationSetupProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6 flex flex-col justify-center min-h-0 flex-1">
-      {/* 헤더 */}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
-          개인화 설정
-        </h2>
-        <p className="text-sm text-slate-500">
-          알림 시간과 빈도를 설정해주세요
-        </p>
-      </div>
+    <OnboardingContainer maxWidth="lg">
+      <OnboardingSection spacing="normal" align="center">
+        {/* 헤더 */}
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">
+            개인화 설정
+          </h2>
+          <p className="text-sm text-slate-500">
+            알림 시간과 빈도를 설정해주세요
+          </p>
+        </div>
 
       {/* 알림 시간 설정 */}
       <motion.div
@@ -171,32 +174,33 @@ export const PersonalizationSetup: React.FC<PersonalizationSetupProps> = ({
         </div>
       </motion.div>
 
-      {/* 네비게이션 버튼 */}
-      <div className="flex gap-3 pt-4">
-        <Button
-          onClick={onBack}
-          variant="ghost"
-          className="flex-1"
-        >
-          <ArrowLeft size={18} className="mr-2" />
-          뒤로
-        </Button>
-        <Button
-          onClick={onSkip}
-          variant="ghost"
-          className="flex-1"
-        >
-          스킵
-        </Button>
-        <Button
-          onClick={onNext}
-          variant="primary"
-          className="flex-1"
-        >
-          다음
-          <ArrowRight size={18} className="ml-2" />
-        </Button>
-      </div>
-    </div>
+        {/* 네비게이션 버튼 */}
+        <div className="flex gap-3 pt-4">
+          <Button
+            onClick={onBack}
+            variant="ghost"
+            className="flex-1"
+          >
+            <ArrowLeft size={18} className="mr-2" />
+            뒤로
+          </Button>
+          <Button
+            onClick={onSkip}
+            variant="ghost"
+            className="flex-1"
+          >
+            스킵
+          </Button>
+          <Button
+            onClick={onNext}
+            variant="primary"
+            className="flex-1"
+          >
+            다음
+            <ArrowRight size={18} className="ml-2" />
+          </Button>
+        </div>
+      </OnboardingSection>
+    </OnboardingContainer>
   );
 };

@@ -10,6 +10,8 @@ import { motion } from 'framer-motion';
 import { Bell, MapPin, ArrowLeft, ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '../ui';
 import { OnboardingData } from './OnboardingFlow';
+import { OnboardingContainer } from '../layout/OnboardingContainer';
+import { OnboardingSection } from './OnboardingSection';
 
 /**
  * PermissionRequest Props 인터페이스
@@ -89,16 +91,17 @@ export const PermissionRequest: React.FC<PermissionRequestProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6 flex flex-col justify-center min-h-0 flex-1">
-      {/* 헤더 */}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
-          권한 설정
-        </h2>
-        <p className="text-sm text-slate-500">
-          더 나은 경험을 위해 권한이 필요해요
-        </p>
-      </div>
+    <OnboardingContainer maxWidth="lg">
+      <OnboardingSection spacing="normal" align="center">
+        {/* 헤더 */}
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">
+            권한 설정
+          </h2>
+          <p className="text-sm text-slate-500">
+            더 나은 경험을 위해 권한이 필요해요
+          </p>
+        </div>
 
       {/* 알림 권한 카드 */}
       <motion.div
@@ -175,25 +178,26 @@ export const PermissionRequest: React.FC<PermissionRequestProps> = ({
         </div>
       </motion.div>
 
-      {/* 네비게이션 버튼 */}
-      <div className="flex gap-3 pt-4">
-        <Button
-          onClick={onBack}
-          variant="ghost"
-          className="flex-1"
-        >
-          <ArrowLeft size={18} className="mr-2" />
-          뒤로
-        </Button>
-        <Button
-          onClick={onNext}
-          variant="primary"
-          className="flex-1"
-        >
-          다음
-          <ArrowRight size={18} className="ml-2" />
-        </Button>
-      </div>
-    </div>
+        {/* 네비게이션 버튼 */}
+        <div className="flex gap-3 pt-4">
+          <Button
+            onClick={onBack}
+            variant="ghost"
+            className="flex-1"
+          >
+            <ArrowLeft size={18} className="mr-2" />
+            뒤로
+          </Button>
+          <Button
+            onClick={onNext}
+            variant="primary"
+            className="flex-1"
+          >
+            다음
+            <ArrowRight size={18} className="ml-2" />
+          </Button>
+        </div>
+      </OnboardingSection>
+    </OnboardingContainer>
   );
 };
