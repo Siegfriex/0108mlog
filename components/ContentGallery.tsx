@@ -1,18 +1,22 @@
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Sparkles, Music, Quote, X, RefreshCw, MessageSquareQuote, 
-  Link2, Lightbulb, Search, Globe, ExternalLink, Palette, 
+import {
+  Sparkles, Music, Quote, X, RefreshCw, MessageSquareQuote,
+  Link2, Lightbulb, Search, Globe, ExternalLink, Palette,
   Feather, ArrowUpRight, Infinity as InfinityIcon, Activity,
-  TrendingUp, Calendar
+  TrendingUp, Calendar, BookOpen, Headphones, Play
 } from 'lucide-react';
 import { LineChart, Line, ResponsiveContainer, XAxis, Tooltip as RechartsTooltip } from 'recharts';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
-import { Button, PullToRefresh } from '../src/components/ui';
+import { Button, PullToRefresh, YouTubeCard, PoemCard } from '../src/components/ui';
 import { VoicePlayer } from '../src/components/chat/VoicePlayer';
 import { ContentData, CoachPersona } from '../types';
 import { generateHealingContent } from '../src/services/ai/gemini';
+
+// External API hooks
+import { usePoemSearch } from '../src/hooks/useCustomSearch';
+import { useMeditationVideos, useMusicVideos } from '../src/hooks/useYouTubeAPI';
 
 interface ContentGalleryProps {
   persona: CoachPersona;
@@ -30,6 +34,17 @@ const MOODS = [
   '사랑받고 싶어', '영감이 필요해', '잠이 오지 않아', '누군가 그리워'
 ];
 
+// 카테고리 타입
+type ContentCategory = 'all' | 'poems' | 'meditations' | 'music';
+
+// 카테고리 옵션
+const CATEGORY_OPTIONS: { id: ContentCategory; label: string; icon: React.ReactNode }[] = [
+  { id: 'all', label: '전체', icon: <Sparkles size={16} /> },
+  { id: 'poems', label: '위로의 글', icon: <BookOpen size={16} /> },
+  { id: 'meditations', label: '명상', icon: <Headphones size={16} /> },
+  { id: 'music', label: '음악', icon: <Music size={16} /> },
+];
+
 // 무한 루프 방지를 위한 최대 재시도 횟수
 const MAX_RETRIES = 3;
 
@@ -42,6 +57,25 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
 
   // 감정 트렌드 데이터 (차트용)
   const { trendData } = useEmotionTrendData(userId ?? undefined);
+
+  // 카테고리 필터 상태
+  const [selectedCategory, setSelectedCategory] = useState<ContentCategory>('all');
+
+  // 외부 API 검색 상태
+  const [poemMood, setPoemMood] = useState('위로');
+  const [meditationMood, setMeditationMood] = useState('평온');
+  const [musicMood, setMusicMood] = useState('힐링');
+
+  // External API hooks
+  const { data: poems, isLoading: poemsLoading, error: poemsError } = usePoemSearch(
+    selectedCategory === 'poems' ? poemMood : ''
+  );
+  const { data: meditations, isLoading: meditationsLoading, error: meditationsError, refetch: refetchMeditations } = useMeditationVideos(
+    selectedCategory === 'meditations' ? meditationMood : ''
+  );
+  const { data: music, isLoading: musicLoading, error: musicError, refetch: refetchMusic } = useMusicVideos(
+    selectedCategory === 'music' ? musicMood : ''
+  );
 
   // 로컬 optimistic 업데이트용 상태
   const [localContents, setLocalContents] = useState<(ContentData & { commentary?: string })[]>([]);
@@ -305,13 +339,184 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
             </div>
             </div>
 
-            {/* 2. Content Feed (Asymmetrical Grid) */}
+            {/* 2. Category Filter Tabs */}
+            <div className="mb-6">
+                <div className="flex items-center justify-between mb-4 px-2">
+                    <h3 className="font-bold text-slate-800">콘텐츠</h3>
+                </div>
+                <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                    {CATEGORY_OPTIONS.map((category) => (
+                        <button
+                            key={category.id}
+                            onClick={() => setSelectedCategory(category.id)}
+                            className={`
+                                flex items-center gap-2 whitespace-nowrap px-4 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300
+                                ${selectedCategory === category.id
+                                    ? 'bg-slate-800 text-white shadow-lg'
+                                    : 'bg-white border border-slate-100 text-slate-500 hover:bg-slate-50 hover:border-slate-200'}
+                            `}
+                        >
+                            {category.icon}
+                            {category.label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* 3. Category-specific Content */}
+            {selectedCategory === 'poems' && (
+                <div className="mb-8">
+                    <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-4">
+                        {['위로', '격려', '희망', '평화', '사랑', '용기'].map((mood) => (
+                            <button
+                                key={mood}
+                                onClick={() => setPoemMood(mood)}
+                                className={`
+                                    whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold transition-all
+                                    ${poemMood === mood
+                                        ? 'bg-orange-500 text-white'
+                                        : 'bg-orange-50 text-orange-600 hover:bg-orange-100'}
+                                `}
+                            >
+                                {mood}
+                            </button>
+                        ))}
+                    </div>
+                    {poemsLoading ? (
+                        <div className="flex items-center justify-center py-12">
+                            <div className="w-6 h-6 border-2 border-orange-200 border-t-orange-500 rounded-full animate-spin" />
+                        </div>
+                    ) : poemsError ? (
+                        <div className="text-center py-8 text-slate-500">
+                            <p>시를 불러오는 중 오류가 발생했습니다.</p>
+                            <button
+                                onClick={() => setPoemMood(poemMood)}
+                                className="mt-2 text-orange-500 hover:underline text-sm"
+                            >
+                                다시 시도
+                            </button>
+                        </div>
+                    ) : poems && poems.length > 0 ? (
+                        <div className="space-y-3 pb-24">
+                            {poems.map((poem, idx) => (
+                                <PoemCard
+                                    key={`${poem.link}-${idx}`}
+                                    title={poem.title}
+                                    link={poem.link}
+                                    snippet={poem.snippet}
+                                    source={poem.source}
+                                    reason={poem.reason}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 text-slate-400">
+                            검색 결과가 없습니다.
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {selectedCategory === 'meditations' && (
+                <div className="mb-8">
+                    <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-4">
+                        {['평온', '불안 해소', '스트레스 완화', '수면', '집중'].map((mood) => (
+                            <button
+                                key={mood}
+                                onClick={() => setMeditationMood(mood.replace(' 해소', '').replace(' 완화', ''))}
+                                className={`
+                                    whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold transition-all
+                                    ${meditationMood === mood.replace(' 해소', '').replace(' 완화', '')
+                                        ? 'bg-teal-500 text-white'
+                                        : 'bg-teal-50 text-teal-600 hover:bg-teal-100'}
+                                `}
+                            >
+                                {mood}
+                            </button>
+                        ))}
+                    </div>
+                    {meditationsLoading ? (
+                        <div className="flex items-center justify-center py-12">
+                            <div className="w-6 h-6 border-2 border-teal-200 border-t-teal-500 rounded-full animate-spin" />
+                        </div>
+                    ) : meditationsError ? (
+                        <div className="text-center py-8 text-slate-500">
+                            <p>명상 영상을 불러오는 중 오류가 발생했습니다.</p>
+                            <button
+                                onClick={() => refetchMeditations()}
+                                className="mt-2 text-teal-500 hover:underline text-sm"
+                            >
+                                다시 시도
+                            </button>
+                        </div>
+                    ) : meditations && meditations.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-24">
+                            {meditations.map((video) => (
+                                <YouTubeCard key={video.id} video={video} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 text-slate-400">
+                            검색 결과가 없습니다.
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {selectedCategory === 'music' && (
+                <div className="mb-8">
+                    <div className="flex gap-2 overflow-x-auto scrollbar-hide mb-4">
+                        {['힐링', '수면', '집중', '휴식', '명상'].map((mood) => (
+                            <button
+                                key={mood}
+                                onClick={() => setMusicMood(mood)}
+                                className={`
+                                    whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold transition-all
+                                    ${musicMood === mood
+                                        ? 'bg-indigo-500 text-white'
+                                        : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100'}
+                                `}
+                            >
+                                {mood}
+                            </button>
+                        ))}
+                    </div>
+                    {musicLoading ? (
+                        <div className="flex items-center justify-center py-12">
+                            <div className="w-6 h-6 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
+                        </div>
+                    ) : musicError ? (
+                        <div className="text-center py-8 text-slate-500">
+                            <p>음악 영상을 불러오는 중 오류가 발생했습니다.</p>
+                            <button
+                                onClick={() => refetchMusic()}
+                                className="mt-2 text-indigo-500 hover:underline text-sm"
+                            >
+                                다시 시도
+                            </button>
+                        </div>
+                    ) : music && music.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-24">
+                            {music.map((video) => (
+                                <YouTubeCard key={video.id} video={video} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-8 text-slate-400">
+                            검색 결과가 없습니다.
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* 4. AI Generated Content Feed (show when 'all' category) */}
+            {selectedCategory === 'all' && (
             <div>
                 <div className="flex items-center justify-between mb-4 px-2">
                     <h3 className="font-bold text-slate-800">당신을 위해</h3>
                     <button className="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors">전체 보기</button>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4 pb-24">
                     {contents.map((content, idx) => {
                         // 첫 번째 항목을 시각적으로 강조
@@ -354,6 +559,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                     </div>
                 </div>
             </div>
+            )}
           </div>
         </div>
       </PullToRefresh>
@@ -509,6 +715,11 @@ const GalleryItem: React.FC<{
             `}
         >
             <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${bgGradient} opacity-50 blur-2xl rounded-full -translate-y-1/2 translate-x-1/2`} />
+            
+            {/* Frosted Glass Overlay for image-based cards */}
+            {content.type === 'meditation' && (
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            )}
             
             <div className="p-5 flex flex-col justify-between h-full relative z-10">
                 <div className="flex justify-between items-start">

@@ -63,6 +63,7 @@ export const QuickChip: React.FC<QuickChipProps> = ({
           h-10
         `}
       >
+        <Sparkles size={14} className="opacity-70" />
         <span>{text}</span>
       </motion.button>
     );

@@ -44,3 +44,4 @@ export { XPFeedback } from './XPFeedback';
 export type { XPFeedbackProps } from './XPFeedback';
 export { ReminderBadge } from './ReminderBadge';
 export type { ReminderBadgeProps } from './ReminderBadge';
+export { FloatingOrbs } from './FloatingOrbs';

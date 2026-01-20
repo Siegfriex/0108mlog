@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { CelestialBackground, Button, GlassCard } from '../../components/ui';
 import { Sparkles, ArrowLeft, Key } from 'lucide-react';
@@ -47,7 +47,14 @@ export const GatePage: React.FC = () => {
     <div className="relative w-full h-full flex flex-col items-center justify-center p-6 bg-[#050505] text-white">
       {/* 배경 레이어 */}
       <CelestialBackground intensity="high" />
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay"></div>
+      {/* 노이즈 텍스처 - 외부 URL 제거, CSS로 대체 */}
+      <div 
+        className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`,
+          backgroundSize: '20px 20px'
+        }}
+      ></div>
       
       {/* 뒤로가기 버튼 */}
       <button
@@ -71,10 +78,10 @@ export const GatePage: React.FC = () => {
         <GlassCard className="!bg-[#151520]/60 !border-white/10 !shadow-2xl !backdrop-blur-xl p-8 flex flex-col items-center gap-8 relative overflow-hidden">
           {/* 장식용 빛 */}
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent"></div>
-          <div className="absolute -top-20 inset-x-0 h-40 bg-purple-500/10 blur-3xl rounded-full"></div>
+          <div className="absolute -top-20 inset-x-0 h-40 bg-purple-500/10 blur-3xl rounded-full pointer-events-none"></div>
 
           {/* 아이콘 */}
-          <div className="relative mt-4">
+          <div className="relative mt-4 pointer-events-none">
             <div className="absolute inset-0 bg-purple-500 blur-xl opacity-30"></div>
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-white/10 flex items-center justify-center relative z-10 backdrop-blur-md">
               <Key size={32} className="text-purple-200" />
@@ -99,9 +106,9 @@ export const GatePage: React.FC = () => {
           </div>
 
           {/* 입력 폼 */}
-          <div className="w-full space-y-4">
+          <div className="w-full space-y-4 relative z-20">
             <div className="relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl opacity-20 group-focus-within:opacity-50 transition duration-500 blur"></div>
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl opacity-20 group-focus-within:opacity-50 transition duration-500 blur pointer-events-none"></div>
               <input
                 type="tel"
                 maxLength={6}
@@ -109,16 +116,17 @@ export const GatePage: React.FC = () => {
                 onChange={(e) => setInput(e.target.value.replace(/\D/g, ''))}
                 onKeyPress={handleKeyPress}
                 placeholder="YYMMDD"
-                className="relative w-full px-6 py-4 text-center text-2xl tracking-[0.5em] font-mono rounded-xl bg-black/40 border border-white/10 text-white placeholder-white/10 focus:outline-none focus:border-white/20 transition-colors"
+                className="relative w-full px-6 py-4 text-center text-2xl tracking-[0.5em] font-mono rounded-xl bg-black/40 border border-white/10 text-white placeholder-white/10 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 transition-colors z-10"
                 aria-label="생년월일 입력"
                 autoFocus
+                autoComplete="off"
               />
             </div>
 
             <Button
               onClick={handleSubmit}
               disabled={input.length !== 6}
-              className={`w-full py-4 rounded-xl text-base font-bold tracking-wide transition-all duration-300
+              className={`w-full py-4 rounded-xl text-base font-bold tracking-wide transition-all duration-300 relative z-10
                 ${input.length === 6 
                   ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-lg hover:shadow-purple-500/25 text-white border-none' 
                   : 'bg-white/5 text-slate-500 border border-white/5 cursor-not-allowed hover:bg-white/5'}
@@ -129,7 +137,7 @@ export const GatePage: React.FC = () => {
           </div>
 
           {/* 에러 메시지 */}
-          <div className="h-6 flex items-center justify-center">
+          <div className="h-6 flex items-center justify-center relative z-20">
             <AnimatePresence>
               {shake && (
                 <motion.p

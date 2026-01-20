@@ -46,7 +46,7 @@ export async function getGeminiApiKey(): Promise<string> {
       success: true,
     });
 
-    const apiKey = version.payload?.data?.toString();
+    const apiKey = version.payload?.data?.toString().trim();
     if (!apiKey) {
       throw new Error("GEMINI_API_KEY not found in Secret Manager");
     }
@@ -105,7 +105,7 @@ export async function getGoogleApiKey(): Promise<string> {
       success: true,
     });
 
-    const apiKey = version.payload?.data?.toString();
+    const apiKey = version.payload?.data?.toString().trim();
     if (!apiKey) {
       throw new Error("GOOGLE_API_KEY not found in Secret Manager");
     }
@@ -165,7 +165,7 @@ export async function getCSEId(): Promise<string> {
       success: true,
     });
 
-    const cseId = version.payload?.data?.toString();
+    const cseId = version.payload?.data?.toString().trim();
     if (!cseId) {
       throw new Error("CSE_ID not found in Secret Manager");
     }
@@ -225,7 +225,7 @@ export async function getYouTubeApiKey(): Promise<string> {
       success: true,
     });
 
-    const apiKey = version.payload?.data?.toString();
+    const apiKey = version.payload?.data?.toString().trim();
     if (!apiKey) {
       throw new Error("YOUTUBE_API_KEY not found in Secret Manager");
     }

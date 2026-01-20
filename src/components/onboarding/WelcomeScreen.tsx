@@ -8,7 +8,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight } from 'lucide-react';
-import { Button } from '../ui';
+import { Button, FloatingOrbs } from '../ui';
 import { OnboardingContainer } from '../layout/OnboardingContainer';
 import { OnboardingSection } from './OnboardingSection';
 
@@ -30,16 +30,23 @@ export interface WelcomeScreenProps {
 export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onExit }) => {
   return (
     <OnboardingContainer maxWidth="lg">
+      {/* 배경에 FloatingOrbs 추가 */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <FloatingOrbs />
+      </div>
+      
       <OnboardingSection spacing="loose" align="center">
         {/* 벚꽃 일러스트 (아이콘으로 대체) */}
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="flex justify-center"
+          className="flex justify-center relative z-10"
         >
-          <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-full bg-gradient-to-br from-brand-accent via-brand-primary to-brand-secondary flex items-center justify-center shadow-2xl shadow-brand-primary/30">
-            <Sparkles size={80} className="text-white sm:w-28 sm:h-28" strokeWidth={1.5} />
+          <div className="relative w-32 h-32 sm:w-40 sm:h-40 specular-highlight">
+            <div className="w-full h-full rounded-[32px] bg-gradient-to-br from-brand-accent via-brand-primary to-brand-secondary flex items-center justify-center shadow-neon-lg">
+              <Sparkles size={60} className="text-white sm:w-28 sm:h-28" strokeWidth={1.5} />
+            </div>
           </div>
         </motion.div>
 
@@ -48,6 +55,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onExit }) 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
+          className="relative z-10"
         >
           <h1 className="text-5xl sm:text-6xl font-bold text-slate-900">
             MaumLog
@@ -62,6 +70,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onExit }) 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
+          className="relative z-10"
         >
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 leading-tight">
             당신의 마음을<br />
@@ -78,7 +87,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onNext, onExit }) 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="pt-4"
+          className="pt-4 relative z-10"
         >
           <Button
             onClick={onNext}

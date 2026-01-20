@@ -99,21 +99,26 @@ export const GoalSetting: React.FC<GoalSettingProps> = ({
         {GOAL_CARDS.map((card, index) => (
           <motion.button
             key={card.id}
+            data-testid={`goal-card-${card.id}`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             onClick={() => handleGoalSelect(card.id)}
-            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
+            whileHover={{ y: -4 }}
             className={`
-              w-full p-6 sm:p-8 rounded-2xl text-left
-              transition-all duration-300
+              relative w-full overflow-hidden p-6 sm:p-8 rounded-3xl text-left
+              transition-all duration-500
               ${selectedGoal === card.id
-                ? 'bg-gradient-to-br ' + card.color + ' border-2 border-brand-primary shadow-xl'
-                : 'bg-white/80 border border-white/60 hover:bg-white/90'
+                ? 'bg-white/80 shadow-floating border-2 border-brand-primary/30'
+                : 'bg-white/40 border border-white/40 hover:bg-white/60 shadow-glass'
               }
+              backdrop-blur-xl
             `}
           >
+            {selectedGoal === card.id && (
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/10 to-transparent opacity-50" />
+            )}
             <div className="flex items-start gap-4 sm:gap-5">
               <div className={`
                 w-16 h-16 sm:w-18 sm:h-18 rounded-xl flex items-center justify-center shrink-0

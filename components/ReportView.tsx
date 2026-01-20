@@ -192,7 +192,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 {/* Mood Flow (Area Chart) */}
-                <GlassCard className="!p-0 h-80 overflow-hidden relative col-span-1 md:col-span-2">
+                <div data-testid="weekly-report" className="glass-panel !p-0 h-80 overflow-hidden relative col-span-1 md:col-span-2 rounded-[2rem]">
                      <div className="absolute top-6 left-6 z-10">
                         <div className="flex items-center gap-2 mb-1">
                              <div className="p-1.5 bg-brand-light rounded-lg text-brand-primary">
@@ -240,7 +240,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
                             </AreaChart>
                         </ResponsiveContainer>
                      </div>
-                </GlassCard>
+                </div>
 
                 {/* Balance Radar */}
                 <GlassCard className="!p-6 h-80 flex flex-col items-center justify-center relative">

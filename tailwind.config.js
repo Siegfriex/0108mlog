@@ -228,10 +228,13 @@ export default {
         'brand-md': 'var(--shadow-brand-md)',
         'brand-lg': 'var(--shadow-brand-lg)',
         'glass': 'var(--shadow-glass)',
+        'glass-lg': '0 8px 32px 0 rgba(31, 38, 135, 0.12)',
         'glass-hover': 'var(--shadow-glass-hover)',
         'glow': 'var(--shadow-glow)',
         'glow-white': 'var(--shadow-glow-white)',
         'floating': 'var(--shadow-floating)',
+        'neon': '0 0 10px rgba(255, 107, 157, 0.5), 0 0 20px rgba(255, 107, 157, 0.3)',
+        'neon-lg': '0 0 20px rgba(255, 107, 157, 0.6), 0 0 40px rgba(255, 107, 157, 0.4)',
       },
 
       /* ========================================
@@ -276,6 +279,11 @@ export default {
       blur: {
         'bg-lg': 'var(--bg-blur-lg)',
         'bg-xl': 'var(--bg-blur-xl)',
+      },
+      backdropBlur: {
+        'xs': '2px',
+        'xl': '20px',
+        '2xl': '40px',
       },
 
       /* ========================================
@@ -323,6 +331,7 @@ export default {
         'float': 'float 6s ease-in-out infinite',
         'shimmer': 'shimmer 2s linear infinite',
         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'glow': 'glow 2s ease-in-out infinite alternate',
         'blob': 'blob 7s infinite',
         'fade-in': 'fadeIn var(--duration-normal) var(--ease-out)',
         'fade-out': 'fadeOut var(--duration-normal) var(--ease-out)',
@@ -332,12 +341,16 @@ export default {
       },
       keyframes: {
         float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
         },
         shimmer: {
           'from': { backgroundPosition: '0 0' },
           'to': { backgroundPosition: '-200% 0' },
+        },
+        glow: {
+          '0%': { boxShadow: '0 0 5px rgba(255, 107, 157, 0.3)' },
+          '100%': { boxShadow: '0 0 20px rgba(255, 107, 157, 0.6)' },
         },
         blob: {
           '0%': { transform: 'translate(0px, 0px) scale(1)' },

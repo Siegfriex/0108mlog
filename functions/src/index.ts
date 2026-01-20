@@ -4,8 +4,12 @@
  * 모든 Callable Functions를 export합니다.
  */
 
+import {initializeApp} from "firebase-admin/app";
 import {setGlobalOptions} from "firebase-functions/v2";
 import * as logger from "firebase-functions/logger";
+
+// Firebase Admin SDK 초기화 (필수!)
+initializeApp();
 
 // Global options
 setGlobalOptions({

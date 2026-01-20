@@ -37,78 +37,41 @@ export const EmotionOrb: React.FC<EmotionOrbProps> = ({
       aria-pressed={isSelected}
       aria-describedby={`${emotionId}-description`}
       tabIndex={0}
-      className={`
-        relative overflow-hidden rounded-full
-        w-20 h-20 sm:w-24 sm:h-24
+      className="relative group"
+      whileHover={{ y: -6, scale: 1.08 }}
+      whileTap={{ scale: 0.92 }}
+    >
+      {/* 배경 글로우 효과 */}
+      <div className={`absolute inset-0 ${bgGradient} blur-2xl opacity-20 group-hover:opacity-50 transition-opacity`} />
+      
+      {/* Gemstone 버튼 */}
+      <div className={`
+        relative w-24 h-24 rounded-[28px]
+        bg-gradient-to-br from-white/90 to-white/40
+        border-2
+        ${isSelected 
+          ? 'border-brand-primary/50 shadow-neon-lg' 
+          : 'border-white/60 shadow-lg'
+        }
         flex flex-col items-center justify-center gap-1
         focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2
         transition-all duration-300
-        ${isSelected 
-          ? `bg-gradient-to-br ${bgGradient} border-2 border-brand-primary shadow-lg` 
-          : 'bg-white/50 border border-white/60 hover:bg-white/70'
-        }
-      `}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-    >
-      {/* 펄스 효과 (선택 시) */}
-      {isSelected && (
-        <>
-          <motion.div
-            className={`absolute inset-0 rounded-full bg-gradient-to-br ${bgGradient} opacity-50`}
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.5, 0.3, 0.5],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
-          />
-          <motion.div
-            className={`absolute inset-0 rounded-full bg-gradient-to-br ${bgGradient} opacity-30`}
-            animate={{
-              scale: [1, 1.4, 1],
-              opacity: [0.3, 0, 0.3],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: 'easeInOut',
-              delay: 0.5,
-            }}
-          />
-        </>
-      )}
+      `}>
+        {/* Specular Highlight */}
+        <div className="absolute top-3 left-3 w-12 h-6 bg-white/50 rounded-full blur-[3px] rotate-[-18deg]" />
+        {/* 아이콘 */}
+        <div className={`${color} relative z-content-base flex justify-center`}>
+          {icon}
+        </div>
 
-      {/* 글로우 효과 (선택 시) */}
-      {isSelected && (
-        <motion.div
-          className={`absolute inset-0 rounded-full blur-xl bg-gradient-to-br ${bgGradient}`}
-          animate={{
-            opacity: [0.4, 0.6, 0.4],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-        />
-      )}
-
-      {/* 아이콘 */}
-      <div className={`${color} relative z-content-base flex justify-center`}>
-        {icon}
+        {/* 라벨 */}
+        <p 
+          id={`${emotionId}-description`}
+          className={`text-xs font-medium relative z-content-base ${isSelected ? 'text-slate-900' : 'text-slate-600'}`}
+        >
+          {label}
+        </p>
       </div>
-
-      {/* 라벨 */}
-      <p 
-        id={`${emotionId}-description`}
-        className={`text-xs font-medium relative z-content-base ${isSelected ? 'text-slate-900' : 'text-slate-600'}`}
-      >
-        {label}
-      </p>
     </motion.button>
   );
 };

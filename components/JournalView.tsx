@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -14,6 +14,7 @@ import { TimelineEntry, TherapyTool, EmotionType } from '../types';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
 import { GlassCard, Button } from '../src/components/ui';
 import { AreaChart, Area, ResponsiveContainer, YAxis } from 'recharts';
+import { useScrollProgress } from '../src/hooks/useScrollProgress';
 
 interface JournalViewProps {
   timelineData: TimelineEntry[];
@@ -55,6 +56,8 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
   const [showMemoryLane, setShowMemoryLane] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEmotionFilter, setSelectedEmotionFilter] = useState<EmotionType | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScrollProgress(containerRef);
 
   // Auth 상태
   const { userId } = useAuthUser();
@@ -69,6 +72,7 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
          Focuses on "Here & Now" + "Growth", not just history.
        */}
        <motion.div 
+         ref={containerRef}
          className={`flex-1 h-full overflow-y-auto scrollbar-hide p-6 transition-all duration-500 ${showMemoryLane ? 'opacity-50 scale-95 pointer-events-none' : 'opacity-100 scale-100'}`}
        >
           {/* Header */}

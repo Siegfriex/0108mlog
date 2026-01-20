@@ -157,35 +157,41 @@ export const Settings: React.FC = () => {
         <h2 className="text-xl font-bold text-slate-800">설정</h2>
       </div>
 
-      <div className="space-y-4 max-w-2xl">
+      <div className="space-y-3 max-w-2xl">
         {/* 알림 설정 */}
-        <GlassCard className="p-6">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <Bell size={20} className="text-brand-primary" />
-                <div>
-                  <h3 className="font-bold text-slate-800">알림</h3>
-                  <p className="text-sm text-slate-600">체크인 리마인드 알림</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setReminderEnabled(!reminderEnabled)}
-                className={`
-                  w-12 h-6 rounded-full transition-colors relative
-                  ${reminderEnabled ? 'bg-brand-primary' : 'bg-slate-300'}
-                `}
-                aria-label={reminderEnabled ? '알림 끄기' : '알림 켜기'}
-              >
-                <motion.div 
-                  className="w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm"
-                  animate={{ x: reminderEnabled ? 24 : 2 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                />
-              </button>
+        <motion.div
+          data-testid="setting-notification"
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center justify-between p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/70 shadow-glass hover:shadow-floating transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 flex items-center justify-center">
+              <Bell size={20} className="text-brand-primary" />
             </div>
-
-            {reminderEnabled && (
+            <div>
+              <h3 className="font-bold text-slate-800">알림</h3>
+              <p className="text-sm text-slate-600">체크인 리마인드 알림</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setReminderEnabled(!reminderEnabled)}
+            className={`
+              w-12 h-6 rounded-full transition-colors relative
+              ${reminderEnabled ? 'bg-brand-primary' : 'bg-slate-300'}
+            `}
+            aria-label={reminderEnabled ? '알림 끄기' : '알림 켜기'}
+          >
+            <motion.div 
+              className="w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm"
+              animate={{ x: reminderEnabled ? 24 : 2 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+            />
+          </button>
+        </motion.div>
+        
+        {reminderEnabled && (
+          <GlassCard className="p-6">
+            <div className="space-y-6">
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -263,87 +269,97 @@ export const Settings: React.FC = () => {
                   </button>
                 )}
               </motion.div>
-            )}
-          </div>
-        </GlassCard>
+            </div>
+          </GlassCard>
+        )}
 
         {/* 예측 넛지 설정 */}
-        <GlassCard className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <h3 className="font-bold text-slate-800 mb-1">예측 넛지</h3>
-              <p className="text-sm text-slate-600 mb-2">
-                반복 패턴 시간대에 예방 코칭을 제안합니다
-              </p>
-              <p className="text-xs text-slate-500">
-                예: "보통 이 시간쯤 마음이 무거워지곤 하셨어요. 미리 '따뜻한 차 마시기'로 예방해볼까요?"
-              </p>
-            </div>
-            <button
-              onClick={() => setPredictiveNudgeEnabled(!predictiveNudgeEnabled)}
-              className={`
-                w-12 h-6 rounded-full transition-colors relative ml-4
-                ${predictiveNudgeEnabled ? 'bg-brand-primary' : 'bg-slate-300'}
-              `}
-              aria-label={predictiveNudgeEnabled ? '예측 넛지 끄기' : '예측 넛지 켜기'}
-            >
-              <motion.div 
-                className="w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm"
-                animate={{ x: predictiveNudgeEnabled ? 24 : 2 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              />
-            </button>
+        <motion.div
+          data-testid="setting-predictive-nudge"
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center justify-between p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/70 shadow-glass hover:shadow-floating transition-all"
+        >
+          <div className="flex-1">
+            <h3 className="font-bold text-slate-800 mb-1">예측 넛지</h3>
+            <p className="text-sm text-slate-600 mb-2">
+              반복 패턴 시간대에 예방 코칭을 제안합니다
+            </p>
+            <p className="text-xs text-slate-500">
+              예: "보통 이 시간쯤 마음이 무거워지곤 하셨어요. 미리 '따뜻한 차 마시기'로 예방해볼까요?"
+            </p>
           </div>
-        </GlassCard>
+          <button
+            onClick={() => setPredictiveNudgeEnabled(!predictiveNudgeEnabled)}
+            className={`
+              w-12 h-6 rounded-full transition-colors relative ml-4
+              ${predictiveNudgeEnabled ? 'bg-brand-primary' : 'bg-slate-300'}
+            `}
+            aria-label={predictiveNudgeEnabled ? '예측 넛지 끄기' : '예측 넛지 켜기'}
+          >
+            <motion.div 
+              className="w-5 h-5 bg-white rounded-full absolute top-0.5 shadow-sm"
+              animate={{ x: predictiveNudgeEnabled ? 24 : 2 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+            />
+          </button>
+        </motion.div>
 
         {/* 언어 설정 */}
-        <GlassCard className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+        <motion.div
+          data-testid="setting-language"
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center justify-between p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/70 shadow-glass hover:shadow-floating transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 flex items-center justify-center">
               <Globe size={20} className="text-brand-primary" />
-              <div>
-                <h3 className="font-bold text-slate-800">언어</h3>
-                <p className="text-sm text-slate-600">앱 언어 설정</p>
-              </div>
             </div>
-            <select
-              value={language}
-              onChange={(e) => setLanguage(e.target.value as 'ko' | 'en')}
-              className="px-4 py-2 rounded-lg border border-slate-200 bg-white font-medium"
-            >
-              <option value="ko">한국어</option>
-              <option value="en">English</option>
-            </select>
+            <div>
+              <h3 className="font-bold text-slate-800">언어</h3>
+              <p className="text-sm text-slate-600">앱 언어 설정</p>
+            </div>
           </div>
-        </GlassCard>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as 'ko' | 'en')}
+            className="px-4 py-2 rounded-lg border border-slate-200 bg-white font-medium"
+          >
+            <option value="ko">한국어</option>
+            <option value="en">English</option>
+          </select>
+        </motion.div>
 
         {/* 데이터 내보내기 */}
-        <GlassCard className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+        <motion.div
+          data-testid="setting-export"
+          whileTap={{ scale: 0.98 }}
+          className="flex items-center justify-between p-4 rounded-2xl bg-white/60 backdrop-blur-sm border border-white/70 shadow-glass hover:shadow-floating transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-primary/10 to-brand-secondary/10 flex items-center justify-center">
               <Download size={20} className="text-brand-primary" />
-              <div>
-                <h3 className="font-bold text-slate-800">데이터 내보내기</h3>
-                <p className="text-sm text-slate-600">나의 모든 데이터를 JSON 파일로 다운로드</p>
-              </div>
             </div>
-            <Button
-              onClick={handleExportData}
-              variant="ghost"
-              disabled={exporting}
-              className="flex items-center gap-2"
-            >
-              {exporting ? (
-                <>
-                  <Loader2 size={16} className="animate-spin" />
-                  내보내는 중...
-                </>
-              ) : (
-                '내보내기'
-              )}
-            </Button>
+            <div>
+              <h3 className="font-bold text-slate-800">데이터 내보내기</h3>
+              <p className="text-sm text-slate-600">나의 모든 데이터를 JSON 파일로 다운로드</p>
+            </div>
           </div>
-        </GlassCard>
+          <Button
+            onClick={handleExportData}
+            variant="ghost"
+            disabled={exporting}
+            className="flex items-center gap-2"
+          >
+            {exporting ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                내보내는 중...
+              </>
+            ) : (
+              '내보내기'
+            )}
+          </Button>
+        </motion.div>
 
         {/* 이스터에그 카드 - 나이트모드 전용 (리디자인) */}
         {mode === 'night' && (

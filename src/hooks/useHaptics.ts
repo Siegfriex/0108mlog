@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 /**
  * 햅틱 피드백 타입
  */
-export type HapticType = 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error';
+export type HapticType = 'subtle' | 'gentle' | 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error';
 
 /**
  * useHaptics 훅
@@ -22,12 +22,14 @@ export const useHaptics = () => {
     }
 
     const patterns: Record<HapticType, number | number[]> = {
-      light: 10,
-      medium: 20,
-      heavy: 30,
-      success: [10, 50, 10],
-      warning: [20, 50, 20, 50, 20],
-      error: [30, 50, 30, 50, 30],
+      subtle: 10,    // 아주 가벼운 터치
+      gentle: 15,    // 부드러운 터치
+      light: 20,     // 기존 light
+      medium: 40,    // 기존 medium
+      heavy: 80,     // 기존 heavy
+      success: [20, 10, 20],  // 짧은 진동 패턴
+      error: [40, 20, 40, 20, 40],  // 강한 진동 패턴
+      warning: [30, 15, 30],  // 경고 패턴
     };
 
     const pattern = patterns[type];

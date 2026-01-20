@@ -10,6 +10,7 @@ import { ActionFeedback } from '../actions/ActionFeedback';
 import { EmotionType, CoachPersona, TimelineEntry } from '../../../types';
 import { useDayCheckinMachine } from '../../features/checkin/useDayCheckinMachine';
 import { useHaptics } from '../../hooks/useHaptics';
+import { useScrollProgress } from '../../hooks/useScrollProgress';
 
 /**
  * 감정 설정 구성
@@ -93,7 +94,9 @@ const DayModeComponent: React.FC<DayModeProps> = ({
   });
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { scrollY } = useScrollProgress(messagesContainerRef);
 
   // 현재 감정 설정
   const activeEmotionConfig = EMOTIONS_CONFIG.find(e => e.id === machine.emotion);
@@ -238,11 +241,16 @@ const DayModeComponent: React.FC<DayModeProps> = ({
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
               className="fixed inset-0 z-modal flex flex-col h-full w-full bg-gradient-to-b from-white/60 to-white/40 pt-safe-top pb-safe-bottom"
             >
-            {/* 헤더 - 더 넓고 여유로운 디자인 */}
-            <motion.div
+            {/* 헤더 - Adaptive Blur */}
+            <motion.header
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="shrink-0 flex items-center justify-between px-8 py-6 sm:px-12 sm:py-8 border-b border-slate-200/30 bg-white/50 backdrop-blur-xl"
+              style={{
+                background: scrollY > 20 ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.5)',
+                backdropFilter: scrollY > 20 ? 'blur(20px)' : 'blur(10px)',
+                borderBottom: scrollY > 20 ? '1px solid rgba(255, 255, 255, 0.3)' : 'none',
+              }}
+              className="shrink-0 flex items-center justify-between px-8 py-6 sm:px-12 sm:py-8 transition-all duration-300"
             >
               <div className="flex items-center gap-3">
                 {activeEmotionConfig && (
@@ -276,10 +284,10 @@ const DayModeComponent: React.FC<DayModeProps> = ({
               >
                 <X size={20} />
               </button>
-            </motion.div>
+            </motion.header>
 
             {/* 메시지 영역 - 더 여유로운 간격 */}
-            <div className="flex-1 overflow-y-auto px-6 py-6 sm:px-8 sm:py-8 space-y-5 scrollbar-hide min-h-0">
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-6 py-6 sm:px-8 sm:py-8 space-y-5 scrollbar-hide min-h-0">
               <div className="max-w-3xl mx-auto space-y-5">
               {displayMessages.map((msg, index) => (
                 <motion.div
@@ -475,20 +483,14 @@ const DayModeComponent: React.FC<DayModeProps> = ({
                       >
                         <Send size={18} />
                       </button>
-                      {/* 글자 수 경고 - WCAG 접근성 */}
-                      {showWarning && (
-                        <p
-                          id="char-warning-day"
-                          role="status"
-                          aria-live="polite"
-                          className={`absolute -bottom-5 right-2 text-xs ${
-                            isMaxReached ? 'text-status-error' : 'text-status-warning'
-                          }`}
-                        >
-                          {isMaxReached ? '최대 글자 수에 도달했습니다' : `${remaining}자 남음`}
-                        </p>
-                      )}
-                    </div>
+                      </div>
+                      {/* 글자 수 표시 */}
+                      <div className="flex justify-between mt-2 text-xs">
+                        <span className="text-slate-400">Shift+Enter로 줄바꿈</span>
+                        <span className={machine.input.length > WARNING_THRESHOLD ? 'text-status-warning' : 'text-slate-400'}>
+                          {machine.input.length}/{MAX_INPUT_LENGTH}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
