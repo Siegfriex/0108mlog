@@ -89,6 +89,23 @@ service cloud.firestore {
       allow delete: if isOwner(resource.data.userId);
     }
 
+    // 게이미피케이션 데이터 (gamification)
+    match /gamification/{gamificationId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isOwner(resource.data.userId);
+      allow delete: if isOwner(resource.data.userId);
+    }
+
+    // XP 로그 (xpLogs)
+    match /xpLogs/{logId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      // XP 로그는 수정/삭제 불가 (감사 목적)
+      allow update: if false;
+      allow delete: if false;
+    }
+
     // 사용자 데이터 (users 컬렉션 하위 문서들)
     match /users/{userId} {
       allow read, write: if isOwner(userId);

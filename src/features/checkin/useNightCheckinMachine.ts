@@ -196,7 +196,7 @@ export function useNightCheckinMachine(options: UseNightCheckinMachineOptions) {
 
     while (retryCount <= maxRetries) {
       try {
-        await saveDiaryEntry({
+        const diaryId = await saveDiaryEntry({
           content: diary,
           emotion,
           intensity,
@@ -207,9 +207,9 @@ export function useNightCheckinMachine(options: UseNightCheckinMachineOptions) {
         saveCompletedRef.current = true;
         send({ type: 'SAVE_SUCCESS' });
 
-        // TimelineEntry 생성 및 콜백
+        // TimelineEntry 생성 및 콜백 (diaryId 사용하여 삭제 시 orphan 방지)
         const entry: TimelineEntry = {
-          id: Date.now().toString(),
+          id: diaryId || Date.now().toString(),
           date: new Date(),
           type: 'night',
           emotion,

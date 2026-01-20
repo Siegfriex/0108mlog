@@ -10,7 +10,7 @@
 ### 1. CSE_ID 저장
 
 ```bash
-echo -n "728e72197c5ad4ad9" | gcloud secrets create CSE_ID \
+echo -n "YOUR_CSE_ID_HERE" | gcloud secrets create CSE_ID \
   --data-file=- \
   --project=iness-mlog \
   --replication-policy="automatic"
@@ -18,7 +18,7 @@ echo -n "728e72197c5ad4ad9" | gcloud secrets create CSE_ID \
 
 **또는 이미 존재하는 경우 업데이트**:
 ```bash
-echo -n "728e72197c5ad4ad9" | gcloud secrets versions add CSE_ID \
+echo -n "YOUR_CSE_ID_HERE" | gcloud secrets versions add CSE_ID \
   --data-file=- \
   --project=iness-mlog
 ```
@@ -26,7 +26,7 @@ echo -n "728e72197c5ad4ad9" | gcloud secrets versions add CSE_ID \
 ### 2. GOOGLE_API_KEY 저장
 
 ```bash
-echo -n "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets create GOOGLE_API_KEY \
+echo -n "YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets create GOOGLE_API_KEY \
   --data-file=- \
   --project=iness-mlog \
   --replication-policy="automatic"
@@ -34,7 +34,7 @@ echo -n "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets create GOOGLE
 
 **또는 이미 존재하는 경우 업데이트**:
 ```bash
-echo -n "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets versions add GOOGLE_API_KEY \
+echo -n "YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets versions add GOOGLE_API_KEY \
   --data-file=- \
   --project=iness-mlog
 ```
@@ -124,8 +124,8 @@ firebase functions:log --only searchPoems
 
 | Secret 이름 | 값 | 용도 |
 |------------|-----|------|
-| `CSE_ID` | `728e72197c5ad4ad9` | Custom Search Engine ID |
-| `GOOGLE_API_KEY` | `AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo` | Custom Search API 키 |
+| `CSE_ID` | `YOUR_CSE_ID_HERE` | Custom Search Engine ID |
+| `GOOGLE_API_KEY` | `YOUR_GOOGLE_API_KEY_HERE` | Custom Search API 키 |
 | `GEMINI_API_KEY` | (기존) | Gemini API 키 |
 
 ---

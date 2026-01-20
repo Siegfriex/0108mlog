@@ -240,9 +240,9 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
 
         send({ type: 'SAVE_SUCCESS' });
 
-        // TimelineEntry 생성 및 콜백
+        // TimelineEntry 생성 및 콜백 (conversationId 사용하여 삭제 시 orphan 방지)
         const entry: TimelineEntry = {
-          id: Date.now().toString(),
+          id: conversationId || Date.now().toString(),
           date: new Date(),
           type: 'day',
           emotion,

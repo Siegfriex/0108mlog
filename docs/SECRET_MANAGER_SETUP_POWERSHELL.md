@@ -26,22 +26,22 @@ gcloud auth login
 
 **신규 생성**:
 ```powershell
-"728e72197c5ad4ad9" | gcloud secrets create CSE_ID --data-file=- --project=iness-mlog --replication-policy="automatic"
+"YOUR_CSE_ID_HERE" | gcloud secrets create CSE_ID --data-file=- --project=iness-mlog --replication-policy="automatic"
 ```
 
 **이미 존재하는 경우 업데이트**:
 ```powershell
-"728e72197c5ad4ad9" | gcloud secrets versions add CSE_ID --data-file=- --project=iness-mlog
+"YOUR_CSE_ID_HERE" | gcloud secrets versions add CSE_ID --data-file=- --project=iness-mlog
 ```
 
 **또는 한 번에 시도**:
 ```powershell
 # 먼저 생성 시도
 try {
-    "728e72197c5ad4ad9" | gcloud secrets create CSE_ID --data-file=- --project=iness-mlog --replication-policy="automatic"
+    "YOUR_CSE_ID_HERE" | gcloud secrets create CSE_ID --data-file=- --project=iness-mlog --replication-policy="automatic"
 } catch {
     # 이미 존재하면 업데이트
-    "728e72197c5ad4ad9" | gcloud secrets versions add CSE_ID --data-file=- --project=iness-mlog
+    "YOUR_CSE_ID_HERE" | gcloud secrets versions add CSE_ID --data-file=- --project=iness-mlog
 }
 ```
 
@@ -49,20 +49,20 @@ try {
 
 **신규 생성**:
 ```powershell
-"AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets create GOOGLE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
+"YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets create GOOGLE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
 ```
 
 **이미 존재하는 경우 업데이트**:
 ```powershell
-"AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets versions add GOOGLE_API_KEY --data-file=- --project=iness-mlog
+"YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets versions add GOOGLE_API_KEY --data-file=- --project=iness-mlog
 ```
 
 **또는 한 번에 시도**:
 ```powershell
 try {
-    "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets create GOOGLE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
+    "YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets create GOOGLE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
 } catch {
-    "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets versions add GOOGLE_API_KEY --data-file=- --project=iness-mlog
+    "YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets versions add GOOGLE_API_KEY --data-file=- --project=iness-mlog
 }
 ```
 
@@ -70,20 +70,20 @@ try {
 
 **신규 생성**:
 ```powershell
-"AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets create YOUTUBE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
+"YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets create YOUTUBE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
 ```
 
 **이미 존재하는 경우 업데이트**:
 ```powershell
-"AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets versions add YOUTUBE_API_KEY --data-file=- --project=iness-mlog
+"YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets versions add YOUTUBE_API_KEY --data-file=- --project=iness-mlog
 ```
 
 **또는 한 번에 시도**:
 ```powershell
 try {
-    "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets create YOUTUBE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
+    "YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets create YOUTUBE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
 } catch {
-    "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets versions add YOUTUBE_API_KEY --data-file=- --project=iness-mlog
+    "YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets versions add YOUTUBE_API_KEY --data-file=- --project=iness-mlog
 }
 ```
 
@@ -150,30 +150,30 @@ if ($authStatus -match "No credentialed accounts") {
 # CSE_ID 저장
 Write-Host "`n2. CSE_ID 저장 중..." -ForegroundColor Yellow
 try {
-    "728e72197c5ad4ad9" | gcloud secrets create CSE_ID --data-file=- --project=iness-mlog --replication-policy="automatic" 2>&1 | Out-Null
+    "YOUR_CSE_ID_HERE" | gcloud secrets create CSE_ID --data-file=- --project=iness-mlog --replication-policy="automatic" 2>&1 | Out-Null
     Write-Host "✅ CSE_ID 생성 완료" -ForegroundColor Green
 } catch {
-    "728e72197c5ad4ad9" | gcloud secrets versions add CSE_ID --data-file=- --project=iness-mlog 2>&1 | Out-Null
+    "YOUR_CSE_ID_HERE" | gcloud secrets versions add CSE_ID --data-file=- --project=iness-mlog 2>&1 | Out-Null
     Write-Host "✅ CSE_ID 업데이트 완료" -ForegroundColor Green
 }
 
 # GOOGLE_API_KEY 저장 (Custom Search API용)
 Write-Host "`n3. GOOGLE_API_KEY 저장 중 (Custom Search API용)..." -ForegroundColor Yellow
 try {
-    "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets create GOOGLE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic" 2>&1 | Out-Null
+    "YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets create GOOGLE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic" 2>&1 | Out-Null
     Write-Host "✅ GOOGLE_API_KEY 생성 완료" -ForegroundColor Green
 } catch {
-    "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets versions add GOOGLE_API_KEY --data-file=- --project=iness-mlog 2>&1 | Out-Null
+    "YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets versions add GOOGLE_API_KEY --data-file=- --project=iness-mlog 2>&1 | Out-Null
     Write-Host "✅ GOOGLE_API_KEY 업데이트 완료" -ForegroundColor Green
 }
 
 # YOUTUBE_API_KEY 저장 (YouTube Data API용)
 Write-Host "`n4. YOUTUBE_API_KEY 저장 중 (YouTube Data API용)..." -ForegroundColor Yellow
 try {
-    "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets create YOUTUBE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic" 2>&1 | Out-Null
+    "YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets create YOUTUBE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic" 2>&1 | Out-Null
     Write-Host "✅ YOUTUBE_API_KEY 생성 완료" -ForegroundColor Green
 } catch {
-    "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets versions add YOUTUBE_API_KEY --data-file=- --project=iness-mlog 2>&1 | Out-Null
+    "YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets versions add YOUTUBE_API_KEY --data-file=- --project=iness-mlog 2>&1 | Out-Null
     Write-Host "✅ YOUTUBE_API_KEY 업데이트 완료" -ForegroundColor Green
 }
 
@@ -219,7 +219,7 @@ gcloud config set project iness-mlog
 
 해결: 업데이트 명령어 사용:
 ```powershell
-"728e72197c5ad4ad9" | gcloud secrets versions add CSE_ID --data-file=- --project=iness-mlog
+"YOUR_CSE_ID_HERE" | gcloud secrets versions add CSE_ID --data-file=- --project=iness-mlog
 ```
 
 ---

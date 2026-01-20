@@ -15,7 +15,7 @@ Write-Host "✅ gcloud 인증 확인됨" -ForegroundColor Green
 
 # 2. CSE_ID 저장
 Write-Host "`n2. CSE_ID 저장 중..." -ForegroundColor Yellow
-$cseId = "728e72197c5ad4ad9"
+$cseId = "YOUR_CSE_ID_HERE"
 $null = $cseId | gcloud secrets create CSE_ID --data-file=- --project=iness-mlog --replication-policy="automatic" 2>&1
 
 if ($LASTEXITCODE -eq 0) {
@@ -33,7 +33,7 @@ if ($LASTEXITCODE -eq 0) {
 
 # 3. GOOGLE_API_KEY 저장 (Custom Search API용)
 Write-Host "`n3. GOOGLE_API_KEY 저장 중 (Custom Search API용)..." -ForegroundColor Yellow
-$googleKey = "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo"
+$googleKey = "YOUR_GOOGLE_API_KEY_HERE"
 $null = $googleKey | gcloud secrets create GOOGLE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic" 2>&1
 
 if ($LASTEXITCODE -eq 0) {
@@ -51,7 +51,7 @@ if ($LASTEXITCODE -eq 0) {
 
 # 4. YOUTUBE_API_KEY 저장 (YouTube Data API용)
 Write-Host "`n4. YOUTUBE_API_KEY 저장 중 (YouTube Data API용)..." -ForegroundColor Yellow
-$youtubeKey = "AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo"
+$youtubeKey = "YOUR_GOOGLE_API_KEY_HERE"
 $null = $youtubeKey | gcloud secrets create YOUTUBE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic" 2>&1
 
 if ($LASTEXITCODE -eq 0) {

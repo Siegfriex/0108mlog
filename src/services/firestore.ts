@@ -851,15 +851,20 @@ export async function upsertTimelineEntry(
   try {
     const userId = getCurrentUserId();
 
+    // 동의 확인: 동의 없으면 summary/detail 제외
+    const hasConsent = await canSaveConversation();
+
     const timelineData: Omit<FirestoreTimelineEntry, 'id'> = {
       userId,
       date: Timestamp.fromDate(entry.date),
       type: entry.type,
       emotion: entry.emotion,
       intensity: entry.intensity ?? 5,
-      summary: entry.summary ?? '',
-      detail: entry.detail ?? '',
+      // 동의 없으면 원문 저장 안 함 (PRD Privacy-first)
+      summary: hasConsent ? (entry.summary ?? '') : '',
+      detail: hasConsent ? (entry.detail ?? '') : '',
       nuanceTags: entry.nuanceTags ?? [],
+      isRedacted: !hasConsent,
       ...(entry.conversationId && { conversationId: entry.conversationId }),
     };
 
@@ -1108,6 +1113,7 @@ export async function exportAllUserData(): Promise<{
   exportedAt: string;
   profile: object | null;
   conversations: object[];
+  messages: object[];
   emotions: object[];
   diaries: object[];
   timeline: object[];
@@ -1120,6 +1126,7 @@ export async function exportAllUserData(): Promise<{
       exportedAt: string;
       profile: object | null;
       conversations: object[];
+      messages: object[];
       emotions: object[];
       diaries: object[];
       timeline: object[];
@@ -1129,6 +1136,7 @@ export async function exportAllUserData(): Promise<{
       exportedAt: new Date().toISOString(),
       profile: null,
       conversations: [],
+      messages: [],
       emotions: [],
       diaries: [],
       timeline: [],
@@ -1163,6 +1171,22 @@ export async function exportAllUserData(): Promise<{
       console.warn('대화 내보내기 실패:', err);
     }
 
+    // 메시지 데이터
+    try {
+      const messagesRef = collection(db, FIRESTORE_COLLECTIONS.MESSAGES);
+      const messagesQuery = query(
+        messagesRef,
+        where('userId', '==', userId),
+        orderBy('timestamp', 'desc')
+      );
+      const messagesSnapshot = await getDocs(messagesQuery);
+      messagesSnapshot.forEach((doc) => {
+        exportData.messages.push({ id: doc.id, ...doc.data() });
+      });
+    } catch (err) {
+      console.warn('메시지 내보내기 실패:', err);
+    }
+
     // 감정 데이터
     try {
       const emotionsRef = collection(db, FIRESTORE_COLLECTIONS.EMOTIONS);
@@ -1185,7 +1209,7 @@ export async function exportAllUserData(): Promise<{
       const diariesQuery = query(
         diariesRef,
         where('userId', '==', userId),
-        orderBy('createdAt', 'desc')
+        orderBy('date', 'desc')
       );
       const diariesSnapshot = await getDocs(diariesQuery);
       diariesSnapshot.forEach((doc) => {
@@ -1227,13 +1251,13 @@ export async function exportAllUserData(): Promise<{
       console.warn('콘텐츠 내보내기 실패:', err);
     }
 
-    // 마이크로 액션 로그
+    // 마이크로 액션 로그 (MICRO_ACTIONS 컬렉션 사용 - saveMicroActionLog와 일치)
     try {
-      const actionLogsRef = collection(db, FIRESTORE_COLLECTIONS.MICRO_ACTION_LOGS);
+      const actionLogsRef = collection(db, FIRESTORE_COLLECTIONS.MICRO_ACTIONS);
       const actionLogsQuery = query(
         actionLogsRef,
         where('userId', '==', userId),
-        orderBy('timestamp', 'desc')
+        orderBy('executedAt', 'desc')
       );
       const actionLogsSnapshot = await getDocs(actionLogsQuery);
       actionLogsSnapshot.forEach((doc) => {

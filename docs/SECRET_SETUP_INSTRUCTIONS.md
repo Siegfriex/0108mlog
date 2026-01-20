@@ -40,36 +40,36 @@ gcloud 명령어는 **인증이 필요**하며, 비대화형 환경에서는 자
 
 **신규 생성**:
 ```powershell
-"728e72197c5ad4ad9" | gcloud secrets create CSE_ID --data-file=- --project=iness-mlog --replication-policy="automatic"
+"YOUR_CSE_ID_HERE" | gcloud secrets create CSE_ID --data-file=- --project=iness-mlog --replication-policy="automatic"
 ```
 
 **이미 존재하는 경우 업데이트**:
 ```powershell
-"728e72197c5ad4ad9" | gcloud secrets versions add CSE_ID --data-file=- --project=iness-mlog
+"YOUR_CSE_ID_HERE" | gcloud secrets versions add CSE_ID --data-file=- --project=iness-mlog
 ```
 
 ### GOOGLE_API_KEY 저장 (Custom Search API용)
 
 **신규 생성**:
 ```powershell
-"AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets create GOOGLE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
+"YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets create GOOGLE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
 ```
 
 **이미 존재하는 경우 업데이트**:
 ```powershell
-"AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets versions add GOOGLE_API_KEY --data-file=- --project=iness-mlog
+"YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets versions add GOOGLE_API_KEY --data-file=- --project=iness-mlog
 ```
 
 ### YOUTUBE_API_KEY 저장 (YouTube Data API용)
 
 **신규 생성**:
 ```powershell
-"AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets create YOUTUBE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
+"YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets create YOUTUBE_API_KEY --data-file=- --project=iness-mlog --replication-policy="automatic"
 ```
 
 **이미 존재하는 경우 업데이트**:
 ```powershell
-"AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo" | gcloud secrets versions add YOUTUBE_API_KEY --data-file=- --project=iness-mlog
+"YOUR_GOOGLE_API_KEY_HERE" | gcloud secrets versions add YOUTUBE_API_KEY --data-file=- --project=iness-mlog
 ```
 
 ---
@@ -85,17 +85,17 @@ gcloud 명령어는 **인증이 필요**하며, 비대화형 환경에서는 자
 
 3. **CSE_ID**:
    - 이름: `CSE_ID`
-   - 비밀 값: `728e72197c5ad4ad9`
+   - 비밀 값: `YOUR_CSE_ID_HERE`
    - 만들기 클릭
 
 4. **GOOGLE_API_KEY** (Custom Search API용):
    - 이름: `GOOGLE_API_KEY`
-   - 비밀 값: `AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo`
+   - 비밀 값: `YOUR_GOOGLE_API_KEY_HERE`
    - 만들기 클릭
 
 5. **YOUTUBE_API_KEY** (YouTube Data API용):
    - 이름: `YOUTUBE_API_KEY`
-   - 비밀 값: `AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo`
+   - 비밀 값: `YOUR_GOOGLE_API_KEY_HERE`
    - 만들기 클릭
 
 ---
@@ -156,9 +156,9 @@ gcloud secrets add-iam-policy-binding YOUTUBE_API_KEY `
 
 | Secret 이름 | 값 | 용도 | 사용 함수 |
 |------------|-----|------|----------|
-| `CSE_ID` | `728e72197c5ad4ad9` | Custom Search Engine ID | `searchPoems` |
-| `GOOGLE_API_KEY` | `AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo` | Custom Search API 키 | `searchPoems` |
-| `YOUTUBE_API_KEY` | `AIzaSyAvXcwh0L46lqPibIHIR8dun-8iJ8r6Xyo` | YouTube Data API 키 | `fetchYouTubeMeditations`, `fetchYouTubeMusic` |
+| `CSE_ID` | `YOUR_CSE_ID_HERE` | Custom Search Engine ID | `searchPoems` |
+| `GOOGLE_API_KEY` | `YOUR_GOOGLE_API_KEY_HERE` | Custom Search API 키 | `searchPoems` |
+| `YOUTUBE_API_KEY` | `YOUR_GOOGLE_API_KEY_HERE` | YouTube Data API 키 | `fetchYouTubeMeditations`, `fetchYouTubeMusic` |
 
 ---
 
