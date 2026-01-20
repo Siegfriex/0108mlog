@@ -198,3 +198,25 @@ export async function callWithPolicy<T>(
     error: finalErrorMessage,
   };
 }
+
+/**
+ * LLM 호출 전용 설정
+ * - 20초 타임아웃 (Firebase Functions 30초 제한 고려)
+ * - 1회 재시도 (빠른 응답 우선)
+ */
+const LLM_CALL_CONFIG: ApiPolicyOptions = {
+  timeout: 20000,
+  maxRetries: 1,
+  retryDelay: 1000,
+};
+
+/**
+ * LLM 호출 래퍼 (최적화된 정책 적용)
+ *
+ * @template T 응답 타입
+ * @param fn LLM 호출 함수
+ * @returns {Promise<ApiResponse<T>>} API 응답
+ */
+export const callLLMWithPolicy = async <T>(fn: () => Promise<T>): Promise<ApiResponse<T>> => {
+  return callWithPolicy(fn, LLM_CALL_CONFIG);
+};

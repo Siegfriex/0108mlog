@@ -32,7 +32,7 @@ export const TabBar: React.FC<TabBarProps> = ({
     { id: 'chat', label: '채팅', icon: <MessageCircle size={22} strokeWidth={2.5} /> },
     { id: 'journal', label: '기록', icon: <Book size={22} strokeWidth={2.5} /> },
     { id: 'reports', label: '통계', icon: <BarChart2 size={22} strokeWidth={2.5} /> },
-    { id: 'content', label: '피드', icon: <Layers size={22} strokeWidth={2.5} /> },
+    { id: 'content', label: '콘텐츠', icon: <Layers size={22} strokeWidth={2.5} /> },
     { id: 'profile', label: '나', icon: <User size={22} strokeWidth={2.5} /> },
   ];
 

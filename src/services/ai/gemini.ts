@@ -57,7 +57,7 @@ export const generateDayModeResponse = async (
       persona,
     }),
     {
-      timeout: 3000,
+      timeout: 20000,
       maxRetries: 2,
       fallback: () => ({
         success: false,
@@ -89,7 +89,7 @@ export const generateNightModeLetter = async (
       persona,
     }),
     {
-      timeout: 3000,
+      timeout: 20000,
       maxRetries: 2,
       fallback: () => ({
         success: false,
@@ -147,7 +147,7 @@ export const generateHealingContent = async (
       persona,
     }),
     {
-      timeout: 3000,
+      timeout: 20000,
       maxRetries: 2,
       fallback: () => ({
         success: false,
@@ -182,7 +182,7 @@ export const generateChatbotResponse = async (
       persona,
     }),
     {
-      timeout: 3000,
+      timeout: 20000,
       maxRetries: 2,
       fallback: () => ({
         success: false,
@@ -225,7 +225,7 @@ export const generateMicroAction = async (
       userContext,
     }),
     {
-      timeout: 3000,
+      timeout: 20000,
       maxRetries: 2,
       fallback: () => ({
         success: false,

@@ -109,7 +109,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onCrisisD
             <span className="text-purple-300"><Star size={20} fill="currentColor" /></span>
             {step === 'emotion' ? '저녁 성찰' : step === 'diary' ? '나의 이야기' : '당신을 위한 편지'}
           </h2>
-          <p className="text-white/60 text-sm font-medium">
+          <p className="text-white/80 text-sm font-medium">
              {step === 'emotion' ? '오늘 하루 기분은 어떠셨나요?' : 
               step === 'diary' ? '모두 털어놓으세요. 밤이 듣고 있어요.' : 
               `${persona.name}의 메시지`}

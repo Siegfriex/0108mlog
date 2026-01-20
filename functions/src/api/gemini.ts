@@ -22,6 +22,11 @@ export const generateDayModeResponse = onCall(
     maxInstances: 10,
   },
   async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "인증이 필요합니다.");
+    }
+    const userId = request.auth.uid;
+
     return await measurePerformance(
       "generateDayModeResponse",
       request,
@@ -29,7 +34,7 @@ export const generateDayModeResponse = onCall(
         const requestId = generateRequestId();
         const context = {
           requestId,
-          userId: request.auth?.uid || "anonymous",
+          userId,
           functionName: "generateDayModeResponse",
         };
 
@@ -99,6 +104,11 @@ export const generateNightModeLetter = onCall(
     maxInstances: 10,
   },
   async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "인증이 필요합니다.");
+    }
+    const userId = request.auth.uid;
+
     return await measurePerformance(
       "generateNightModeLetter",
       request,
@@ -106,7 +116,7 @@ export const generateNightModeLetter = onCall(
         const requestId = generateRequestId();
         const context = {
           requestId,
-          userId: request.auth?.uid || "anonymous",
+          userId,
           functionName: "generateNightModeLetter",
         };
 
@@ -170,6 +180,11 @@ export const generateMonthlyNarrative = onCall(
     maxInstances: 5,
   },
   async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "인증이 필요합니다.");
+    }
+    const userId = request.auth.uid;
+
     return await measurePerformance(
       "generateMonthlyNarrative",
       request,
@@ -177,7 +192,7 @@ export const generateMonthlyNarrative = onCall(
         const requestId = generateRequestId();
         const context = {
           requestId,
-          userId: request.auth?.uid || "anonymous",
+          userId,
           functionName: "generateMonthlyNarrative",
         };
 
@@ -228,6 +243,11 @@ export const generateHealingContent = onCall(
     maxInstances: 10,
   },
   async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "인증이 필요합니다.");
+    }
+    const userId = request.auth.uid;
+
     return await measurePerformance(
       "generateHealingContent",
       request,
@@ -235,7 +255,7 @@ export const generateHealingContent = onCall(
         const requestId = generateRequestId();
         const context = {
           requestId,
-          userId: request.auth?.uid || "anonymous",
+          userId,
           functionName: "generateHealingContent",
         };
 
@@ -349,6 +369,11 @@ export const generateChatbotResponse = onCall(
     maxInstances: 10,
   },
   async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "인증이 필요합니다.");
+    }
+    const userId = request.auth.uid;
+
     return await measurePerformance(
       "generateChatbotResponse",
       request,
@@ -356,7 +381,7 @@ export const generateChatbotResponse = onCall(
         const requestId = generateRequestId();
         const context = {
           requestId,
-          userId: request.auth?.uid || "anonymous",
+          userId,
           functionName: "generateChatbotResponse",
         };
 
@@ -422,6 +447,11 @@ export const generateMicroAction = onCall(
     maxInstances: 10,
   },
   async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "인증이 필요합니다.");
+    }
+    const userId = request.auth.uid;
+
     return await measurePerformance(
       "generateMicroAction",
       request,
@@ -429,7 +459,7 @@ export const generateMicroAction = onCall(
         const requestId = generateRequestId();
         const context = {
           requestId,
-          userId: request.auth?.uid || "anonymous",
+          userId,
           functionName: "generateMicroAction",
         };
 
@@ -531,6 +561,11 @@ export const generateTimelineAnalysis = onCall(
     maxInstances: 5,
   },
   async (request) => {
+    if (!request.auth) {
+      throw new HttpsError("unauthenticated", "인증이 필요합니다.");
+    }
+    const userId = request.auth.uid;
+
     return await measurePerformance(
       "generateTimelineAnalysis",
       request,
@@ -538,7 +573,7 @@ export const generateTimelineAnalysis = onCall(
         const requestId = generateRequestId();
         const context = {
           requestId,
-          userId: request.auth?.uid || "anonymous",
+          userId,
           functionName: "generateTimelineAnalysis",
         };
 

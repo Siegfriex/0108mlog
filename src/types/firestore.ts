@@ -25,6 +25,7 @@ export type FirestoreTimestamp = Timestamp | Date;
  */
 export interface FirestoreChatMessage {
   id: string;
+  userId: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: FirestoreTimestamp;

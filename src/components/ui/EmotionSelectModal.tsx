@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GlassCard, Button, EmotionOrb, Portal } from './index';
 import { EmotionType } from '../../../types';
-import { Smile, Meh, Frown, CloudRain, Flame } from 'lucide-react';
+import { Smile, Meh, Frown, CloudRain, Flame, X } from 'lucide-react';
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 import { useFocusRestore } from '../../hooks/useFocusRestore';
@@ -25,6 +25,7 @@ export interface EmotionSelectModalProps {
   onEmotionSelect: (emotion: EmotionType) => void;
   onIntensityChange: (intensity: number) => void;
   onComplete: () => void;
+  onClose?: () => void; // 모달 닫기 핸들러 (backdrop 클릭, X 버튼)
 }
 
 /**
@@ -38,6 +39,7 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
   onEmotionSelect,
   onIntensityChange,
   onComplete,
+  onClose,
 }) => {
   // 키보드 네비게이션을 위한 선택 인덱스
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -85,15 +87,16 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* 배경 오버레이 */}
+            {/* 배경 오버레이 - 클릭 시 모달 닫기 */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               className="fixed inset-0 bg-black/40 backdrop-blur-md z-modal flex items-center justify-center p-4"
+              onClick={onClose}
             >
-            {/* 글래스모피즘 모달 */}
+            {/* 글래스모피즘 모달 - 내부 클릭 시 이벤트 전파 중단 */}
             <motion.div
               ref={modalContainerRef}
               initial={{ scale: 0.8, opacity: 0, y: 50 }}
@@ -106,6 +109,7 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
                 duration: 0.5
               }}
               className="w-full max-w-md"
+              onClick={(e) => e.stopPropagation()}
             >
               <GlassCard 
                 intensity="high" 
@@ -115,6 +119,17 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
               >
                 {/* 배경 그라데이션 효과 */}
                 <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 via-brand-secondary/5 to-transparent pointer-events-none" />
+                
+                {/* 닫기 버튼 - z-50으로 가장 위에 표시 */}
+                {onClose && (
+                  <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 z-50 p-2 rounded-full bg-white/80 hover:bg-white text-slate-500 hover:text-slate-700 transition-all duration-200 shadow-md"
+                    aria-label="닫기"
+                  >
+                    <X size={20} />
+                  </button>
+                )}
                 
                 <div className="relative z-content-base">
                   {/* 헤더 */}

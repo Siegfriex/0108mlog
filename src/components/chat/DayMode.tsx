@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Smile, Frown, Meh, CloudRain, Flame, Send, Heart, MessageCircle } from 'lucide-react';
-import { GlassCard, Button } from '../ui';
+import { GlassCard, Button, Portal } from '../ui';
 import { EmotionSelectModal } from '../ui/EmotionSelectModal';
 import { AIThinkingAnimation } from '../ui/AIThinkingAnimation';
 import { SmartContextTag } from '../checkin';
@@ -210,18 +210,20 @@ const DayModeComponent: React.FC<DayModeProps> = ({
         onEmotionSelect={handleEmotionSelect}
         onIntensityChange={handleIntensityChange}
         onComplete={handleEmotionComplete}
+        onClose={machine.closeEmotionModal}
       />
 
-      {/* 채팅 인터페이스 */}
-      <AnimatePresence>
-        {showChat && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 z-[100] flex flex-col h-full w-full bg-gradient-to-b from-white/60 to-white/40 pt-safe-top pb-safe-bottom"
-          >
+      {/* 채팅 인터페이스 - Portal로 body에 직접 렌더링하여 z-index 문제 해결 */}
+      <Portal>
+        <AnimatePresence>
+          {showChat && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed inset-0 z-modal flex flex-col h-full w-full bg-gradient-to-b from-white/60 to-white/40 pt-safe-top pb-safe-bottom"
+            >
             {/* 헤더 - 더 넓고 여유로운 디자인 */}
             <motion.div
               initial={{ y: -20, opacity: 0 }}
@@ -251,7 +253,10 @@ const DayModeComponent: React.FC<DayModeProps> = ({
                 </div>
               </div>
               <button
-                onClick={() => setImmersive(false)}
+                onClick={() => {
+                  machine.reset();
+                  setImmersive(false);
+                }}
                 className="p-2 rounded-full hover:bg-white/60 transition-colors text-slate-600"
                 aria-label="닫기"
               >
@@ -474,9 +479,10 @@ const DayModeComponent: React.FC<DayModeProps> = ({
                 </motion.div>
               );
             })()}
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </Portal>
     </>
   );
 };

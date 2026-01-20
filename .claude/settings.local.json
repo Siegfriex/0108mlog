@@ -19,7 +19,8 @@
       "FileRead",
       "FileWrite",
       "FileEdit",
-      "WebSearch"
+      "WebSearch",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }

@@ -125,7 +125,8 @@ export type DayCheckinEvent =
   | { type: 'CRISIS_DETECTED' }
   | { type: 'CRISIS_HANDLED' }
   | { type: 'COMPLETE' }
-  | { type: 'RESET' };
+  | { type: 'RESET' }
+  | { type: 'CLOSE_EMOTION_MODAL' }; // 감정 모달 닫기 (탭 이동 등)
 
 /**
  * 초기 상태
@@ -170,6 +171,10 @@ export function dayCheckinReducer(
           intensity: 5 
         };
       }
+      // 모달 닫기 (다른 탭으로 이동 시)
+      if (event.type === 'CLOSE_EMOTION_MODAL') {
+        return { type: 'idle' };
+      }
       break;
 
     case 'emotion_selected':
@@ -195,6 +200,10 @@ export function dayCheckinReducer(
           messages: [],
           input: ''
         };
+      }
+      // 모달 닫기 (다른 탭으로 이동 시)
+      if (event.type === 'CLOSE_EMOTION_MODAL') {
+        return { type: 'idle' };
       }
       break;
 

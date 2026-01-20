@@ -24,4 +24,15 @@ export {
   generateTimelineAnalysis,
 } from "./api/gemini";
 
+// Custom Search API Functions
+export {
+  searchPoems,
+} from "./api/customSearch";
+
+// YouTube API Functions
+export {
+  fetchYouTubeMeditations,
+  fetchYouTubeMusic,
+} from "./api/youtube";
+
 logger.info("Firebase Functions initialized");

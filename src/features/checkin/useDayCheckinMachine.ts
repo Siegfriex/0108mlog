@@ -72,6 +72,13 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
   }, [send]);
 
   /**
+   * 감정 모달 닫기 (다른 탭으로 이동 시)
+   */
+  const closeEmotionModal = useCallback(() => {
+    send({ type: 'CLOSE_EMOTION_MODAL' });
+  }, [send]);
+
+  /**
    * 감정 선택 (위기 감지 포함)
    */
   const selectEmotion = useCallback(async (emotion: EmotionType) => {
@@ -406,6 +413,7 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
     
     // 액션
     openEmotionModal,
+    closeEmotionModal,
     selectEmotion,
     changeIntensity,
     confirmEmotion,

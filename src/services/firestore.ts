@@ -65,7 +65,31 @@ export async function saveConversation(
   try {
     const userId = getCurrentUserId();
     const now = serverTimestamp();
+    const hasConsent = await canSaveConversation();
 
+    // 대화 문서 참조 생성
+    const conversationRef = doc(collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS));
+
+    if (!hasConsent) {
+      // 동의 없음: 메시지 원문 저장 스킵, 메타데이터만 저장
+      const redactedConversation = {
+        userId,
+        title: conversationData.title,
+        createdAt: now as Timestamp,
+        updatedAt: now as Timestamp,
+        messageCount: conversationData.messages.length,
+        modeAtTime: conversationData.modeAtTime,
+        isRedacted: true,
+        ...(conversationData.emotion !== undefined && { emotion: conversationData.emotion }),
+        ...(conversationData.intensity !== undefined && { intensity: conversationData.intensity }),
+        ...(conversationData.contextTags !== undefined && { contextTags: conversationData.contextTags }),
+      };
+
+      await setDoc(conversationRef, redactedConversation);
+      return conversationRef.id;
+    }
+
+    // 동의 있음: 기존 로직 - 대화 + 메시지 모두 저장
     const conversation: Omit<FirestoreConversation, 'id'> = {
       userId,
       title: conversationData.title,
@@ -80,9 +104,6 @@ export async function saveConversation(
 
     // Batch write로 대화와 메시지를 원자적으로 저장 (P0 수정: 부분 저장 방지)
     const batch = writeBatch(db);
-
-    // 대화 문서 참조 생성
-    const conversationRef = doc(collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS));
     batch.set(conversationRef, conversation);
 
     // 메시지들 배치로 추가
@@ -90,6 +111,7 @@ export async function saveConversation(
     conversationData.messages.forEach((message) => {
       const messageRef = doc(messagesCollection);
       batch.set(messageRef, {
+        userId,
         conversationId: conversationRef.id,
         role: message.role,
         content: message.content,

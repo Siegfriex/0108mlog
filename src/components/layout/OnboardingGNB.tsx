@@ -46,12 +46,12 @@ export const OnboardingGNB: React.FC<OnboardingGNBProps> = ({
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3 }}
-          className="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-xl rounded-full shadow-sm border border-white/80"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-xl rounded-full shadow-sm border border-white/80 max-w-xs"
         >
           <span className="text-xs font-bold text-brand-primary min-w-[2rem] text-right">
             {progress}/6
           </span>
-          <div className="w-24 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+          <div className="flex-1 max-w-32 h-1.5 bg-slate-200 rounded-full overflow-hidden">
             <motion.div
               className="h-full bg-gradient-to-r from-brand-primary to-brand-secondary rounded-full"
               initial={{ width: 0 }}

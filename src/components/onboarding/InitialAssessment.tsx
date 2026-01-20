@@ -143,7 +143,7 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
                 요즘 감정 상태는 어떠신가요?
               </h3>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
               {EMOTION_OPTIONS.map((option, index) => (
                 <motion.button
                   key={option.value}

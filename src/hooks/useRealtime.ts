@@ -23,7 +23,7 @@ import {
   Unsubscribe,
   Timestamp,
 } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db, auth } from '../config/firebase';
 import { FIRESTORE_COLLECTIONS } from '../types/firestore';
 import { TimelineEntry, EmotionType } from '../../types';
 import { toDate } from '../utils/firestore';
@@ -218,13 +218,16 @@ export const useRealtimeMessages = (
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!conversationId) {
+    const userId = auth.currentUser?.uid;
+
+    if (!conversationId || !userId) {
       setLoading(false);
       return;
     }
 
     const q = query(
       collection(db, FIRESTORE_COLLECTIONS.MESSAGES),
+      where('userId', '==', userId),
       where('conversationId', '==', conversationId),
       orderBy('timestamp', 'asc')
     );
@@ -259,7 +262,7 @@ export const useRealtimeMessages = (
     return () => {
       unsubscribe();
     };
-  }, [conversationId]);
+  }, [conversationId, auth.currentUser?.uid]);
 
   return { data, loading, error };
 };

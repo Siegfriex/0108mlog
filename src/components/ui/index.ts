@@ -37,3 +37,6 @@ export { Portal } from './Portal';
 export { ToastProvider, useToast } from './Toast';
 export { ErrorRecovery } from './ErrorRecovery';
 export { AuthLoadingScreen } from './AuthLoadingScreen';
+export { PoemCard } from './PoemCard';
+export type { PoemCardProps } from './PoemCard';
+export { YouTubeCard } from './YouTubeCard';
