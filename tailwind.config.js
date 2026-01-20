@@ -75,6 +75,7 @@ export default {
        * ======================================== */
       fontFamily: {
         sans: ['var(--font-sans)'],
+        en: ['var(--font-en)'],
         mono: ['var(--font-mono)'],
       },
       fontSize: {
@@ -370,7 +371,6 @@ export default {
        * 브레이크포인트
        * ======================================== */
       screens: {
-        'xs': '375px',
         'sm': '640px',
         'md': '768px',
         'lg': '1024px',

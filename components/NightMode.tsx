@@ -92,7 +92,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotion
       
       {/* Title */}
       <div className="py-6 shrink-0 text-center">
-          <h2 className="text-2xl font-serif font-bold flex items-center justify-center gap-2 mb-2 drop-shadow-md">
+          <h2 className="text-2xl font-sans font-bold flex items-center justify-center gap-2 mb-2 drop-shadow-md">
             <span className="text-purple-300"><Star size={20} fill="currentColor" /></span>
             {step === 'emotion' ? '저녁 성찰' : step === 'diary' ? '나의 이야기' : '당신을 위한 편지'}
           </h2>
@@ -173,7 +173,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotion
                     value={diary}
                     onChange={(e) => setDiary(e.target.value)}
                     placeholder="오늘 하루를 기록해보세요..."
-                    className="w-full h-full bg-transparent resize-none focus:outline-none text-white placeholder:text-white/20 text-xl leading-relaxed p-4 font-serif"
+                    className="w-full h-full bg-transparent resize-none focus:outline-none text-white placeholder:text-white/20 text-xl leading-relaxed p-4 font-sans"
                     autoFocus
                     />
                 </GlassCard>
@@ -213,7 +213,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotion
                     </div>
                     
                     <div className="flex-1 overflow-y-auto pr-4 scrollbar-hide">
-                        <div className="prose prose-lg prose-invert prose-p:text-indigo-100 prose-p:leading-loose prose-p:font-light font-serif">
+                        <div className="prose prose-lg prose-invert prose-p:text-indigo-100 prose-p:leading-loose prose-p:font-light font-sans">
                             <p className="whitespace-pre-wrap">{letter}</p>
                         </div>
                     </div>

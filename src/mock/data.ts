@@ -65,20 +65,20 @@ export const RESILIENCE_DATA = [
 
 // 레이더 차트 데이터 (ReportView용)
 export const RADAR_DATA = [
-  { subject: 'Self-Care', A: 120, fullMark: 150 },
-  { subject: 'Social', A: 98, fullMark: 150 },
-  { subject: 'Work', A: 86, fullMark: 150 },
-  { subject: 'Sleep', A: 99, fullMark: 150 },
-  { subject: 'Mindfulness', A: 85, fullMark: 150 },
-  { subject: 'Physical', A: 65, fullMark: 150 },
+  { subject: '자기돌봄', A: 120, fullMark: 150 },
+  { subject: '사회관계', A: 98, fullMark: 150 },
+  { subject: '업무', A: 86, fullMark: 150 },
+  { subject: '수면', A: 99, fullMark: 150 },
+  { subject: '마음챙김', A: 85, fullMark: 150 },
+  { subject: '신체활동', A: 65, fullMark: 150 },
 ];
 
 // Area 차트 데이터 (ReportView용)
 export const AREA_DATA = [
-  { name: 'Wk 1', positive: 40, energy: 24, stress: 24 },
-  { name: 'Wk 2', positive: 50, energy: 35, stress: 20 },
-  { name: 'Wk 3', positive: 35, energy: 60, stress: 45 },
-  { name: 'Wk 4', positive: 65, energy: 45, stress: 15 },
+  { name: '1주차', positive: 40, energy: 24, stress: 24 },
+  { name: '2주차', positive: 50, energy: 35, stress: 20 },
+  { name: '3주차', positive: 35, energy: 60, stress: 45 },
+  { name: '4주차', positive: 65, energy: 45, stress: 15 },
 ];
 
 // 콘텐츠 갤러리 목업 데이터 (ContentGallery용)
@@ -127,17 +127,20 @@ export const MOCK_CONTENTS: (ContentData & { commentary?: string })[] = [
 
 // 트렌드 데이터 (ContentGallery용)
 export const TREND_DATA = [
-  { day: 'M', score: 3 },
-  { day: 'T', score: 4 },
-  { day: 'W', score: 3 },
-  { day: 'T', score: 6 },
-  { day: 'F', score: 5 },
-  { day: 'S', score: 8 },
-  { day: 'S', score: 7 },
+  { day: '월', score: 3 },
+  { day: '화', score: 4 },
+  { day: '수', score: 3 },
+  { day: '목', score: 6 },
+  { day: '금', score: 5 },
+  { day: '토', score: 8 },
+  { day: '일', score: 7 },
 ];
 
 // 기분 태그 목업 데이터
 export const MOODS = [
-  '지친 하루', '막막한 미래', '작은 기쁨', '휴식이 필요해', '불안한 마음', 
+  '지친 하루', '막막한 미래', '작은 기쁨', '휴식이 필요해', '불안한 마음',
   '사랑받고 싶어', '영감이 필요해', '잠이 오지 않아', '누군가 그리워'
 ];
+
+// 감정별 동적 데이터 re-export
+export * from './emotionBasedData';

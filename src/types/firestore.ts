@@ -59,6 +59,7 @@ export interface FirestoreEmotionData {
   modeAtTime: 'day' | 'night';
   contextTags?: string[];
   conversationId?: string;
+  conversationTitle?: string; // P0 수정: N+1 쿼리 제거용 - 저장 시점에 제목 포함
   location?: {
     latitude: number;
     longitude: number;

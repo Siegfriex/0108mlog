@@ -80,13 +80,13 @@ export const GoalSetting: React.FC<GoalSettingProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
+    <div className="w-full max-w-lg mx-auto space-y-6 flex flex-col justify-center min-h-0 flex-1">
       {/* 헤더 */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+        <h2 className="text-3xl font-bold text-slate-900 mb-2">
           목표 설정
         </h2>
-        <p className="text-sm text-slate-500">
+        <p className="text-base text-slate-500">
           어떤 목표로 시작하시겠어요?
         </p>
       </div>
@@ -103,7 +103,7 @@ export const GoalSetting: React.FC<GoalSettingProps> = ({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className={`
-              w-full p-6 rounded-2xl text-left
+              w-full p-6 sm:p-8 rounded-2xl text-left
               transition-all duration-300
               ${selectedGoal === card.id
                 ? 'bg-gradient-to-br ' + card.color + ' border-2 border-brand-primary shadow-xl'
@@ -111,9 +111,9 @@ export const GoalSetting: React.FC<GoalSettingProps> = ({
               }
             `}
           >
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-4 sm:gap-5">
               <div className={`
-                w-16 h-16 rounded-xl flex items-center justify-center shrink-0
+                w-16 h-16 sm:w-18 sm:h-18 rounded-xl flex items-center justify-center shrink-0
                 ${selectedGoal === card.id ? card.textColor : 'text-slate-400'}
                 ${selectedGoal === card.id ? 'bg-white/80' : 'bg-slate-50'}
               `}>
@@ -121,13 +121,13 @@ export const GoalSetting: React.FC<GoalSettingProps> = ({
               </div>
               <div className="flex-1">
                 <h3 className={`
-                  font-bold text-lg mb-1
+                  font-extrabold text-xl mb-1
                   ${selectedGoal === card.id ? card.textColor : 'text-slate-900'}
                 `}>
                   {card.title}
                 </h3>
                 <p className={`
-                  text-sm
+                  text-base
                   ${selectedGoal === card.id ? card.textColor + '/80' : 'text-slate-600'}
                 `}>
                   {card.description}

@@ -34,7 +34,7 @@ const DEFAULT_PERSONA: CoachPersona = {
 
 const App: React.FC = () => {
   // 모바일 최적화 훅
-  const { isMobile, shouldReduceAnimations } = useMobileOptimization();
+  const { isMobile, shouldReduceAnimations, shouldDisableLayoutAnimations } = useMobileOptimization();
   
   // 온보딩 완료 여부 확인 (FEAT-011)
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState<boolean>(() => {
@@ -134,33 +134,48 @@ const App: React.FC = () => {
 
       {/* 2. Global Navigation Bar (GNB) - Strictly Constrained Width */}
       <div className={`
-          fixed top-0 z-50 w-full flex justify-center pt-6 px-4 transition-all duration-500
+          fixed top-0 z-50 w-full flex justify-center
+          ${isMobile ? 'pt-safe-top px-3' : 'pt-6 px-4'}
+          ${shouldDisableLayoutAnimations ? '' : 'transition-all duration-500'}
           ${isImmersive ? 'opacity-20 pointer-events-none blur-sm' : 'opacity-100'}
       `}>
-          <header className="w-full max-w-2xl flex items-center justify-between">
-              {/* Brand: Absolute Left */}
-              <div className="flex items-center gap-3 group cursor-pointer select-none">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center backdrop-blur-md shadow-sm border transition-all duration-300
+          <header className={`
+            w-full flex items-center justify-between
+            ${isMobile ? 'max-w-full' : 'max-w-2xl'}
+          `}>
+              {/* Brand: Absolute Left - 모바일에서 텍스트 숨김 */}
+              <div className="flex items-center gap-2 group cursor-pointer select-none">
+                  <div className={`
+                      ${isMobile ? 'w-9 h-9' : 'w-10 h-10'}
+                      rounded-xl flex items-center justify-center backdrop-blur-md shadow-sm border
+                      ${shouldDisableLayoutAnimations ? '' : 'transition-all duration-300'}
                       ${mode === 'day' ? 'bg-white/90 border-white/60 text-brand-primary' : 'bg-white/10 border-white/10 text-white'}
                       group-hover:scale-105
                   `}>
-                      <span className="font-extrabold text-lg tracking-tighter">M.</span>
+                      <img
+                        src="/img/logo.png"
+                        alt="MaumLog Logo"
+                        className="w-full h-full object-contain p-1.5"
+                      />
                   </div>
-                  <div className="flex flex-col">
-                      <span className={`font-bold text-sm tracking-tight leading-none mb-0.5 ${mode === 'day' ? 'text-slate-900' : 'text-slate-100'}`}>MaumLog</span>
-                      <span className={`text-[9px] font-bold tracking-widest uppercase opacity-50 ${mode === 'day' ? 'text-brand-dark' : 'text-slate-400'}`}>V5.0</span>
-                  </div>
+                  {!isMobile && (
+                    <div className="flex flex-col">
+                        <span className={`font-en font-bold text-sm tracking-tight leading-none mb-0.5 ${mode === 'day' ? 'text-slate-900' : 'text-slate-100'}`}>MaumLog</span>
+                        <span className={`font-en text-[9px] font-bold tracking-widest uppercase opacity-50 ${mode === 'day' ? 'text-brand-dark' : 'text-slate-400'}`}>V5.0</span>
+                    </div>
+                  )}
               </div>
 
               {/* Tools: Absolute Right */}
               <div className={`
-                  flex items-center gap-1 p-1 rounded-full backdrop-blur-xl border shadow-sm transition-colors duration-500
+                  flex items-center gap-1 ${isMobile ? 'p-0.5' : 'p-1'} rounded-full backdrop-blur-xl border shadow-sm
+                  ${shouldDisableLayoutAnimations ? '' : 'transition-colors duration-500'}
                   ${mode === 'day' ? 'bg-white/60 border-white/50' : 'bg-white/5 border-white/10'}
               `}>
-                  <IconButton onClick={() => setShowSafetyLayer(true)} icon={<ShieldAlert size={18} strokeWidth={2.5} />} label="Safety" mode={mode} />
-                  <IconButton onClick={() => setShowChatbot(true)} icon={<Bot size={18} strokeWidth={2.5} />} label="AI Helper" mode={mode} />
-                  <div className={`w-[1px] h-3 mx-0.5 opacity-20 ${mode === 'day' ? 'bg-brand-dark' : 'bg-white'}`} />
-                  <IconButton onClick={toggleMode} icon={mode === 'day' ? <Moon size={18} strokeWidth={2.5} /> : <Sun size={18} strokeWidth={2.5} />} label="Theme" mode={mode} />
+                  <IconButton onClick={() => setShowSafetyLayer(true)} icon={<ShieldAlert size={isMobile ? 16 : 18} strokeWidth={2.5} />} label="Safety" mode={mode} />
+                  <IconButton onClick={() => setShowChatbot(true)} icon={<Bot size={isMobile ? 16 : 18} strokeWidth={2.5} />} label="AI Helper" mode={mode} />
+                  <div className={`w-[1px] ${isMobile ? 'h-2.5' : 'h-3'} mx-0.5 opacity-20 ${mode === 'day' ? 'bg-brand-dark' : 'bg-white'}`} />
+                  <IconButton onClick={toggleMode} icon={mode === 'day' ? <Moon size={isMobile ? 16 : 18} strokeWidth={2.5} /> : <Sun size={isMobile ? 16 : 18} strokeWidth={2.5} />} label="Theme" mode={mode} />
               </div>
           </header>
       </div>
@@ -168,42 +183,57 @@ const App: React.FC = () => {
       {/* 3. Main Stage - Layout Sync with GNB (max-w-2xl) */}
       <main className={`
         relative z-10 w-full h-full flex flex-col items-center
-        transition-all duration-700 ease-[0.22, 1, 0.36, 1]
-        ${isImmersive ? 'px-0 py-0' : 'px-4 pt-24 pb-28'}
+        ${shouldDisableLayoutAnimations ? '' : 'transition-all duration-700 ease-[0.22,1,0.36,1]'}
+        ${isImmersive ? 'px-0 py-0' : isMobile
+          ? 'px-3 pt-[calc(var(--header-height)+var(--safe-top))] pb-[calc(var(--dock-height)+var(--safe-bottom))]'
+          : 'px-4 pt-24 pb-28'
+        }
       `}>
-         <motion.div
-            layout
+         <div
             className={`
-               w-full h-full max-w-2xl flex flex-col overflow-hidden transition-all duration-700 relative
-               ${isImmersive 
-                 ? 'rounded-none shadow-none bg-transparent' 
+               w-full h-full flex flex-col overflow-hidden relative
+               ${isMobile ? 'max-w-full' : 'max-w-2xl'}
+               ${shouldDisableLayoutAnimations ? '' : 'transition-all duration-700'}
+               ${isImmersive
+                 ? 'rounded-none shadow-none bg-transparent'
                  : `rounded-[36px] shadow-2xl border backdrop-blur-lg
                     ${mode === 'day' ? 'bg-white/40 border-white/60 shadow-brand-primary/10' : 'bg-white/5 border-white/10 shadow-black/50'}`
                }
             `}
          >
-            <AnimatePresence mode="wait">
-                <motion.div
-                    key={activeTab + mode}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.02 }}
-                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex-1 w-full h-full overflow-hidden"
-                >
-                    {renderContent()}
-                </motion.div>
-            </AnimatePresence>
-         </motion.div>
+            {shouldDisableLayoutAnimations ? (
+              <div className="flex-1 w-full h-full overflow-hidden">
+                {renderContent()}
+              </div>
+            ) : (
+              <AnimatePresence mode="wait">
+                  <motion.div
+                      key={activeTab + mode}
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 1.02 }}
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      className="flex-1 w-full h-full overflow-hidden"
+                  >
+                      {renderContent()}
+                  </motion.div>
+              </AnimatePresence>
+            )}
+         </div>
       </main>
 
       {/* 4. Dock - Unified Width & Unlocked */}
       <div className={`
-          fixed bottom-6 z-50 w-full flex justify-center px-4 transition-all duration-500
+          fixed z-50 w-full flex justify-center
+          ${isMobile ? 'bottom-0 pb-safe-bottom px-3' : 'bottom-6 px-4'}
+          ${shouldDisableLayoutAnimations ? '' : 'transition-all duration-500'}
           ${isImmersive ? 'translate-y-24 opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}
       `}>
-          <div className="w-full max-w-2xl flex justify-center">
-              <TabBar activeTab={activeTab} onTabChange={setActiveTab} mode={mode} />
+          <div className={`
+            w-full flex justify-center
+            ${isMobile ? 'max-w-full' : 'max-w-2xl'}
+          `}>
+              <TabBar activeTab={activeTab} onTabChange={setActiveTab} mode={mode} isMobile={isMobile} />
           </div>
       </div>
 

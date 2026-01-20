@@ -36,3 +36,4 @@ export type { SkipLinkProps } from './SkipLink';
 export { Portal } from './Portal';
 export { ToastProvider, useToast } from './Toast';
 export { ErrorRecovery } from './ErrorRecovery';
+export { AuthLoadingScreen } from './AuthLoadingScreen';

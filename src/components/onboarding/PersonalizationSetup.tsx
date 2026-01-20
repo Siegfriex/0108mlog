@@ -83,7 +83,7 @@ export const PersonalizationSetup: React.FC<PersonalizationSetupProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
+    <div className="w-full max-w-md mx-auto space-y-6 flex flex-col justify-center min-h-0 flex-1">
       {/* 헤더 */}
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-slate-900 mb-2">
@@ -109,13 +109,13 @@ export const PersonalizationSetup: React.FC<PersonalizationSetupProps> = ({
             <p className="text-xs text-slate-500">체크인 알림을 받을 시간을 선택해주세요</p>
           </div>
         </div>
-        <div className="grid grid-cols-4 gap-2 max-h-48 overflow-y-auto scrollbar-hide">
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-48 overflow-y-auto scrollbar-hide">
           {TIME_OPTIONS.map(time => (
             <button
               key={time}
               onClick={() => handleTimeChange(time)}
               className={`
-                px-4 py-2 rounded-lg text-sm font-medium
+                px-3 sm:px-4 py-2 rounded-lg text-sm font-medium
                 transition-all duration-300
                 ${notificationTime === time
                   ? 'bg-brand-primary text-white shadow-md'

@@ -57,20 +57,20 @@ export const generateDayModeResponse = async (
       persona,
     }),
     {
-      timeout: 8000,
-      maxRetries: 3,
+      timeout: 3000,
+      maxRetries: 2,
       fallback: () => ({
         success: false,
-        fallback: '분석에 시간이 걸리고 있어요. 잠시 후 다시 시도해주세요.',
+        fallback: '당신의 마음을 천천히 느껴보고 있어요. 조금만 기다려주세요.',
       }),
     }
   );
 
   if (response.success && response.data) {
-    return response.data.data || response.data.fallback || '응답을 생성할 수 없습니다.';
+    return response.data.data || response.data.fallback || '지금 이 순간, 함께 있어요.';
   }
 
-  return response.fallback?.fallback || response.error || '잠시 연결이 불안정합니다.';
+  return response.fallback?.fallback || response.error || '마음이 닿을 때까지 곁에 있을게요.';
 };
 
 /**
@@ -89,20 +89,20 @@ export const generateNightModeLetter = async (
       persona,
     }),
     {
-      timeout: 8000,
-      maxRetries: 3,
+      timeout: 3000,
+      maxRetries: 2,
       fallback: () => ({
         success: false,
-        fallback: '편지를 작성하는 중 시간이 걸리고 있어요. 잠시 후 다시 시도해주세요.',
+        fallback: '오늘 하루의 이야기를 담아 편지를 쓰고 있어요...',
       }),
     }
   );
 
   if (response.success && response.data) {
-    return response.data.data || response.data.fallback || '편지를 작성하는 중 오류가 발생했습니다.';
+    return response.data.data || response.data.fallback || '당신의 하루를 위한 편지가 도착했어요.';
   }
 
-  return response.fallback?.fallback || response.error || '지금은 편지를 쓸 수 없는 상태예요.';
+  return response.fallback?.fallback || response.error || '별빛 아래, 당신만을 위한 편지를 준비하고 있어요.';
 };
 
 /**
@@ -147,7 +147,7 @@ export const generateHealingContent = async (
       persona,
     }),
     {
-      timeout: 8000,
+      timeout: 3000,
       maxRetries: 2,
       fallback: () => ({
         success: false,
@@ -182,20 +182,20 @@ export const generateChatbotResponse = async (
       persona,
     }),
     {
-      timeout: 8000,
-      maxRetries: 3,
+      timeout: 3000,
+      maxRetries: 2,
       fallback: () => ({
         success: false,
-        fallback: '응답을 생성하는 중 시간이 걸리고 있어요. 잠시 후 다시 시도해주세요.',
+        fallback: '당신의 이야기에 귀 기울이고 있어요.',
       }),
     }
   );
 
   if (response.success && response.data) {
-    return response.data.data || response.data.fallback || '응답을 생성할 수 없습니다.';
+    return response.data.data || response.data.fallback || '함께 생각해볼게요.';
   }
 
-  return response.fallback?.fallback || response.error || '연결에 문제가 발생했습니다.';
+  return response.fallback?.fallback || response.error || '잠시 쉬어가도 괜찮아요.';
 };
 
 /**
@@ -225,8 +225,8 @@ export const generateMicroAction = async (
       userContext,
     }),
     {
-      timeout: 8000,
-      maxRetries: 3,
+      timeout: 3000,
+      maxRetries: 2,
       fallback: () => ({
         success: false,
         fallback: fallbackAction,

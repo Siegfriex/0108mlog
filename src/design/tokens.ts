@@ -117,7 +117,8 @@ export const spacing = {
 // 타이포그래피 시스템 (PRD 명세)
 export const typography = {
   fontFamily: {
-    body: '"Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    body: '"Chiron GoRound TC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    en: '"Noto Sans", "Chiron GoRound TC", -apple-system, sans-serif',
     code: '"Consolas", "Monaco", monospace',
   },
   fontSize: {

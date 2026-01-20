@@ -72,29 +72,35 @@ export async function saveConversation(
       createdAt: now as Timestamp,
       updatedAt: now as Timestamp,
       messageCount: conversationData.messages.length,
-      emotion: conversationData.emotion,
-      intensity: conversationData.intensity,
       modeAtTime: conversationData.modeAtTime,
-      contextTags: conversationData.contextTags,
+      ...(conversationData.emotion !== undefined && { emotion: conversationData.emotion }),
+      ...(conversationData.intensity !== undefined && { intensity: conversationData.intensity }),
+      ...(conversationData.contextTags !== undefined && { contextTags: conversationData.contextTags }),
     };
 
-    const docRef = await addDoc(
-      collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS),
-      conversation
-    );
+    // Batch write로 대화와 메시지를 원자적으로 저장 (P0 수정: 부분 저장 방지)
+    const batch = writeBatch(db);
 
-    // 메시지 저장
+    // 대화 문서 참조 생성
+    const conversationRef = doc(collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS));
+    batch.set(conversationRef, conversation);
+
+    // 메시지들 배치로 추가
     const messagesCollection = collection(db, FIRESTORE_COLLECTIONS.MESSAGES);
-    for (const message of conversationData.messages) {
-      await addDoc(messagesCollection, {
-        conversationId: docRef.id,
+    conversationData.messages.forEach((message) => {
+      const messageRef = doc(messagesCollection);
+      batch.set(messageRef, {
+        conversationId: conversationRef.id,
         role: message.role,
         content: message.content,
         timestamp: serverTimestamp(),
       });
-    }
+    });
 
-    return docRef.id;
+    // 원자적 커밋 - 전체 성공 또는 전체 실패
+    await batch.commit();
+
+    return conversationRef.id;
   } catch (error) {
     logError('saveConversation', error);
     throw error;
@@ -114,6 +120,7 @@ export async function saveEmotionEntry(
     modeAtTime: 'day' | 'night';
     contextTags?: string[];
     conversationId?: string;
+    conversationTitle?: string; // P0 수정: N+1 쿼리 제거용
     location?: {
       latitude: number;
       longitude: number;
@@ -131,9 +138,10 @@ export async function saveEmotionEntry(
       intensity: emotionData.intensity,
       timestamp: serverTimestamp() as Timestamp,
       modeAtTime: emotionData.modeAtTime,
-      contextTags: emotionData.contextTags,
-      conversationId: emotionData.conversationId,
-      location: emotionData.location,
+      ...(emotionData.contextTags !== undefined && { contextTags: emotionData.contextTags }),
+      ...(emotionData.conversationId !== undefined && { conversationId: emotionData.conversationId }),
+      ...(emotionData.conversationTitle !== undefined && { conversationTitle: emotionData.conversationTitle }), // P0 수정
+      ...(emotionData.location !== undefined && { location: emotionData.location }),
     };
 
     const docRef = await addDoc(
@@ -264,22 +272,62 @@ export async function saveUserSettings(settings: {
 
     // 기존 프로필 확인
     const userProfileSnap = await getDoc(userProfileRef);
-    
+
+    // P1 수정: 깊은 병합 - undefined가 아닌 값만 덮어씀 (기존 값 보존)
+    const existingPreferences = userProfileSnap.exists()
+      ? userProfileSnap.data().preferences || {}
+      : {};
+
+    // undefined가 아닌 설정값만 새 객체에 포함
+    const newPreferences: Record<string, unknown> = { ...existingPreferences };
+
+    // 각 설정값이 명시적으로 제공된 경우에만 업데이트
+    if (settings.reminderEnabled !== undefined) {
+      newPreferences.reminderEnabled = settings.reminderEnabled;
+    } else if (newPreferences.reminderEnabled === undefined) {
+      newPreferences.reminderEnabled = true; // 기본값
+    }
+
+    if (settings.reminderTime !== undefined) {
+      newPreferences.reminderTime = settings.reminderTime;
+    } else if (newPreferences.reminderTime === undefined) {
+      newPreferences.reminderTime = '09:00'; // 기본값
+    }
+
+    if (settings.language !== undefined) {
+      newPreferences.language = settings.language;
+    } else if (newPreferences.language === undefined) {
+      newPreferences.language = 'ko'; // 기본값
+    }
+
+    if (settings.reminderFrequency !== undefined) {
+      newPreferences.reminderFrequency = settings.reminderFrequency;
+    }
+
+    if (settings.autoDayNightMode !== undefined) {
+      newPreferences.autoDayNightMode = settings.autoDayNightMode;
+    }
+
+    if (settings.dayModeStartTime !== undefined) {
+      newPreferences.dayModeStartTime = settings.dayModeStartTime;
+    }
+
+    if (settings.nightModeStartTime !== undefined) {
+      newPreferences.nightModeStartTime = settings.nightModeStartTime;
+    }
+
+    if (settings.predictiveNudgeEnabled !== undefined) {
+      newPreferences.predictiveNudgeEnabled = settings.predictiveNudgeEnabled;
+    }
+
+    if (settings.snoozeUntil !== undefined) {
+      newPreferences.snoozeUntil = Timestamp.fromDate(settings.snoozeUntil);
+    }
+
     const updateData: Partial<FirestoreUserProfile> = {
       updatedAt: serverTimestamp() as Timestamp,
       ...(settings.persona && { persona: settings.persona }),
-      preferences: {
-        ...(userProfileSnap.exists() ? userProfileSnap.data().preferences : {}),
-        reminderEnabled: settings.reminderEnabled ?? userProfileSnap.data()?.preferences?.reminderEnabled ?? true,
-        reminderTime: settings.reminderTime ?? userProfileSnap.data()?.preferences?.reminderTime ?? '09:00',
-        language: settings.language ?? userProfileSnap.data()?.preferences?.language ?? 'ko',
-        ...(settings.reminderFrequency && { reminderFrequency: settings.reminderFrequency }),
-        ...(settings.autoDayNightMode !== undefined && { autoDayNightMode: settings.autoDayNightMode }),
-        ...(settings.dayModeStartTime && { dayModeStartTime: settings.dayModeStartTime }),
-        ...(settings.nightModeStartTime && { nightModeStartTime: settings.nightModeStartTime }),
-        ...(settings.predictiveNudgeEnabled !== undefined && { predictiveNudgeEnabled: settings.predictiveNudgeEnabled }),
-        ...(settings.snoozeUntil && { snoozeUntil: Timestamp.fromDate(settings.snoozeUntil) }),
-      },
+      preferences: newPreferences as FirestoreUserProfile['preferences'],
     };
 
     if (userProfileSnap.exists()) {
@@ -355,24 +403,29 @@ export async function getTodayDayModeSummary(): Promise<string | null> {
     
     if (!querySnapshot.empty) {
       const latestEntry = querySnapshot.docs[0].data() as FirestoreEmotionData;
-      
-      // 대화가 있으면 대화 요약 생성, 없으면 감정/태그 기반 요약
+
+      // P0 수정: N+1 쿼리 제거 - conversationTitle이 있으면 바로 사용 (추가 쿼리 불필요)
+      if (latestEntry.conversationTitle) {
+        return latestEntry.conversationTitle;
+      }
+
+      // 대화가 있지만 conversationTitle이 없는 경우 (기존 데이터 호환성)
       if (latestEntry.conversationId) {
         const conversationsRef = collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS);
         const conversationDoc = await getDoc(doc(conversationsRef, latestEntry.conversationId));
-        
+
         if (conversationDoc.exists()) {
           const conversation = conversationDoc.data() as FirestoreConversation;
           // 대화 제목이나 첫 메시지 요약 반환
           return conversation.title || `오늘 ${latestEntry.emotion} 감정을 느꼈어요.`;
         }
       }
-      
+
       // 태그 기반 요약 생성
       if (latestEntry.contextTags && latestEntry.contextTags.length > 0) {
         return `오늘 ${latestEntry.contextTags.join(', ')} 상황에서 ${latestEntry.emotion} 감정을 느꼈어요.`;
       }
-      
+
       // 기본 요약
       return `오늘 ${latestEntry.emotion} 감정을 느꼈어요.`;
     }
@@ -566,7 +619,7 @@ export async function deleteConversation(conversationId: string): Promise<void> 
 export async function deleteAllConversations(): Promise<void> {
   try {
     const userId = getCurrentUserId();
-    
+
     // 사용자의 모든 대화 조회
     const conversationsRef = collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS);
     const conversationsQuery = query(
@@ -574,30 +627,37 @@ export async function deleteAllConversations(): Promise<void> {
       where('userId', '==', userId)
     );
     const conversationsSnapshot = await getDocs(conversationsQuery);
-    
+
     // 배치로 모든 대화와 관련 메시지 삭제
     const batch = writeBatch(db);
     const conversationIds: string[] = [];
-    
+
     conversationsSnapshot.forEach((conversationDoc) => {
       batch.delete(conversationDoc.ref);
       conversationIds.push(conversationDoc.id);
     });
-    
-    // 각 대화의 메시지 삭제
+
+    // P1 수정: 루프 쿼리 대신 청크 기반 'in' 쿼리로 최적화
+    // Firestore 'in' 연산자는 최대 10개까지만 지원
     const messagesRef = collection(db, FIRESTORE_COLLECTIONS.MESSAGES);
-    for (const conversationId of conversationIds) {
-      const messagesQuery = query(
-        messagesRef,
-        where('conversationId', '==', conversationId)
-      );
-      const messagesSnapshot = await getDocs(messagesQuery);
-      
-      messagesSnapshot.forEach((messageDoc) => {
-        batch.delete(messageDoc.ref);
-      });
+
+    if (conversationIds.length > 0) {
+      // 10개씩 청크로 분할하여 처리
+      const chunkSize = 10;
+      for (let i = 0; i < conversationIds.length; i += chunkSize) {
+        const chunk = conversationIds.slice(i, i + chunkSize);
+        const messagesQuery = query(
+          messagesRef,
+          where('conversationId', 'in', chunk)
+        );
+        const messagesSnapshot = await getDocs(messagesQuery);
+
+        messagesSnapshot.forEach((messageDoc) => {
+          batch.delete(messageDoc.ref);
+        });
+      }
     }
-    
+
     await batch.commit();
   } catch (error) {
     logError('deleteAllConversations', error);

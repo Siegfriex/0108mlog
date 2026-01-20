@@ -53,13 +53,14 @@ interface DayModeProps {
 
 /**
  * DayMode 컴포넌트
- * 
+ *
  * FEAT-001: 대화형 감정 체크인 (Day Mode)
  * PRD 플로우차트 2.1: Day Mode 체크인 플로우 구현
- * 
+ *
  * 상태 머신 기반 리팩토링
+ * P2 최적화: React.memo로 불필요한 리렌더 방지
  */
-export const DayMode: React.FC<DayModeProps> = ({ 
+const DayModeComponent: React.FC<DayModeProps> = ({ 
   persona, 
   onSave, 
   setImmersive, 
@@ -181,6 +182,13 @@ export const DayMode: React.FC<DayModeProps> = ({
   // 퀵칩 표시 여부
   const showQuickChips = machine.isChatting && machine.messages.length > 0 && !machine.isAIResponding;
 
+  // showChat 상태와 isImmersive 동기화 (새로고침/복귀 시에도 immersive 모드 유지)
+  useEffect(() => {
+    if (showChat) {
+      setImmersive(true);
+    }
+  }, [showChat, setImmersive]);
+
   // 인사 메시지 추가 (채팅 시작 시)
   const displayMessages = showChat && machine.messages.length === 0 
     ? [{
@@ -211,13 +219,13 @@ export const DayMode: React.FC<DayModeProps> = ({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col h-full w-full bg-gradient-to-b from-white/60 to-white/40"
+            className="flex flex-col h-screen w-screen bg-gradient-to-b from-white/60 to-white/40"
           >
             {/* 헤더 - 더 넓고 여유로운 디자인 */}
             <motion.div
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              className="shrink-0 flex items-center justify-between px-6 py-5 sm:px-8 sm:py-6 border-b border-slate-200/30 bg-white/50 backdrop-blur-xl"
+              className="shrink-0 flex items-center justify-between px-8 py-6 sm:px-12 sm:py-8 border-b border-slate-200/30 bg-white/50 backdrop-blur-xl"
             >
               <div className="flex items-center gap-3">
                 {activeEmotionConfig && (
@@ -252,6 +260,7 @@ export const DayMode: React.FC<DayModeProps> = ({
 
             {/* 메시지 영역 - 더 여유로운 간격 */}
             <div className="flex-1 overflow-y-auto px-6 py-6 sm:px-8 sm:py-8 space-y-5 scrollbar-hide min-h-0">
+              <div className="max-w-3xl mx-auto space-y-5">
               {displayMessages.map((msg, index) => (
                 <motion.div
                   key={msg.id}
@@ -298,7 +307,8 @@ export const DayMode: React.FC<DayModeProps> = ({
                 </motion.div>
               )}
               
-              <div ref={messagesEndRef} />
+                <div ref={messagesEndRef} />
+              </div>
             </div>
 
             {/* 퀵칩 영역 - 더 넓은 간격 */}
@@ -421,8 +431,9 @@ export const DayMode: React.FC<DayModeProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   className="shrink-0 px-6 py-5 sm:px-8 sm:py-6 border-t border-slate-200/30 bg-white/50 backdrop-blur-xl"
                 >
-                  <div className="flex gap-3">
-                    <div className="flex-1 relative">
+                  <div className="max-w-3xl mx-auto">
+                    <div className="flex gap-3">
+                      <div className="flex-1 relative">
                       <input
                         ref={inputRef}
                         type="text"
@@ -457,6 +468,7 @@ export const DayMode: React.FC<DayModeProps> = ({
                         </p>
                       )}
                     </div>
+                    </div>
                   </div>
                 </motion.div>
               );
@@ -467,3 +479,6 @@ export const DayMode: React.FC<DayModeProps> = ({
     </>
   );
 };
+
+// P2 최적화: React.memo로 불필요한 리렌더 방지
+export const DayMode = React.memo(DayModeComponent);

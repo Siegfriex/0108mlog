@@ -102,15 +102,24 @@ export async function callWithPolicy<T>(
   let lastError: unknown = null;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    // P1 수정: 타임아웃 정리로 메모리 누수 방지
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
     try {
-      // 타임아웃과 API 호출을 경쟁
+      // 타임아웃과 API 호출을 경쟁 (메모리 누수 수정)
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           reject(new Error('Request timeout'));
         }, timeout);
       });
 
-      const result = await Promise.race([apiCall(), timeoutPromise]);
+      const result = await Promise.race([
+        apiCall().finally(() => {
+          // API 호출 완료 시 타임아웃 정리
+          if (timeoutId) clearTimeout(timeoutId);
+        }),
+        timeoutPromise
+      ]);
 
       // 성공 시 응답 반환
       return {
@@ -118,6 +127,9 @@ export async function callWithPolicy<T>(
         data: result,
       };
     } catch (error: unknown) {
+      // P1 수정: catch에서도 타임아웃 정리 (타임아웃이 이긴 경우)
+      if (timeoutId) clearTimeout(timeoutId);
+
       lastError = error;
 
       // 네트워크 오류가 아니면 즉시 실패

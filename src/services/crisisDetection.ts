@@ -30,6 +30,15 @@ interface GeminiCrisisResult {
 }
 
 /**
+ * Critical 키워드 목록 (Gemini 폴백용 - 즉시 개입 필요)
+ * P0 수정: Gemini API 실패시에도 위기 감지 보장
+ */
+const CRITICAL_FALLBACK_KEYWORDS = [
+  '자살', '죽고싶', '죽을', '자해', '손목', '목숨',
+  '약물과다', '극단적', '더이상못', '살기싫', '끝내고싶'
+];
+
+/**
  * 위기 키워드 목록 (자해/자살 관련)
  * 정기적으로 업데이트 필요 (분기 1회)
  */
@@ -260,7 +269,25 @@ JSON만 반환하세요:`;
     return result;
   } catch (error) {
     console.error('Gemini 위기 감지 실패:', error);
-    // 파싱 실패 시 안전하게 false 반환 (키워드 기반으로 폴백)
+
+    // P0 수정: Gemini 실패시 키워드 기반 폴백 - Critical 키워드 감지시 위기로 판단
+    if (message) {
+      const normalizedText = message.toLowerCase().replace(/\s+/g, '');
+      const detectedCriticalKeywords = CRITICAL_FALLBACK_KEYWORDS.filter(keyword =>
+        normalizedText.includes(keyword.replace(/\s+/g, ''))
+      );
+
+      if (detectedCriticalKeywords.length > 0) {
+        console.warn('Gemini 실패 - 키워드 기반 위기 감지 폴백 활성화:', detectedCriticalKeywords);
+        return {
+          isCrisis: true,
+          severity: 'high',
+          reason: `키워드 폴백 감지: ${detectedCriticalKeywords.join(', ')}`
+        };
+      }
+    }
+
+    // Critical 키워드 없으면 안전하게 false 반환
     return { isCrisis: false, severity: 'none' };
   }
 }

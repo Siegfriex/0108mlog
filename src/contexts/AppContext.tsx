@@ -9,8 +9,9 @@ import React, { createContext, useContext, useState, useEffect, useCallback, Rea
 import { CoachPersona, TimelineEntry, EmotionType } from '../../types';
 import { DEFAULT_PERSONA } from '../../constants';
 import { INITIAL_TIMELINE } from '../mock/data';
-import { resolveMode, setModeOverride, getModeOverride, Mode } from '../services/modeResolver';
+import { resolveMode, setModeOverride, getModeOverride, Mode, getInitialMode } from '../services/modeResolver';
 import { TIME_CONSTANTS } from '../../constants';
+import { ensureAnonymousAuth } from '../services/auth';
 
 /**
  * AppContext 값 인터페이스
@@ -48,31 +49,57 @@ interface AppProviderProps {
  * 전역 앱 상태를 관리하는 Provider
  */
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [mode, setModeState] = useState<Mode>('day');
+  // 초기값: Firestore 접근 없이 localStorage + 시간 기반으로 설정
+  const [mode, setModeState] = useState<Mode>(getInitialMode());
   const [persona, setPersona] = useState<CoachPersona>(DEFAULT_PERSONA);
   const [timelineData, setTimelineData] = useState<TimelineEntry[]>(INITIAL_TIMELINE);
   const [currentEmotion, setCurrentEmotion] = useState<EmotionType | null>(null);
+  const [isSettingsSynced, setIsSettingsSynced] = useState(false);
 
-  // 모드 초기화 및 주기적 업데이트
+  // Auth 완료 후 Firestore 동기화
   useEffect(() => {
-    const initializeMode = async () => {
-      const resolvedMode = await resolveMode();
-      setModeState(resolvedMode);
+    const syncSettings = async () => {
+      try {
+        // Auth 대기 (Router에서 이미 완료되었지만 안전장치)
+        await ensureAnonymousAuth();
+        
+        // Firestore에서 설정 로드
+        const resolvedMode = await resolveMode();
+        
+        // 수동 override가 없으면 적용
+        if (!getModeOverride()) {
+          setModeState(resolvedMode);
+        }
+        
+        setIsSettingsSynced(true);
+      } catch (error) {
+        console.error('Failed to sync settings from Firestore:', error);
+        // 에러 발생해도 계속 진행 (초기값 유지)
+        setIsSettingsSynced(true);
+      }
     };
 
-    initializeMode();
+    syncSettings();
+  }, []);
 
-    // 수동 override가 없으면 주기적으로 모드 확인 (1분마다)
+  // 주기적 모드 체크 (설정 동기화 후에만)
+  useEffect(() => {
+    if (!isSettingsSynced) return;
+
     const interval = setInterval(async () => {
       const override = getModeOverride();
       if (!override) {
-        const resolvedMode = await resolveMode();
-        setModeState(resolvedMode);
+        try {
+          const resolvedMode = await resolveMode();
+          setModeState(resolvedMode);
+        } catch (error) {
+          console.error('Failed to update mode:', error);
+        }
       }
     }, TIME_CONSTANTS.MODE_CHECK_INTERVAL);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isSettingsSynced]);
 
   /**
    * 모드 설정 (수동 override 포함)

@@ -85,7 +85,7 @@ export const TutorialGuide: React.FC<TutorialGuideProps> = ({
   const currentTutorial = TUTORIAL_STEPS[currentStep];
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
+    <div className="w-full max-w-md mx-auto space-y-6 flex flex-col justify-center min-h-0 flex-1">
       {/* 헤더 */}
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-slate-900 mb-2">
@@ -104,20 +104,22 @@ export const TutorialGuide: React.FC<TutorialGuideProps> = ({
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 1.05 }}
           transition={{ duration: 0.3 }}
-          className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-white/60 shadow-xl"
+          className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-white/60 shadow-xl"
         >
           {/* 아이콘 */}
           <div className={`
-            w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br ${currentTutorial.color}
+            w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 rounded-full bg-gradient-to-br ${currentTutorial.color}
             flex items-center justify-center text-white
             shadow-lg
           `}>
-            {currentTutorial.icon}
+            <div className="scale-90 sm:scale-100">
+              {currentTutorial.icon}
+            </div>
           </div>
 
           {/* 제목 및 설명 */}
-          <div className="text-center space-y-4">
-            <h3 className="text-xl font-bold text-slate-900">
+          <div className="text-center space-y-3 sm:space-y-4">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 leading-tight">
               {currentTutorial.title}
             </h3>
             <p className="text-sm text-slate-600 leading-relaxed">

@@ -166,7 +166,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
                         </div>
                     </div>
                     
-                    <h3 className="text-2xl font-serif font-bold mb-3 leading-tight tracking-wide">Your January<br/>Emotional Narrative</h3>
+                    <h3 className="text-2xl font-sans font-bold mb-3 leading-tight tracking-wide">Your January<br/>Emotional Narrative</h3>
                     <p className="text-teal-50 text-sm mb-6 max-w-sm font-medium leading-relaxed opacity-90">
                        AI has analyzed your emotional journey this month. See how you've grown and what patterns emerged.
                     </p>
@@ -525,7 +525,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
                                 <span className="px-3 py-1 rounded-full bg-white shadow-sm border border-slate-100 text-brand-primary text-[10px] font-bold uppercase tracking-widest">
                                     January Review
                                 </span>
-                                <h2 className="text-2xl font-serif font-bold text-slate-800 mt-4 leading-tight">
+                                <h2 className="text-2xl font-sans font-bold text-slate-800 mt-4 leading-tight">
                                     Your Emotional<br/>Narrative
                                 </h2>
                             </div>

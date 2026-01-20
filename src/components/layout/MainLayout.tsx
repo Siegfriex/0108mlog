@@ -5,7 +5,7 @@
  * 기존 App.tsx의 레이아웃 구조 보존
  */
 
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldAlert, Moon, Sun, Bot } from 'lucide-react';
@@ -39,8 +39,8 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
   const { mode, persona, setMode: setModeContext } = useAppContext();
   const { showChatbot, isImmersive, isOnline, setShowChatbot, setIsImmersive } = useUIContext();
   
-  // URL 기반 탭 활성화
-  const getActiveTab = () => {
+  // P2 최적화: useMemo로 URL 기반 탭 활성화 메모이제이션
+  const activeTab = useMemo(() => {
     const path = location.pathname;
     if (path.startsWith('/chat')) return 'chat';
     if (path.startsWith('/journal')) return 'journal';
@@ -48,12 +48,10 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
     if (path.startsWith('/content')) return 'content';
     if (path.startsWith('/profile')) return 'profile';
     return 'chat';
-  };
-  
-  const activeTab = getActiveTab();
-  
-  // 탭 변경 핸들러
-  const handleTabChange = (tab: string) => {
+  }, [location.pathname]);
+
+  // P2 최적화: useCallback으로 탭 변경 핸들러 메모이제이션
+  const handleTabChange = useCallback((tab: string) => {
     switch (tab) {
       case 'chat':
         navigate('/chat');
@@ -71,13 +69,13 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
         navigate('/profile');
         break;
     }
-  };
-  
-  // 모드 토글 핸들러 (수동 override 설정)
-  const toggleMode = () => {
+  }, [navigate]);
+
+  // P2 최적화: useCallback으로 모드 토글 핸들러 메모이제이션
+  const toggleMode = useCallback(() => {
     const newMode: Mode = mode === 'day' ? 'night' : 'day';
     setModeContext(newMode);
-  };
+  }, [mode, setModeContext]);
 
   return (
     <div className={`
@@ -102,7 +100,7 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
             absolute left-1/2 -translate-x-1/2 w-bg-overflow h-bg-overflow rounded-full blur-bg-lg opacity-40 transition-colors duration-1000 
             ${mode === 'day' ? 'bg-gradient-to-b from-brand-secondary to-transparent' : 'bg-gradient-to-b from-brand-dark to-transparent'}
           `}
-          style={{ top: 'var(--offset-negative-sm)' }}
+          style={{ top: isMobile ? 'var(--offset-negative-sm)' : '0' }}
         />
         <div 
           className={`
@@ -163,47 +161,52 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
         </header>
       </div>
 
-      {/* Main Stage */}
-      <main id="main-content" className={`
-        relative z-content-base w-full h-full flex flex-col items-center
-        ${shouldDisableLayoutAnimations ? '' : 'transition-all duration-700 ease-[0.22,1,0.36,1]'}
-        ${isImmersive ? 'px-0 py-0' : isMobile
-          ? 'px-3 pt-[calc(var(--header-height)+var(--safe-top))] pb-[calc(var(--dock-height)+var(--safe-bottom))]'
-          : 'px-4 pt-24 pb-28'
-        }
-      `}>
-        <div
-          className={`
-            w-full h-full flex flex-col overflow-hidden relative
-            ${isMobile ? 'max-w-full' : 'max-w-2xl'}
-            ${shouldDisableLayoutAnimations ? '' : 'transition-all duration-700'}
-            ${isImmersive
-              ? 'rounded-none shadow-none bg-transparent'
-              : `rounded-xl shadow-2xl border backdrop-blur-lg
-                 ${mode === 'day' ? 'bg-white/40 border-white/60 shadow-brand-primary/10' : 'bg-white/5 border-white/10 shadow-black/50'}`
-            }
-          `}
-        >
-          {shouldDisableLayoutAnimations ? (
-            <div className="flex-1 w-full h-full overflow-hidden">
-              <Outlet />
-            </div>
-          ) : (
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 1.02 }}
-                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                className="flex-1 w-full h-full overflow-hidden"
-              >
+      {/* Main Stage - isImmersive 모드는 완전히 별도 렌더링 */}
+      {isImmersive ? (
+        // 풀스크린 모드: 모든 패딩/제약 제거
+        <main id="main-content" className="fixed inset-0 z-content-base pt-safe-top pb-safe-bottom">
+          <Outlet />
+        </main>
+      ) : (
+        // 일반 모드: 카드형 레이아웃
+        <main id="main-content" className={`
+          relative z-content-base w-full flex-1 flex flex-col items-center
+          ${shouldDisableLayoutAnimations ? '' : 'transition-all duration-700 ease-[0.22,1,0.36,1]'}
+          ${isMobile
+            ? 'px-3 pt-[calc(var(--header-height)+var(--safe-top))] pb-[calc(var(--dock-height)+var(--safe-bottom))]'
+            : 'px-6 pt-28 pb-32'
+          }
+        `}>
+          <div
+            className={`
+              w-full flex-1 flex flex-col overflow-hidden relative
+              ${isMobile ? 'max-w-full' : 'max-w-2xl'}
+              ${shouldDisableLayoutAnimations ? '' : 'transition-all duration-700'}
+              rounded-xl shadow-2xl border backdrop-blur-lg
+              ${mode === 'day' ? 'bg-white/40 border-white/60 shadow-brand-primary/10' : 'bg-white/5 border-white/10 shadow-black/50'}
+            `}
+          >
+            {shouldDisableLayoutAnimations ? (
+              <div className="flex-1 w-full h-full overflow-hidden">
                 <Outlet />
-              </motion.div>
-            </AnimatePresence>
-          )}
-        </div>
-      </main>
+              </div>
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={location.pathname}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 1.02 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex-1 w-full h-full overflow-hidden"
+                >
+                  <Outlet />
+                </motion.div>
+              </AnimatePresence>
+            )}
+          </div>
+        </main>
+      )}
 
       {/* Dock */}
       <div className={`

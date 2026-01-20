@@ -21,37 +21,53 @@ interface ContentGalleryProps {
 // 목업 데이터 import: 중앙화된 목업 데이터 사용
 import { MOCK_CONTENTS, MOODS, TREND_DATA } from '../src/mock/data';
 
+// 무한 루프 방지를 위한 최대 재시도 횟수
+const MAX_RETRIES = 3;
+
 export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
   // 목업 데이터를 상태로 관리 (추후 API 연동 시 교체)
   const [contents, setContents] = useState<(ContentData & { commentary?: string })[]>(MOCK_CONTENTS as (ContentData & { commentary?: string })[]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedMood, setSelectedMood] = useState<string>('지친 하루');
-  
+
+  // 에러 상태 및 재시도 횟수 관리 (무한 루프 방지)
+  const [hasError, setHasError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+
   // 무한 스크롤 참조
   const loaderRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const fetchContent = useCallback(async (append: boolean = false) => {
-    if (isGenerating) return;
+    // 에러 상태이고 최대 재시도 횟수 초과 시 중단
+    if (isGenerating || (hasError && retryCount >= MAX_RETRIES)) return;
     setIsGenerating(true);
-    
+
     try {
       const newContent = await generateHealingContent(selectedMood, persona);
-      
+
       if (newContent) {
         setContents(prev => append ? [...prev, newContent] : [newContent, ...prev]);
         if (!append) setSelectedId(newContent.id);
+        // 성공 시 에러 상태 초기화
+        setHasError(false);
+        setRetryCount(0);
       }
     } catch (error) {
       console.error('콘텐츠 생성 오류:', error);
-      // 사용자에게 알림 표시 (선택적)
+      // 에러 상태 설정 및 재시도 횟수 증가
+      setHasError(true);
+      setRetryCount(prev => prev + 1);
     } finally {
       setIsGenerating(false);
     }
-  }, [isGenerating, selectedMood, persona]);
+  }, [isGenerating, selectedMood, persona, hasError, retryCount]);
 
   const handleManualGenerate = useCallback(() => {
+    // 수동 생성 시 에러 상태 초기화
+    setHasError(false);
+    setRetryCount(0);
     fetchContent(false);
   }, [fetchContent]);
 
@@ -63,7 +79,8 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
     const observer = new IntersectionObserver(
       (entries) => {
         const first = entries[0];
-        if (first.isIntersecting && !isGenerating) {
+        // hasError 조건 추가 - 에러 상태일 때 자동 로딩 중단
+        if (first.isIntersecting && !isGenerating && !hasError) {
           handleLoadMore();
         }
       },
@@ -80,7 +97,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
         observer.unobserve(currentLoader);
       }
     };
-  }, [handleLoadMore, isGenerating]);
+  }, [handleLoadMore, isGenerating, hasError]);
 
 
   const getIcon = (type: string) => {
@@ -107,6 +124,9 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
   const monthName = new Date().toLocaleString('default', { month: 'long' });
 
   const handleRefresh = async () => {
+    // 새로고침 시 에러 상태 초기화
+    setHasError(false);
+    setRetryCount(0);
     await fetchContent(false);
   };
 
@@ -256,12 +276,24 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                         );
                     })}
 
-                    {/* Loader */}
+                    {/* Loader - 에러 상태 표시 추가 */}
                     <div ref={loaderRef} className="col-span-2 flex justify-center py-8">
                          {isGenerating ? (
                              <div className="flex flex-col items-center gap-2">
                                  <div className="w-6 h-6 border-2 border-indigo-200 border-t-indigo-500 rounded-full animate-spin" />
                              </div>
+                         ) : hasError ? (
+                             <button
+                               onClick={() => {
+                                 setHasError(false);
+                                 setRetryCount(0);
+                                 handleLoadMore();
+                               }}
+                               className="text-sm text-slate-500 hover:text-brand-primary transition-colors flex items-center gap-2"
+                             >
+                               <RefreshCw size={14} />
+                               다시 시도
+                             </button>
                          ) : (
                              <div className="flex flex-col items-center gap-1 opacity-40">
                                  <InfinityIcon size={16} className="text-slate-400" />
@@ -322,7 +354,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
                        <div className="relative z-10">
                             <motion.h2 
                                 layoutId={`card-title-${selectedId}`}
-                                className="text-3xl font-serif font-bold text-slate-800 leading-tight mb-2"
+                                className="text-3xl font-sans font-bold text-slate-800 leading-tight mb-2"
                             >
                                 {selectedContent.title}
                             </motion.h2>
@@ -442,7 +474,7 @@ const GalleryItem: React.FC<{
                     </span>
                     <motion.h3 
                         layoutId={`card-title-${content.id}`}
-                        className={`font-serif font-bold text-slate-800 leading-tight ${isFeatured ? 'text-2xl max-w-[80%]' : 'text-lg line-clamp-3'}`}
+                        className={`font-sans font-bold text-slate-800 leading-tight ${isFeatured ? 'text-2xl max-w-[80%]' : 'text-lg line-clamp-3'}`}
                     >
                         {content.title}
                     </motion.h3>

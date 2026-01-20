@@ -30,25 +30,32 @@ export const useMobileOptimization = () => {
 
     /**
      * 접근성 설정 확인
+     * P1 수정: 이벤트 핸들러를 변수에 저장하여 cleanup 시 제거
      */
-    const checkPreferences = () => {
-      const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-      const dataQuery = window.matchMedia('(prefers-reduced-data: reduce)');
-      
-      setPrefersReducedMotion(motionQuery.matches);
-      setPrefersLowData(dataQuery.matches);
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const dataQuery = window.matchMedia('(prefers-reduced-data: reduce)');
 
-      motionQuery.addEventListener('change', (e) => setPrefersReducedMotion(e.matches));
-      dataQuery.addEventListener('change', (e) => setPrefersLowData(e.matches));
-    };
+    // 핸들러를 변수에 저장 (cleanup용)
+    const motionHandler = (e: MediaQueryListEvent) => setPrefersReducedMotion(e.matches);
+    const dataHandler = (e: MediaQueryListEvent) => setPrefersLowData(e.matches);
+
+    // 초기값 설정
+    setPrefersReducedMotion(motionQuery.matches);
+    setPrefersLowData(dataQuery.matches);
+
+    // 이벤트 리스너 등록
+    motionQuery.addEventListener('change', motionHandler);
+    dataQuery.addEventListener('change', dataHandler);
 
     checkDevice();
-    checkPreferences();
 
     window.addEventListener('resize', checkDevice);
-    
+
+    // P1 수정: 모든 이벤트 리스너 cleanup
     return () => {
       window.removeEventListener('resize', checkDevice);
+      motionQuery.removeEventListener('change', motionHandler);
+      dataQuery.removeEventListener('change', dataHandler);
     };
   }, []);
 
@@ -58,7 +65,13 @@ export const useMobileOptimization = () => {
   const shouldReduceAnimations = prefersReducedMotion || isMobile;
   const shouldDisableParallax = isMobile || prefersReducedMotion;
   const shouldDisableSpotlight = isMobile || prefersReducedMotion;
-  
+
+  // 레이아웃 애니메이션만 비활성화 (UI 피드백은 유지)
+  const shouldDisableLayoutAnimations = isMobile || prefersReducedMotion;
+
+  // 모바일 전용 클래스 문자열
+  const mobileLayoutClass = isMobile ? 'mobile-layout' : '';
+
   // 하드웨어 동시성 기반 성능 판단 (기본값: false, 향후 확장 가능)
   const isLowPerformance = false;
 
@@ -72,6 +85,9 @@ export const useMobileOptimization = () => {
     shouldReduceAnimations,
     shouldDisableParallax,
     shouldDisableSpotlight,
+    // 신규 추가
+    shouldDisableLayoutAnimations,
+    mobileLayoutClass,
     // 최적화 설정 (하위 호환성 유지)
     optimizationSettings: {
       reduceAnimations: shouldReduceAnimations,

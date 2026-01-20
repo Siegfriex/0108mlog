@@ -135,3 +135,23 @@ export function getModeOverride(): Mode | null {
   }
   return null;
 }
+
+/**
+ * 초기 모드 계산 (Firestore 접근 없이)
+ * 
+ * Auth 완료 전 즉시 사용 가능
+ * localStorage + 시간 기반으로만 결정
+ * 
+ * @returns 'day' 또는 'night'
+ */
+export function getInitialMode(): Mode {
+  // 1. 수동 override 확인
+  const manualOverride = getModeOverride();
+  if (manualOverride) {
+    return manualOverride;
+  }
+
+  // 2. 시간 기반 기본값
+  const hour = new Date().getHours();
+  return (hour >= 6 && hour < 18) ? 'day' : 'night';
+}

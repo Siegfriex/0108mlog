@@ -13,7 +13,13 @@
       "Bash(findstr:*)",
       "Bash(Get-ChildItem -Path \"C:\\\\INEESm\\\\src\" -Directory)",
       "Bash(ForEach-Object { $_Name })",
-      "Bash(npx tsc --noEmit)"
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx firebase deploy:*)",
+      "Bash",
+      "FileRead",
+      "FileWrite",
+      "FileEdit",
+      "WebSearch"
     ]
   }
 }

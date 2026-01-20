@@ -224,7 +224,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onEx
   }, [currentStep, requestExit]);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
+    <div className="w-full min-h-screen h-full flex flex-col items-center justify-center bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
       {/* 종료 확인 다이얼로그 */}
       <ExitConfirm
         isOpen={isExitConfirm}
@@ -254,7 +254,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onEx
 
       {/* 진행률 표시 (개선) */}
       <motion.div 
-        className="absolute top-8 left-1/2 -translate-x-1/2 z-content-base"
+        className="absolute top-12 sm:top-8 left-1/2 -translate-x-1/2 z-content-base"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
@@ -293,7 +293,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete, onEx
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
-          className="w-full h-full flex flex-col items-center justify-center px-4"
+          className="w-full flex-1 flex flex-col items-center justify-center px-6 sm:px-8 py-8"
         >
           {currentStep === 'welcome' && (
             <WelcomeScreen

@@ -26,11 +26,11 @@ export interface InitialAssessmentProps {
  * 질문 1: 감정 상태 옵션 (5점 척도)
  */
 const EMOTION_OPTIONS = [
-  { value: 1, label: '매우 나쁨', icon: <Frown size={24} />, color: 'text-red-500' },
-  { value: 2, label: '나쁨', icon: <Frown size={24} />, color: 'text-orange-500' },
-  { value: 3, label: '보통', icon: <Meh size={24} />, color: 'text-yellow-500' },
-  { value: 4, label: '좋음', icon: <Smile size={24} />, color: 'text-blue-500' },
-  { value: 5, label: '매우 좋음', icon: <Smile size={24} />, color: 'text-green-500' },
+  { value: 1, label: '매우 나쁨', icon: <Frown size={36} />, color: 'text-red-500' },
+  { value: 2, label: '나쁨', icon: <Frown size={36} />, color: 'text-orange-500' },
+  { value: 3, label: '보통', icon: <Meh size={36} />, color: 'text-yellow-500' },
+  { value: 4, label: '좋음', icon: <Smile size={36} />, color: 'text-blue-500' },
+  { value: 5, label: '매우 좋음', icon: <Smile size={36} />, color: 'text-green-500' },
 ];
 
 /**
@@ -114,13 +114,13 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
+    <div className="w-full max-w-lg mx-auto space-y-6 flex flex-col justify-center min-h-0 flex-1">
       {/* 헤더 */}
       <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">
+        <h2 className="text-3xl font-bold text-slate-900 mb-2">
           초기 평가
         </h2>
-        <p className="text-sm text-slate-500">
+        <p className="text-base text-slate-500">
           {currentQuestion}/3
         </p>
       </div>
@@ -136,11 +136,11 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
             className="space-y-6"
           >
             <div className="text-center mb-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-2">
+              <h3 className="text-xl font-bold text-slate-900 mb-2">
                 요즘 감정 상태는 어떠신가요?
               </h3>
             </div>
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
               {EMOTION_OPTIONS.map((option, index) => (
                 <motion.button
                   key={option.value}
@@ -151,7 +151,7 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={`
-                    flex flex-col items-center gap-2 p-4 rounded-xl
+                    flex flex-col items-center gap-2 sm:gap-3 p-5 sm:p-6 rounded-xl
                     transition-all duration-300
                     ${emotionState === option.value
                       ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30'
@@ -162,7 +162,7 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
                   <div className={emotionState === option.value ? 'text-white' : option.color}>
                     {option.icon}
                   </div>
-                  <span className="text-xs font-medium text-center">{option.label}</span>
+                  <span className="text-sm font-medium text-center leading-tight">{option.label}</span>
                 </motion.button>
               ))}
             </div>
@@ -179,10 +179,10 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
             className="space-y-6"
           >
             <div className="text-center mb-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-2">
+              <h3 className="text-xl font-bold text-slate-900 mb-2">
                 어떤 도움이 필요하신가요?
               </h3>
-              <p className="text-sm text-slate-500">여러 개 선택 가능해요</p>
+              <p className="text-base text-slate-500">여러 개 선택 가능해요</p>
             </div>
             <div className="grid grid-cols-2 gap-3">
               {HELP_OPTIONS.map((option, index) => (
@@ -229,7 +229,7 @@ export const InitialAssessment: React.FC<InitialAssessmentProps> = ({
             className="space-y-6"
           >
             <div className="text-center mb-6">
-              <h3 className="text-lg font-bold text-slate-900 mb-2">
+              <h3 className="text-xl font-bold text-slate-900 mb-2">
                 체크인 목표는 무엇인가요?
               </h3>
             </div>

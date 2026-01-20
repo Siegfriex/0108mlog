@@ -1,0 +1,1 @@
+import{j as o}from"./framer-motion-BL4N7xFA.js";import{R as r}from"./ReportView-B7sfXILp.js";import{o as p}from"./index-AFX2_y7y.js";import"./react-vendor-CHpw1G1i.js";import"./lucide-react-J6DJLIhr.js";import"./recharts-D37Qx2ho.js";import"./firebase-BBl07Gss.js";const R=()=>{const{timelineData:t}=p();return o.jsx(r,{timelineData:t})};export{R as MonthlyReport};

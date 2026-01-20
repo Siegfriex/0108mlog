@@ -89,7 +89,7 @@ export const PermissionRequest: React.FC<PermissionRequestProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-6">
+    <div className="w-full max-w-md mx-auto space-y-6 flex flex-col justify-center min-h-0 flex-1">
       {/* 헤더 */}
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold text-slate-900 mb-2">
@@ -105,11 +105,11 @@ export const PermissionRequest: React.FC<PermissionRequestProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-white/60 shadow-lg"
+        className="bg-white/80 backdrop-blur-xl rounded-2xl p-5 sm:p-6 border border-white/60 shadow-lg"
       >
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center text-brand-primary shrink-0">
-            <Bell size={24} />
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-brand-light flex items-center justify-center text-brand-primary shrink-0">
+            <Bell size={22} className="sm:w-6 sm:h-6" />
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-slate-900 mb-1">알림 권한</h3>
@@ -140,11 +140,11 @@ export const PermissionRequest: React.FC<PermissionRequestProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-white/80 backdrop-blur-xl rounded-2xl p-6 border border-white/60 shadow-lg"
+        className="bg-white/80 backdrop-blur-xl rounded-2xl p-5 sm:p-6 border border-white/60 shadow-lg"
       >
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-brand-light flex items-center justify-center text-brand-primary shrink-0">
-            <MapPin size={24} />
+        <div className="flex items-start gap-3 sm:gap-4">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-brand-light flex items-center justify-center text-brand-primary shrink-0">
+            <MapPin size={22} className="sm:w-6 sm:h-6" />
           </div>
           <div className="flex-1">
             <h3 className="font-bold text-slate-900 mb-1">위치 권한</h3>

@@ -1,8 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle, Book, BarChart2, Layers, User } from 'lucide-react';
 import { useTouchGestures } from '../../hooks/useTouchGestures';
 import { useHaptics } from '../../hooks/useHaptics';
+import { useMobileOptimization } from '../../hooks/useMobileOptimization';
 
 /**
  * TabBar 컴포넌트
@@ -15,13 +16,18 @@ export interface TabBarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
   mode?: 'day' | 'night';
+  isMobile?: boolean;
 }
 
-export const TabBar: React.FC<TabBarProps> = ({ 
-  activeTab, 
-  onTabChange, 
-  mode = 'day' 
+export const TabBar: React.FC<TabBarProps> = ({
+  activeTab,
+  onTabChange,
+  mode = 'day',
+  isMobile: isMobileProp,
 }) => {
+  const { shouldReduceAnimations, isMobile: isMobileDetected } = useMobileOptimization();
+  const isMobile = isMobileProp ?? isMobileDetected;
+  const disableAnimations = isMobile || shouldReduceAnimations;
   const allTabs = [
     { id: 'chat', label: '채팅', icon: <MessageCircle size={22} strokeWidth={2.5} /> },
     { id: 'journal', label: '기록', icon: <Book size={22} strokeWidth={2.5} /> },
@@ -89,34 +95,37 @@ export const TabBar: React.FC<TabBarProps> = ({
   };
 
   return (
-    <nav 
+    <nav
       {...touchGestures}
       className={`
-        relative flex items-center justify-between px-6 py-3 gap-2 pb-safe-bottom
-        backdrop-blur-2xl border
-        rounded-xl shadow-2xl
-        w-auto min-w-80 max-w-full transition-colors duration-500
-        ${mode === 'day' 
-          ? 'bg-white/80 border-white/60 shadow-brand-primary/10 ring-1 ring-white/50' 
+        relative flex items-center justify-between gap-2 pb-safe-bottom
+        backdrop-blur-2xl border rounded-xl shadow-2xl
+        ${isMobile
+          ? 'px-3 py-2.5 w-full min-w-0'
+          : 'px-6 py-3 w-auto min-w-80 max-w-full'
+        }
+        ${disableAnimations ? '' : 'transition-colors duration-500'}
+        ${mode === 'day'
+          ? 'bg-white/80 border-white/60 shadow-brand-primary/10 ring-1 ring-white/50'
           : 'bg-slate-900/80 border-white/10 shadow-black/50 ring-1 ring-white/10'
         }
       `}
       role="navigation"
       aria-label="메인 네비게이션"
     >
-      {/* 유동적 배경 (젤리처럼 이동) */}
-      {allTabs.map((tab, index) => {
+      {/* 유동적 배경 (젤리처럼 이동) - 모바일에서 비활성화 */}
+      {!disableAnimations && allTabs.map((tab, index) => {
         const isActive = activeTab === tab.id;
         if (!isActive) return null;
-        
+
         return (
           <motion.div
             key={`background-${tab.id}`}
             layoutId="activeTabBackground"
             className={`
               absolute inset-0 rounded-xl
-              ${mode === 'day' 
-                ? 'bg-brand-light/50' 
+              ${mode === 'day'
+                ? 'bg-brand-light/50'
                 : 'bg-white/10'
               }
             `}
@@ -135,7 +144,46 @@ export const TabBar: React.FC<TabBarProps> = ({
       
       {allTabs.map((tab, index) => {
         const isActive = activeTab === tab.id;
-        
+
+        // 모바일: 일반 버튼 사용
+        if (disableAnimations) {
+          return (
+            <button
+              key={tab.id}
+              ref={(el) => { buttonRefs.current[index] = el; }}
+              onClick={() => {
+                onTabChange(tab.id);
+                triggerHaptic('light');
+              }}
+              onKeyDown={(e) => handleKeyDown(e, index)}
+              tabIndex={isActive ? 0 : -1}
+              className={`
+                relative z-content-base group flex flex-col items-center justify-center
+                ${isMobile ? 'w-10 h-10' : 'w-11 h-11'} rounded-xl
+                focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2
+                active:scale-95
+                ${isActive
+                  ? mode === 'day'
+                    ? 'text-brand-primary bg-brand-light/50'
+                    : 'text-brand-secondary bg-white/10'
+                  : mode === 'day'
+                    ? 'text-slate-400'
+                    : 'text-slate-500'
+                }
+              `}
+              aria-label={tab.label}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              {tab.icon}
+              {/* 활성 탭 표시 점 */}
+              {isActive && (
+                <div className={`absolute -bottom-1.5 w-1 h-1 rounded-full ${mode === 'day' ? 'bg-brand-primary' : 'bg-brand-secondary'}`} />
+              )}
+            </button>
+          );
+        }
+
+        // 데스크탑: motion 버튼 사용
         return (
           <motion.button
             key={tab.id}
@@ -152,12 +200,12 @@ export const TabBar: React.FC<TabBarProps> = ({
               w-11 h-11 rounded-xl
               transition-all duration-300
               focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2
-              ${isActive 
-                ? mode === 'day' 
-                  ? 'text-brand-primary shadow-sm' 
+              ${isActive
+                ? mode === 'day'
+                  ? 'text-brand-primary shadow-sm'
                   : 'text-brand-secondary'
-                : mode === 'day' 
-                  ? 'text-slate-400 hover:text-brand-dark' 
+                : mode === 'day'
+                  ? 'text-slate-400 hover:text-brand-dark'
                   : 'text-slate-500 hover:text-slate-300'
               }
             `}
@@ -168,10 +216,10 @@ export const TabBar: React.FC<TabBarProps> = ({
             transition={{ delay: index * 0.05 }}
           >
             {tab.icon}
-            
+
             {/* 활성 탭 표시 점 */}
             {isActive && (
-              <motion.div 
+              <motion.div
                 layoutId="activeTabDot"
                 className={`absolute -bottom-2 w-1 h-1 rounded-full ${mode === 'day' ? 'bg-brand-primary' : 'bg-brand-secondary'}`}
               />
