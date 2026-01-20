@@ -1,0 +1,74 @@
+[
+  {
+    "ts": "2026-01-20T15:07:13.988Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:07:13.993Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:07:22.681Z",
+    "url": "https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?gsessionid=Vca-OxAIvI4MCMaI3yZHsAg7R61rjG4VvyxT_Yvb8hw&VER=8&database=projects%2Finess-mlog%2Fdatabases%2F(default)&RID=rpc&SID=rFzpju7zvEv4WVM2Cw71EQ&AID=0&CI=0&TYPE=xmlhttp&zx=vs8slzcgku28&t=1",
+    "method": "GET",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:07:22.707Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:07:22.711Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:07:31.393Z",
+    "url": "https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?gsessionid=QIbm3EMACB4g9Vt7X-csy-4nzLt4glkFHhCOZWATW6E&VER=8&database=projects%2Finess-mlog%2Fdatabases%2F(default)&RID=rpc&SID=7Hbqeh37Nhi7Hat2Ldwlxg&AID=0&CI=0&TYPE=xmlhttp&zx=q55mfa5c9acu&t=1",
+    "method": "GET",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:07:31.410Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:07:31.415Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  }
+]

@@ -1,0 +1,110 @@
+[
+  {
+    "ts": "2026-01-20T15:04:24.282Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:24.286Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:32.970Z",
+    "url": "https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?gsessionid=gGmSrHQ2C0_7ISgocxmnjjOC0SkI9gkPHnmBCWgbqwU&VER=8&database=projects%2Finess-mlog%2Fdatabases%2F(default)&RID=rpc&SID=y77ZHllOOHaVmpzatRqUYg&AID=0&CI=0&TYPE=xmlhttp&zx=d7d38ni22xo9&t=1",
+    "method": "GET",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:32.997Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:33.002Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:41.701Z",
+    "url": "https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?gsessionid=-Oa91ARQX-o6PWfywavvaNqHnN6UPnFt4UH0d_dys9k&VER=8&database=projects%2Finess-mlog%2Fdatabases%2F(default)&RID=rpc&SID=NtK026q1e8EGKUe4gEGgFQ&AID=0&CI=0&TYPE=xmlhttp&zx=nco982oo1qvo&t=1",
+    "method": "GET",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:41.719Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:41.720Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:50.460Z",
+    "url": "https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?gsessionid=iMQbsJZpF-gpG7HyYf9H3RIlQ44WFe2ykhHpH31pD-4&VER=8&database=projects%2Finess-mlog%2Fdatabases%2F(default)&RID=rpc&SID=hDEFg56wIIyktIXaLrE1jg&AID=0&CI=0&TYPE=xmlhttp&zx=aej6ml9q2xvv&t=1",
+    "method": "GET",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:50.460Z",
+    "url": "https://asia-northeast3-iness-mlog.cloudfunctions.net/generateMonthlyNarrative",
+    "method": "POST",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:50.484Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:04:50.485Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  }
+]

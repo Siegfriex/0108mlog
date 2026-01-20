@@ -9,7 +9,7 @@ import { Sparkles } from 'lucide-react';
  */
 export const AuthLoadingScreen: React.FC = () => {
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
+    <div data-testid="auth-loading" className="w-full h-screen flex items-center justify-center bg-gradient-to-br from-brand-light via-white to-brand-secondary/20">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}

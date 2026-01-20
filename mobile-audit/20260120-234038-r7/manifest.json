@@ -1,0 +1,90 @@
+{
+  "runId": "20260120-234038-r7",
+  "baseUrl": "https://iness-mlog.web.app",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "startedAt": "2026-01-20T15:06:07.395Z",
+  "version": "1.0",
+  "screens": [
+    {
+      "id": "profile_main",
+      "name": "프로필 메인",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile",
+      "file": "mobile-audit/20260120-234038-r7/profile/01-profile.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:06:16.643Z"
+    },
+    {
+      "id": "profile_settings",
+      "name": "설정",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/settings",
+      "file": "mobile-audit/20260120-234038-r7/profile/02-settings.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:06:25.380Z"
+    },
+    {
+      "id": "profile_persona",
+      "name": "페르소나 설정",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/persona",
+      "file": "mobile-audit/20260120-234038-r7/profile/03-persona.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:06:34.122Z"
+    },
+    {
+      "id": "profile_daynight",
+      "name": "Day/Night 설정",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/daynight",
+      "file": "mobile-audit/20260120-234038-r7/profile/04-daynight.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:06:42.899Z"
+    },
+    {
+      "id": "profile_privacy",
+      "name": "개인정보",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/privacy",
+      "file": "mobile-audit/20260120-234038-r7/profile/05-privacy.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:06:51.666Z"
+    },
+    {
+      "id": "profile_privacy_policy",
+      "name": "개인정보 처리방침",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/privacy/policy",
+      "file": "mobile-audit/20260120-234038-r7/profile/06-privacy-policy.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:07:00.414Z"
+    },
+    {
+      "id": "profile_conversations",
+      "name": "대화 관리",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/conversations",
+      "file": "mobile-audit/20260120-234038-r7/profile/07-conversations.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:07:09.215Z"
+    }
+  ],
+  "finishedAt": "2026-01-20T15:07:09.349Z"
+}

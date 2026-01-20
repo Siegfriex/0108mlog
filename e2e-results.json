@@ -1,0 +1,290 @@
+{
+  "config": {
+    "configFile": "C:\\INEESm\\playwright.config.ts",
+    "rootDir": "C:/INEESm/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 2
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "e2e-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "e2e-results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "e2e-results.xml"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/INEESm/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/INEESm/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/INEESm/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 2
+        },
+        "id": "mobile",
+        "name": "mobile",
+        "testDir": "C:/INEESm/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.57.0",
+    "workers": 6,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "tests\\p0\\feat-003-ai-persona.spec.ts",
+      "file": "tests/p0/feat-003-ai-persona.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "FEAT-003: AI 페르소나 기반 대화",
+          "file": "tests/p0/feat-003-ai-persona.spec.ts",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "시나리오 3-1: 기본 페르소나 대화",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 31435,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts:6:8",
+                        "location": {
+                          "file": "C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts",
+                          "column": 8,
+                          "line": 6
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 4 |\u001b[39m\n \u001b[90m 5 |\u001b[39m test\u001b[33m.\u001b[39mdescribe(\u001b[32m'FEAT-003: AI 페르소나 기반 대화'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 6 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m   |\u001b[39m        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 7 |\u001b[39m     \u001b[36mawait\u001b[39m ensureAuthenticated(page)\u001b[33m;\u001b[39m\n \u001b[90m 8 |\u001b[39m     \u001b[36mawait\u001b[39m skipOnboarding(page)\u001b[33m;\u001b[39m\n \u001b[90m 9 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts",
+                            "column": 8,
+                            "line": 6
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n\u001b[0m \u001b[90m 4 |\u001b[39m\n \u001b[90m 5 |\u001b[39m test\u001b[33m.\u001b[39mdescribe(\u001b[32m'FEAT-003: AI 페르소나 기반 대화'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 6 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m   |\u001b[39m        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 7 |\u001b[39m     \u001b[36mawait\u001b[39m ensureAuthenticated(page)\u001b[33m;\u001b[39m\n \u001b[90m 8 |\u001b[39m     \u001b[36mawait\u001b[39m skipOnboarding(page)\u001b[33m;\u001b[39m\n \u001b[90m 9 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts:6:8\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\INEESm\\e2e\\helpers\\auth.ts",
+                            "column": 16,
+                            "line": 37
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n\u001b[90m   at \u001b[39mhelpers\\auth.ts:37\n\n\u001b[0m \u001b[90m 35 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 36 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mreload()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 37 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 38 |\u001b[39m   }\n \u001b[90m 39 |\u001b[39m }\n \u001b[90m 40 |\u001b[39m\u001b[0m\n\u001b[2m    at skipOnboarding (C:\\INEESm\\e2e\\helpers\\auth.ts:37:16)\u001b[22m\n\u001b[2m    at C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts:8:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-20T15:09:36.245Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\INEESm\\test-results\\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\INEESm\\test-results\\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\INEESm\\test-results\\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\INEESm\\test-results\\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts",
+                        "column": 8,
+                        "line": 6
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "339a80a0062d31bceb62-ae01ae415ee04da0e412",
+              "file": "tests/p0/feat-003-ai-persona.spec.ts",
+              "line": 11,
+              "column": 3
+            },
+            {
+              "title": "시나리오 3-2: 커스텀 페르소나 대화",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "timedOut",
+                      "duration": 31426,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n    at C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts:6:8",
+                        "location": {
+                          "file": "C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts",
+                          "column": 8,
+                          "line": 6
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 4 |\u001b[39m\n \u001b[90m 5 |\u001b[39m test\u001b[33m.\u001b[39mdescribe(\u001b[32m'FEAT-003: AI 페르소나 기반 대화'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 6 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m   |\u001b[39m        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 7 |\u001b[39m     \u001b[36mawait\u001b[39m ensureAuthenticated(page)\u001b[33m;\u001b[39m\n \u001b[90m 8 |\u001b[39m     \u001b[36mawait\u001b[39m skipOnboarding(page)\u001b[33m;\u001b[39m\n \u001b[90m 9 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts",
+                            "column": 8,
+                            "line": 6
+                          },
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded while running \"beforeEach\" hook.\u001b[39m\n\n\u001b[0m \u001b[90m 4 |\u001b[39m\n \u001b[90m 5 |\u001b[39m test\u001b[33m.\u001b[39mdescribe(\u001b[32m'FEAT-003: AI 페르소나 기반 대화'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 6 |\u001b[39m   test\u001b[33m.\u001b[39mbeforeEach(\u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m   |\u001b[39m        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 7 |\u001b[39m     \u001b[36mawait\u001b[39m ensureAuthenticated(page)\u001b[33m;\u001b[39m\n \u001b[90m 8 |\u001b[39m     \u001b[36mawait\u001b[39m skipOnboarding(page)\u001b[33m;\u001b[39m\n \u001b[90m 9 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts:6:8\u001b[22m"
+                        },
+                        {
+                          "location": {
+                            "file": "C:\\INEESm\\e2e\\helpers\\auth.ts",
+                            "column": 16,
+                            "line": 37
+                          },
+                          "message": "Error: page.waitForLoadState: Test timeout of 30000ms exceeded.\n\n\u001b[90m   at \u001b[39mhelpers\\auth.ts:37\n\n\u001b[0m \u001b[90m 35 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 36 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mreload()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 37 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 38 |\u001b[39m   }\n \u001b[90m 39 |\u001b[39m }\n \u001b[90m 40 |\u001b[39m\u001b[0m\n\u001b[2m    at skipOnboarding (C:\\INEESm\\e2e\\helpers\\auth.ts:37:16)\u001b[22m\n\u001b[2m    at C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts:8:5\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-01-20T15:09:36.231Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\INEESm\\test-results\\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\INEESm\\test-results\\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\INEESm\\test-results\\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\\error-context.md"
+                        },
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "C:\\INEESm\\test-results\\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\INEESm\\e2e\\tests\\p0\\feat-003-ai-persona.spec.ts",
+                        "column": 8,
+                        "line": 6
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "339a80a0062d31bceb62-b37b492dd729ef1272b9",
+              "file": "tests/p0/feat-003-ai-persona.spec.ts",
+              "line": 39,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-01-20T15:09:34.021Z",
+    "duration": 34121.244000000006,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

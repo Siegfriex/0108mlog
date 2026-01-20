@@ -1,0 +1,155 @@
+[
+  {
+    "ts": "2026-01-20T15:00:27.238Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:27.243Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:35.986Z",
+    "url": "https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?gsessionid=b59SyokiG7WyCb36_FH3KIUSwixGpzI7Vk14-C_WXS8&VER=8&database=projects%2Finess-mlog%2Fdatabases%2F(default)&RID=rpc&SID=bqwoaZWXfxg8c7alU6eLkQ&AID=0&CI=0&TYPE=xmlhttp&zx=exqrdyam0rfm&t=1",
+    "method": "GET",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:36.017Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:36.021Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:45.277Z",
+    "url": "https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?gsessionid=CA-rsj-tel0K104qXKru9Ai77azlFWAkQ-GTEn-Kfic&VER=8&database=projects%2Finess-mlog%2Fdatabases%2F(default)&RID=rpc&SID=b4iF2L07zn31lHTVCfDXSA&AID=0&CI=0&TYPE=xmlhttp&zx=5tibbl8otkk2&t=1",
+    "method": "GET",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:45.317Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:45.317Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:55.176Z",
+    "url": "https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?gsessionid=9SRRvWdxwO4aiHUV5YMlgiDnCleRlY29tfAuNCcz1Ns&VER=8&database=projects%2Finess-mlog%2Fdatabases%2F(default)&RID=rpc&SID=OWLzwkJhzHfAbMD-ypZZRw&AID=0&CI=0&TYPE=xmlhttp&zx=fp4rs9gpw6vb&t=1",
+    "method": "GET",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:55.193Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:55.196Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:09.458Z",
+    "url": "https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?gsessionid=3TJoqhOg4dIMe-C5M7lOzG5L9PC-DZCkUpan9N_ZgfE&VER=8&database=projects%2Finess-mlog%2Fdatabases%2F(default)&RID=rpc&SID=5HmDPHC9Ll8BqqgSDv4MWA&AID=0&CI=0&TYPE=xmlhttp&zx=4jc5f89cddob&t=1",
+    "method": "GET",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:09.473Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:09.474Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:24.989Z",
+    "url": "https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?gsessionid=U0kra0t_FVxA8frb5qYmY4SyE3V9zWnIgWCUyBlD2Lk&VER=8&database=projects%2Finess-mlog%2Fdatabases%2F(default)&RID=rpc&SID=KbsiyngUU8-nbKfyCia7DQ&AID=0&CI=0&TYPE=xmlhttp&zx=nvrwsbybpjlm&t=1",
+    "method": "GET",
+    "resourceType": "fetch",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:25.030Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:25.033Z",
+    "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+    "method": "GET",
+    "resourceType": "font",
+    "failure": {
+      "errorText": "net::ERR_ABORTED"
+    }
+  }
+]

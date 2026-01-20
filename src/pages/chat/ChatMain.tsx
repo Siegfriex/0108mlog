@@ -6,11 +6,12 @@
  * 기존 DayMode와 NightMode 컴포넌트 활용
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DayMode } from '../../components/chat/DayMode';
 import { NightMode } from '../../components/chat/NightMode';
 import { ConsentModal } from '../../components/consent/ConsentModal';
+import { ReminderBadge } from '../../components/ui';
 import { getConsentState } from '../../services/consent';
 import { TimelineEntry } from '../../../types';
 import { useAppContext } from '../../contexts';
@@ -32,10 +33,20 @@ interface ChatMainProps {}
  */
 export const ChatMain: React.FC<ChatMainProps> = () => {
   const navigate = useNavigate();
-  const { mode, persona, addTimelineEntry } = useAppContext();
+  const { mode, persona, addTimelineEntry, timelineData } = useAppContext();
   const { setIsImmersive } = useUIContext();
   const [showConsentModal, setShowConsentModal] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
+
+  // 마지막 체크인 시간 계산
+  const lastCheckinTime = useMemo(() => {
+    if (!timelineData || timelineData.length === 0) return null;
+    // 가장 최근 타임라인 엔트리의 날짜
+    const sorted = [...timelineData].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    return sorted[0]?.date || null;
+  }, [timelineData]);
   
   // 첫 방문 시 동의 모달 표시
   useEffect(() => {
@@ -106,7 +117,15 @@ export const ChatMain: React.FC<ChatMainProps> = () => {
         onConsent={handleConsentComplete}
         onSkip={handleConsentSkip}
       />
-      {mode === 'day' 
+      {/* 인앱 리마인드 배지 (FEAT-010) - Day Mode에서만 표시 */}
+      {mode === 'day' && (
+        <div className="absolute top-4 left-4 right-4 z-10">
+          <ReminderBadge
+            lastCheckinTime={lastCheckinTime}
+          />
+        </div>
+      )}
+      {mode === 'day'
         ? <DayMode 
             key="day-mode-singleton"
             persona={persona} 

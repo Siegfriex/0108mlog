@@ -1,0 +1,79 @@
+{
+  "runId": "20260120-234038-r2",
+  "baseUrl": "https://iness-mlog.web.app",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "startedAt": "2026-01-20T15:00:26.352Z",
+  "version": "1.0",
+  "screens": [
+    {
+      "id": "onboarding_welcome",
+      "name": "웰컴",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038-r2/onboarding/01-welcome.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:00:35.978Z"
+    },
+    {
+      "id": "onboarding_permissions",
+      "name": "권한 설정",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038-r2/onboarding/02-permissions.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:00:45.261Z"
+    },
+    {
+      "id": "onboarding_assessment_q1",
+      "name": "초기 평가 (Q1)",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038-r2/onboarding/03-assessment-q1.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:00:55.169Z"
+    },
+    {
+      "id": "onboarding_goals",
+      "name": "목표 설정",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038-r2/onboarding/04-goals.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:01:09.450Z"
+    },
+    {
+      "id": "onboarding_personalization",
+      "name": "개인화 설정",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038-r2/onboarding/05-personalization.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:01:24.981Z"
+    },
+    {
+      "id": "onboarding_tutorial",
+      "name": "튜토리얼 가이드",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038-r2/onboarding/06-tutorial.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:01:40.854Z"
+    }
+  ],
+  "finishedAt": "2026-01-20T15:01:40.961Z"
+}

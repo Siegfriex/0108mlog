@@ -11,6 +11,7 @@ export interface PoemCardProps {
   snippet: string;
   source: string;
   reason?: string;
+  onClick?: () => void;
 }
 
 /**
@@ -24,9 +25,23 @@ export const PoemCard: React.FC<PoemCardProps> = ({
   snippet,
   source,
   reason,
+  onClick,
 }) => {
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+    <div
+      className={`bg-white/80 backdrop-blur-sm rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${
+        onClick ? 'cursor-pointer' : ''
+      }`}
+      onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={onClick ? (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      } : undefined}
+    >
       <div className="flex items-start justify-between mb-2">
         <h3 className="text-lg font-semibold text-gray-800 flex-1">
           {title}

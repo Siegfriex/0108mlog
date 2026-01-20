@@ -16,8 +16,6 @@ import { OnboardingFlow } from './src/components/onboarding';
 import type { OnboardingData } from './src/components/onboarding';
 import { CoachPersona, TimelineEntry, EmotionType } from './types';
 import { ShieldAlert, Moon, Sun, Bot } from 'lucide-react';
-// 목업 데이터 import: 중앙화된 목업 데이터 사용
-import { INITIAL_TIMELINE } from './src/mock/data';
 // 모바일 최적화 훅
 import { useMobileOptimization } from './src/hooks/useMobileOptimization';
 
@@ -44,7 +42,8 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('chat');
   const [mode, setMode] = useState<'day' | 'night'>('day');
   const [persona, setPersona] = useState<CoachPersona>(DEFAULT_PERSONA);
-  const [timelineData, setTimelineData] = useState<TimelineEntry[]>(INITIAL_TIMELINE);
+  // Mock 데이터 제거 - 빈 배열로 시작 (이 파일은 레거시, 실제 앱은 AppContext 사용)
+  const [timelineData, setTimelineData] = useState<TimelineEntry[]>([]);
   const [showSafetyLayer, setShowSafetyLayer] = useState(false);
   const [showChatbot, setShowChatbot] = useState(false);
   const [isImmersive, setIsImmersive] = useState(false);

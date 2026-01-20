@@ -44,6 +44,9 @@ const SafetyMain = lazy(() => import('../pages/safety/SafetyMain').then(m => ({ 
 const CrisisSupport = lazy(() => import('../pages/safety/CrisisSupport').then(m => ({ default: m.CrisisSupport })));
 const CopingTools = lazy(() => import('../pages/safety/CopingTools').then(m => ({ default: m.CopingTools })));
 
+const GatePage = lazy(() => import('../pages/easterEgg/GatePage').then(m => ({ default: m.GatePage })));
+const LetterPage = lazy(() => import('../pages/easterEgg/LetterPage').then(m => ({ default: m.LetterPage })));
+
 const NotFound = lazy(() => import('../pages/NotFound').then(m => ({ default: m.NotFound })));
 
 /**
@@ -100,6 +103,10 @@ export const routes = (
     <Route path="safety" element={<LoadingWrapper><SafetyMain /></LoadingWrapper>} />
     <Route path="safety/crisis" element={<LoadingWrapper><CrisisSupport /></LoadingWrapper>} />
     <Route path="safety/tools" element={<LoadingWrapper><CopingTools /></LoadingWrapper>} />
+    
+    {/* 이스터에그 라우트 */}
+    <Route path="easter-egg/gate" element={<LoadingWrapper><GatePage /></LoadingWrapper>} />
+    <Route path="easter-egg/letter" element={<LoadingWrapper><LetterPage /></LoadingWrapper>} />
     
     {/* 404 페이지 */}
     <Route path="*" element={<LoadingWrapper><NotFound /></LoadingWrapper>} />

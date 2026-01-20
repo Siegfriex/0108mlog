@@ -1,0 +1,46 @@
+{
+  "runId": "20260120-234038-r8",
+  "baseUrl": "https://iness-mlog.web.app",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "startedAt": "2026-01-20T15:07:13.409Z",
+  "version": "1.0",
+  "screens": [
+    {
+      "id": "safety_main",
+      "name": "안전망 메인",
+      "tab": "safety",
+      "url": "https://iness-mlog.web.app/safety",
+      "file": "mobile-audit/20260120-234038-r8/safety/01-safety.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:07:22.670Z"
+    },
+    {
+      "id": "safety_crisis",
+      "name": "위기 지원",
+      "tab": "safety",
+      "url": "https://iness-mlog.web.app/safety/crisis",
+      "file": "mobile-audit/20260120-234038-r8/safety/02-crisis.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:07:31.381Z"
+    },
+    {
+      "id": "safety_tools",
+      "name": "대처 도구",
+      "tab": "safety",
+      "url": "https://iness-mlog.web.app/safety/tools",
+      "file": "mobile-audit/20260120-234038-r8/safety/03-tools.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:07:40.119Z"
+    }
+  ],
+  "finishedAt": "2026-01-20T15:07:40.234Z"
+}

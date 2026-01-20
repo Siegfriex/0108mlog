@@ -1,0 +1,158 @@
+[
+  {
+    "screenId": "onboarding_welcome",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 924
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 2,
+        "inputs": 0,
+        "links": 0
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "onboarding_permissions",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 924
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 5,
+        "inputs": 0,
+        "links": 0
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "onboarding_assessment_q1",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 924
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 8,
+        "inputs": 0,
+        "links": 0
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "onboarding_goals",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 924
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 7,
+        "inputs": 0,
+        "links": 0
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "onboarding_personalization",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 80
+      },
+      "document": {
+        "scrollHeight": 949
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 24,
+        "inputs": 0,
+        "links": 0
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "onboarding_tutorial",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 80
+      },
+      "document": {
+        "scrollHeight": 924
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 4,
+        "inputs": 0,
+        "links": 0
+      },
+      "targets": []
+    }
+  }
+]

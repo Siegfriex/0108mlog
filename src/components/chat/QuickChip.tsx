@@ -47,6 +47,7 @@ export const QuickChip: React.FC<QuickChipProps> = ({
   if (text && onClick) {
     return (
       <motion.button
+        data-testid="quick-chip"
         onClick={onClick}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}

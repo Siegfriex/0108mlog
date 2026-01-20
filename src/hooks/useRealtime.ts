@@ -348,3 +348,95 @@ export const useRealtime = <T extends DocumentData>(
 
   return { data, loading, error, refetch };
 };
+
+/**
+ * 실시간 콘텐츠 데이터 Hook
+ *
+ * @param userId 사용자 ID
+ * @returns 콘텐츠 데이터 및 로딩 상태
+ */
+export const useRealtimeContents = (
+  userId?: string
+): {
+  data: Array<{
+    id: string;
+    type: 'poem' | 'meditation' | 'quote' | 'insight';
+    title: string;
+    body: string;
+    author: string;
+    tags: string[];
+    createdAt: Date;
+    commentary?: string;
+    groundingLinks?: Array<{ title: string; url: string }>;
+  }>;
+  loading: boolean;
+  error: Error | null;
+} => {
+  const [data, setData] = useState<
+    Array<{
+      id: string;
+      type: 'poem' | 'meditation' | 'quote' | 'insight';
+      title: string;
+      body: string;
+      author: string;
+      tags: string[];
+      createdAt: Date;
+      commentary?: string;
+      groundingLinks?: Array<{ title: string; url: string }>;
+    }>
+  >([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+
+    const q = query(
+      collection(db, FIRESTORE_COLLECTIONS.CONTENTS),
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc'),
+      limit(50)
+    );
+
+    const unsubscribe: Unsubscribe = onSnapshot(
+      q,
+      (snapshot: QuerySnapshot<DocumentData>) => {
+        try {
+          const contents = snapshot.docs.map((doc) => {
+            const docData = doc.data();
+            return {
+              id: doc.id,
+              type: docData.type || 'insight',
+              title: docData.title || '',
+              body: docData.body || '',
+              author: docData.author || '',
+              tags: docData.tags || [],
+              createdAt: toDate(docData.createdAt),
+              commentary: docData.commentary,
+              groundingLinks: docData.groundingLinks,
+            };
+          });
+          setData(contents);
+          setLoading(false);
+          setError(null);
+        } catch (err) {
+          setError(err instanceof Error ? err : new Error('데이터 변환 오류'));
+          setLoading(false);
+        }
+      },
+      (err) => {
+        setError(err);
+        setLoading(false);
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }, [userId]);
+
+  return { data, loading, error };
+};

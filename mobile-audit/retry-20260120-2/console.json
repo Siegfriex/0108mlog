@@ -1,0 +1,782 @@
+[
+  {
+    "ts": "2026-01-20T14:56:38.377Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:56:38.384Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:56:47.100Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:56:47.101Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:56:56.228Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:56:56.230Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:57:06.103Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:57:06.105Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:57:20.790Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:57:20.791Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:57:36.103Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:57:36.105Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:57:52.354Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:57:52.360Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:58:01.103Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:58:01.105Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:58:10.135Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:58:10.136Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:58:19.867Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:58:19.876Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:58:30.047Z",
+    "type": "error",
+    "text": "[callFunction:generateDayModeResponse] internal",
+    "location": {
+      "url": "https://iness-mlog.web.app/assets/index-BehR418Q.js",
+      "lineNumber": 1130,
+      "columnNumber": 1951
+    }
+  },
+  {
+    "ts": "2026-01-20T14:58:30.065Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:58:30.067Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:58:59.994Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:59:00.466Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:59:28.557Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:59:28.562Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:59:37.296Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:59:37.299Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:59:46.037Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:59:46.041Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:59:54.955Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T14:59:54.967Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:03.723Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:03.726Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:12.446Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:12.448Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:21.187Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:21.191Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:30.062Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:30.064Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:38.838Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:38.844Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:47.563Z",
+    "type": "error",
+    "text": "[callFunction:generateHealingContent] internal",
+    "location": {
+      "url": "https://iness-mlog.web.app/assets/index-BehR418Q.js",
+      "lineNumber": 1130,
+      "columnNumber": 1951
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:47.589Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:47.595Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:48.296Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 500 ()",
+    "location": {
+      "url": "https://asia-northeast3-iness-mlog.cloudfunctions.net/searchPoems",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:48.296Z",
+    "type": "error",
+    "text": "[callFunction:searchPoems] Custom Search API 호출 실패",
+    "location": {
+      "url": "https://iness-mlog.web.app/assets/index-BehR418Q.js",
+      "lineNumber": 1130,
+      "columnNumber": 1951
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:56.375Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:00:56.379Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:05.144Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:05.146Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:13.885Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:13.886Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:22.639Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:22.641Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:31.422Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:31.426Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:31.722Z",
+    "type": "error",
+    "text": "[getUserSettings] User must be authenticated to save data",
+    "location": {
+      "url": "https://iness-mlog.web.app/assets/index-BehR418Q.js",
+      "lineNumber": 1130,
+      "columnNumber": 1951
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:31.722Z",
+    "type": "error",
+    "text": "설정 불러오기 오류: Error: User must be authenticated to save data\n    at Qe (https://iness-mlog.web.app/assets/index-BehR418Q.js:1134:4156)\n    at DS (https://iness-mlog.web.app/assets/index-BehR418Q.js:1134:7386)\n    at https://iness-mlog.web.app/assets/Settings-BOvdyZuP.js:1:628\n    at https://iness-mlog.web.app/assets/Settings-BOvdyZuP.js:1:979\n    at Wl (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:92665)\n    at $n (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:108839)\n    at Pd (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:108533)\n    at Lt (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:107777)\n    at Pd (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:108360)\n    at Lt (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:107777)",
+    "location": {
+      "url": "https://iness-mlog.web.app/assets/Settings-BOvdyZuP.js",
+      "lineNumber": 0,
+      "columnNumber": 939
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:40.187Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:40.192Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:49.013Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:49.020Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:49.335Z",
+    "type": "error",
+    "text": "[getUserSettings] User must be authenticated to save data",
+    "location": {
+      "url": "https://iness-mlog.web.app/assets/index-BehR418Q.js",
+      "lineNumber": 1130,
+      "columnNumber": 1951
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:49.335Z",
+    "type": "error",
+    "text": "설정 불러오기 오류: Error: User must be authenticated to save data\n    at Qe (https://iness-mlog.web.app/assets/index-BehR418Q.js:1134:4156)\n    at DS (https://iness-mlog.web.app/assets/index-BehR418Q.js:1134:7386)\n    at https://iness-mlog.web.app/assets/DayNightSettings-ttWKRobB.js:1:450\n    at https://iness-mlog.web.app/assets/DayNightSettings-ttWKRobB.js:1:629\n    at Wl (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:92665)\n    at $n (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:108839)\n    at Pd (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:108533)\n    at Lt (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:107777)\n    at Pd (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:108360)\n    at Lt (https://iness-mlog.web.app/assets/index-BehR418Q.js:25:107777)",
+    "location": {
+      "url": "https://iness-mlog.web.app/assets/DayNightSettings-ttWKRobB.js",
+      "lineNumber": 0,
+      "columnNumber": 589
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:57.781Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:01:57.783Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:02:06.594Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:02:06.600Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:02:15.362Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:02:15.368Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:02:24.131Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:02:24.136Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:02:32.924Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:02:32.929Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:02:41.753Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-VF.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "ts": "2026-01-20T15:02:41.756Z",
+    "type": "error",
+    "text": "Failed to load resource: the server responded with a status of 404 ()",
+    "location": {
+      "url": "https://cdn.jsdelivr.net/gh/nicefont/goround/build/woff2/ChironGoRoundTC-Regular.woff2",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  }
+]

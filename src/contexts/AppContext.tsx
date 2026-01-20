@@ -8,10 +8,12 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo, ReactNode } from 'react';
 import { CoachPersona, TimelineEntry, EmotionType } from '../../types';
 import { DEFAULT_PERSONA } from '../../constants';
-import { INITIAL_TIMELINE } from '../mock/data';
 import { resolveMode, setModeOverride, getModeOverride, Mode, getInitialMode } from '../services/modeResolver';
 import { TIME_CONSTANTS } from '../../constants';
 import { ensureAnonymousAuth } from '../services/auth';
+import { useRealtimeTimeline } from '../hooks/useRealtime';
+import { useAuthUser } from '../hooks/useAuthUser';
+import { upsertTimelineEntry, deleteTimelineEntryById } from '../services/firestore';
 
 /**
  * AppContext 값 인터페이스
@@ -52,9 +54,32 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   // 초기값: Firestore 접근 없이 localStorage + 시간 기반으로 설정
   const [mode, setModeState] = useState<Mode>(getInitialMode());
   const [persona, setPersona] = useState<CoachPersona>(DEFAULT_PERSONA);
-  const [timelineData, setTimelineData] = useState<TimelineEntry[]>(INITIAL_TIMELINE);
   const [currentEmotion, setCurrentEmotion] = useState<EmotionType | null>(null);
   const [isSettingsSynced, setIsSettingsSynced] = useState(false);
+
+  // Auth 상태 구독
+  const { userId } = useAuthUser();
+
+  // Firestore 실시간 타임라인 데이터 (userId가 있을 때만 구독)
+  const { data: firestoreTimeline, loading: timelineLoading } = useRealtimeTimeline({
+    userId: userId ?? undefined,
+    orderByField: 'date',
+    orderDirection: 'desc',
+    limitCount: 50,
+  });
+
+  // 로컬 optimistic 업데이트용 상태 (Firestore 데이터와 병합)
+  const [localTimelineUpdates, setLocalTimelineUpdates] = useState<TimelineEntry[]>([]);
+
+  // 실제 표시될 타임라인: Firestore + 로컬 업데이트 병합
+  const timelineData = useMemo(() => {
+    // Firestore 데이터가 로딩 중이거나 비어있으면 로컬 업데이트만 표시
+    if (!firestoreTimeline || firestoreTimeline.length === 0) {
+      return localTimelineUpdates;
+    }
+    // Firestore 데이터가 있으면 로컬 업데이트 제거 (이미 동기화됨)
+    return firestoreTimeline;
+  }, [firestoreTimeline, localTimelineUpdates]);
 
   // Auth 완료 후 Firestore 동기화
   useEffect(() => {
@@ -117,17 +142,45 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   }, []);
 
   /**
-   * 타임라인 엔트리 추가
+   * 타임라인 엔트리 추가 (Firestore 저장 + Optimistic UI)
    */
-  const addTimelineEntry = useCallback((entry: TimelineEntry) => {
-    setTimelineData(prev => [entry, ...prev]);
+  const addTimelineEntry = useCallback(async (entry: TimelineEntry) => {
+    // Optimistic 업데이트: 즉시 UI에 반영
+    setLocalTimelineUpdates(prev => [entry, ...prev]);
+
+    // Firestore에 저장 (백그라운드)
+    try {
+      await upsertTimelineEntry({
+        date: entry.date,
+        type: entry.type,
+        emotion: entry.emotion,
+        intensity: entry.intensity,
+        summary: entry.summary,
+        detail: entry.detail,
+        nuanceTags: entry.nuanceTags,
+        conversationId: entry.id, // entry.id를 conversationId로 사용
+      });
+      // 성공 시 로컬 업데이트 제거 (Firestore에서 실시간으로 반영됨)
+      setLocalTimelineUpdates(prev => prev.filter(e => e.id !== entry.id));
+    } catch (error) {
+      console.error('Failed to save timeline entry:', error);
+      // 실패 시 로컬 업데이트 유지 (사용자에게 보여줌)
+    }
   }, []);
 
   /**
-   * 타임라인 엔트리 삭제
+   * 타임라인 엔트리 삭제 (Firestore 삭제)
    */
-  const deleteTimelineEntry = useCallback((id: string) => {
-    setTimelineData(prev => prev.filter(entry => entry.id !== id));
+  const deleteTimelineEntry = useCallback(async (id: string) => {
+    // Optimistic 업데이트: 즉시 UI에서 제거
+    setLocalTimelineUpdates(prev => prev.filter(entry => entry.id !== id));
+
+    // Firestore에서 삭제
+    try {
+      await deleteTimelineEntryById(id);
+    } catch (error) {
+      console.error('Failed to delete timeline entry:', error);
+    }
   }, []);
 
   /**

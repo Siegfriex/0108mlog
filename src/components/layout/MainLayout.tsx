@@ -8,7 +8,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, Moon, Sun, Bot } from 'lucide-react';
+import { ShieldAlert, Moon, Sun, Bot, Sparkles } from 'lucide-react';
 import { TabBar, NoiseOverlay, SkipLink } from '../ui';
 import { AIChatbot } from '../../../components/AIChatbot';
 import { useAppContext } from '../../contexts';
@@ -264,6 +264,48 @@ export const MainLayout: React.FC<MainLayoutProps> = () => {
             <ShieldAlert size={24} strokeWidth={2.5} />
           </motion.button>
         )
+      )}
+
+      {/* 이스터에그 플로팅 뱃지 - 나이트모드 전용 (리디자인: 신비로운 구슬 형태) */}
+      {mode === 'night' && 
+       location.pathname !== '/easter-egg/gate' && 
+       location.pathname !== '/easter-egg/letter' && (
+        <motion.button
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ 
+            scale: 1, 
+            opacity: 1,
+            boxShadow: [
+              "0 0 15px rgba(168, 85, 247, 0.2)",
+              "0 0 25px rgba(168, 85, 247, 0.5)",
+              "0 0 15px rgba(168, 85, 247, 0.2)"
+            ]
+          }}
+          transition={{
+            scale: { delay: 0.5, duration: 0.5 },
+            boxShadow: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+          }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => navigate('/easter-egg/gate')}
+          className={`
+            fixed z-safety rounded-full flex items-center justify-center
+            ${isMobile ? 'bottom-[140px] right-4 w-12 h-12' : 'bottom-[180px] right-6 w-14 h-14'}
+            bg-[#1a1b2e]/80 backdrop-blur-xl border border-white/10
+            overflow-hidden group
+          `}
+          aria-label="특별한 공간"
+        >
+          {/* 내부 그라데이션 오브젝트 */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/20 via-transparent to-pink-500/20 opacity-80 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+          
+          <Sparkles 
+            size={isMobile ? 20 : 24} 
+            className="text-purple-200 relative z-10 drop-shadow-md group-hover:text-white transition-colors" 
+            strokeWidth={1.5}
+          />
+        </motion.button>
       )}
 
       {/* Overlays */}

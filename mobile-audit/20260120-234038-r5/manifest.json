@@ -1,0 +1,57 @@
+{
+  "runId": "20260120-234038-r5",
+  "baseUrl": "https://iness-mlog.web.app",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "startedAt": "2026-01-20T15:04:23.683Z",
+  "version": "1.0",
+  "screens": [
+    {
+      "id": "reports_weekly",
+      "name": "주간 리포트",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/weekly",
+      "file": "mobile-audit/20260120-234038-r5/reports/01-weekly.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:04:32.958Z"
+    },
+    {
+      "id": "reports_monthly",
+      "name": "월간 리포트",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/monthly",
+      "file": "mobile-audit/20260120-234038-r5/reports/02-monthly.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:04:41.690Z"
+    },
+    {
+      "id": "reports_monthly_retro",
+      "name": "월간 회고록",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/monthly-retrospective",
+      "file": "mobile-audit/20260120-234038-r5/reports/03-monthly-retrospective.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:04:50.448Z"
+    },
+    {
+      "id": "reports_monitor",
+      "name": "실시간 모니터",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/monitor",
+      "file": "mobile-audit/20260120-234038-r5/reports/04-monitor.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:04:59.195Z"
+    }
+  ],
+  "finishedAt": "2026-01-20T15:04:59.327Z"
+}

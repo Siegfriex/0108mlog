@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Star, Sparkles, CheckCircle, ArrowRight, Smile, Meh, Frown, CloudRain, Flame } from 'lucide-react';
+import { Star, Sparkles, CheckCircle, ArrowRight, Smile, Meh, Frown, CloudRain, Flame, AlertTriangle, TrendingUp } from 'lucide-react';
 // UI 컴포넌트 import 경로: 새로운 구조로 변경
-import { GlassCard, Button, CelestialBackground } from '../src/components/ui';
+import { GlassCard, Button, CelestialBackground, XPFeedback } from '../src/components/ui';
 import { VoicePlayer } from './VoicePlayer';
 import { generateNightModeLetter } from '../services/geminiService';
 import { CoachPersona, TimelineEntry, EmotionType } from '../types';
-import { saveDiaryEntry } from '../src/services/firestore';
+import { saveDiaryEntry, addXP } from '../src/services/firestore';
+import { detectCrisis } from '../src/services/crisisDetection';
+import { XP_REWARDS } from '../src/types/firestore';
 
 interface NightModeProps {
   persona: CoachPersona;
   onSave: (entry: TimelineEntry) => void;
   onEmotionChange?: (emotion: EmotionType | null) => void;
+  onCrisisDetected?: () => void;
 }
 
 // 밤 모드용 감정 설정 (흰색/밝은 스타일)
@@ -23,7 +26,7 @@ const NIGHT_EMOTIONS = [
     { id: EmotionType.ANGER, label: '분노', icon: <Flame size={40} strokeWidth={1.5} />, color: 'anger' },
 ];
 
-export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotionChange }) => {
+export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotionChange, onCrisisDetected }) => {
   const [step, setStep] = useState<'emotion' | 'diary' | 'letter'>('emotion');
   const [selectedEmotion, setSelectedEmotion] = useState<EmotionType | null>(null);
   const [intensity, setIntensity] = useState<number>(5);
@@ -31,6 +34,12 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotion
   const [letter, setLetter] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+  const [showCrisisWarning, setShowCrisisWarning] = useState(false);
+  const [xpFeedback, setXPFeedback] = useState<{
+    xpGained: number;
+    leveledUp: boolean;
+    newLevel: number;
+  } | null>(null);
 
   const handleNextStep = () => {
       if (step === 'emotion' && selectedEmotion) {
@@ -41,13 +50,39 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotion
   const handleAnalyze = async () => {
     if (!diary.trim()) return;
     setIsAnalyzing(true);
-    
+
+    // 위기 감지 (키워드 + Gemini 2차 검증)
+    const emotionToSave = selectedEmotion || EmotionType.PEACE;
+    try {
+      const crisisResult = await detectCrisis({
+        text: diary,
+        emotion: emotionToSave,
+        intensity,
+      });
+
+      if (crisisResult.isCrisis) {
+        setIsAnalyzing(false);
+
+        if (crisisResult.confidence === 'high') {
+          // HIGH 신뢰도 → Safety 화면으로 자동 이동
+          onCrisisDetected?.();
+          return;
+        } else if (crisisResult.confidence === 'medium') {
+          // MEDIUM 신뢰도 → 경고 표시 후 계속 진행 가능
+          setShowCrisisWarning(true);
+          setTimeout(() => setShowCrisisWarning(false), 5000);
+        }
+      }
+    } catch (error) {
+      console.error('위기 감지 오류:', error);
+      // 위기 감지 실패해도 진행
+    }
+
     const result = await generateNightModeLetter(diary, persona);
     setLetter(result);
     setStep('letter');
     setIsAnalyzing(false);
 
-    const emotionToSave = selectedEmotion || EmotionType.PEACE;
     const entry: TimelineEntry = {
         id: Date.now().toString(),
         date: new Date(),
@@ -66,13 +101,25 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotion
         intensity,
         letterContent: result,
       });
+
+      // XP 부여 (게이미피케이션)
+      try {
+        const xpResult = await addXP(XP_REWARDS.DIARY, 'diary');
+        setXPFeedback({
+          xpGained: XP_REWARDS.DIARY,
+          leveledUp: xpResult.leveledUp,
+          newLevel: xpResult.newLevel,
+        });
+      } catch (xpError) {
+        console.warn('XP 부여 실패:', xpError);
+      }
     } catch (error) {
       console.error('일기 저장 오류:', error);
       // 에러가 발생해도 로컬 상태는 저장
     }
 
     onSave(entry);
-    
+
     setShowSaveConfirm(true);
     setTimeout(() => setShowSaveConfirm(false), 3000);
   };
@@ -234,7 +281,7 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotion
 
       <AnimatePresence>
         {showSaveConfirm && (
-             <motion.div 
+             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
@@ -244,7 +291,39 @@ export const NightMode: React.FC<NightModeProps> = ({ persona, onSave, onEmotion
                  <span className="font-bold text-sm">저장되었습니다</span>
              </motion.div>
         )}
+        {showCrisisWarning && (
+             <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                className="fixed top-24 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-2 px-6 py-4 bg-amber-500/90 backdrop-blur-xl text-white rounded-2xl shadow-2xl border border-white/20 max-w-sm"
+             >
+                 <div className="flex items-center gap-2">
+                   <AlertTriangle size={20} />
+                   <span className="font-bold text-sm">당신의 마음이 걱정됩니다</span>
+                 </div>
+                 <p className="text-xs text-center opacity-90">
+                   힘든 시간을 보내고 계시다면, 안전망에서 전문적인 도움을 받아보세요.
+                 </p>
+                 <button
+                   onClick={() => onCrisisDetected?.()}
+                   className="mt-2 px-4 py-2 bg-white/20 rounded-full text-sm font-bold hover:bg-white/30 transition-colors"
+                 >
+                   안전망 바로가기
+                 </button>
+             </motion.div>
+        )}
       </AnimatePresence>
+
+      {/* XP 획득 피드백 */}
+      {xpFeedback && (
+        <XPFeedback
+          xpGained={xpFeedback.xpGained}
+          leveledUp={xpFeedback.leveledUp}
+          newLevel={xpFeedback.newLevel}
+          onComplete={() => setXPFeedback(null)}
+        />
+      )}
     </div>
   );
 };

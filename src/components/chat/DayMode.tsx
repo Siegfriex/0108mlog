@@ -1,7 +1,7 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Sparkles, Smile, Frown, Meh, CloudRain, Flame, Send, Heart, MessageCircle } from 'lucide-react';
-import { GlassCard, Button, Portal } from '../ui';
+import { GlassCard, Button, Portal, XPFeedback } from '../ui';
 import { EmotionSelectModal } from '../ui/EmotionSelectModal';
 import { AIThinkingAnimation } from '../ui/AIThinkingAnimation';
 import { SmartContextTag } from '../checkin';
@@ -60,23 +60,36 @@ interface DayModeProps {
  * 상태 머신 기반 리팩토링
  * P2 최적화: React.memo로 불필요한 리렌더 방지
  */
-const DayModeComponent: React.FC<DayModeProps> = ({ 
-  persona, 
-  onSave, 
-  setImmersive, 
-  onNavigateToReports, 
-  onOpenSafety, 
-  onCrisisDetected, 
-  onEmotionChange 
+const DayModeComponent: React.FC<DayModeProps> = ({
+  persona,
+  onSave,
+  setImmersive,
+  onNavigateToReports,
+  onOpenSafety,
+  onCrisisDetected,
+  onEmotionChange
 }) => {
   const { triggerHaptic } = useHaptics();
-  
+
+  // XP 피드백 상태
+  const [xpFeedback, setXPFeedback] = useState<{
+    xpGained: number;
+    leveledUp: boolean;
+    newLevel: number;
+  } | null>(null);
+
+  // XP 획득 콜백
+  const handleXPGained = useCallback((xpGained: number, leveledUp: boolean, newLevel: number) => {
+    setXPFeedback({ xpGained, leveledUp, newLevel });
+  }, []);
+
   // 상태 머신 훅 사용
   const machine = useDayCheckinMachine({
     persona,
     onCrisisDetected,
     onComplete: onSave,
     onEmotionChange,
+    onXPGained: handleXPGained,
   });
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -218,6 +231,7 @@ const DayModeComponent: React.FC<DayModeProps> = ({
         <AnimatePresence>
           {showChat && (
             <motion.div
+              data-testid="day-mode"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
@@ -276,6 +290,7 @@ const DayModeComponent: React.FC<DayModeProps> = ({
                   className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <motion.div
+                    data-testid={msg.role === 'user' ? 'user-message' : 'ai-message'}
                     className={`
                       max-w-chat-bubble sm:max-w-chat-bubble-sm rounded-2xl px-5 py-4 shadow-lg
                       ${msg.role === 'user'
@@ -483,6 +498,16 @@ const DayModeComponent: React.FC<DayModeProps> = ({
           )}
         </AnimatePresence>
       </Portal>
+
+      {/* XP 획득 피드백 */}
+      {xpFeedback && (
+        <XPFeedback
+          xpGained={xpFeedback.xpGained}
+          leveledUp={xpFeedback.leveledUp}
+          newLevel={xpFeedback.newLevel}
+          onComplete={() => setXPFeedback(null)}
+        />
+      )}
     </>
   );
 };

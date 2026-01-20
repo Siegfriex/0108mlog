@@ -30,6 +30,11 @@ import {
   FirestoreDiaryData,
   FirestoreMicroActionLog,
   FirestoreUserProfile,
+  FirestoreTimelineEntry,
+  FirestoreContentData,
+  FirestoreGamificationData,
+  XP_REWARDS,
+  LEVEL_THRESHOLDS,
 } from '../types/firestore';
 import { EmotionType, CoachPersona } from '../../types';
 import { canSaveConversation } from './consent';
@@ -625,7 +630,19 @@ export async function deleteConversation(conversationId: string): Promise<void> 
     messagesSnapshot.forEach((messageDoc) => {
       batch.delete(messageDoc.ref);
     });
-    
+
+    // 관련 타임라인 엔트리도 삭제
+    const timelineRef = collection(db, FIRESTORE_COLLECTIONS.TIMELINE);
+    const timelineQuery = query(
+      timelineRef,
+      where('conversationId', '==', conversationId)
+    );
+    const timelineSnapshot = await getDocs(timelineQuery);
+
+    timelineSnapshot.forEach((timelineDoc) => {
+      batch.delete(timelineDoc.ref);
+    });
+
     await batch.commit();
   } catch (error) {
     logError('deleteConversation', error);
@@ -752,86 +769,6 @@ export async function updateUserPersona(persona: CoachPersona): Promise<void> {
 }
 
 /**
- * 사용자 데이터 내보내기 (JSON)
- * 
- * @returns {Promise<Blob>} JSON 데이터 Blob
- */
-export async function exportUserData(): Promise<Blob> {
-  try {
-    const userId = getCurrentUserId();
-    
-    // 모든 사용자 데이터 수집
-    const data: {
-      conversations: FirestoreConversation[];
-      emotions: FirestoreEmotionData[];
-      diaries: FirestoreDiaryData[];
-      profile: FirestoreUserProfile | null;
-    } = {
-      conversations: [],
-      emotions: [],
-      diaries: [],
-      profile: null,
-    };
-    
-    // 대화 데이터
-    const conversationsRef = collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS);
-    const conversationsQuery = query(
-      conversationsRef,
-      where('userId', '==', userId),
-      orderBy('createdAt', 'desc')
-    );
-    const conversationsSnapshot = await getDocs(conversationsQuery);
-    conversationsSnapshot.forEach((doc) => {
-      data.conversations.push({
-        id: doc.id,
-        ...doc.data(),
-      } as FirestoreConversation);
-    });
-    
-    // 감정 데이터
-    const emotionsRef = collection(db, FIRESTORE_COLLECTIONS.EMOTIONS);
-    const emotionsQuery = query(
-      emotionsRef,
-      where('userId', '==', userId),
-      orderBy('timestamp', 'desc')
-    );
-    const emotionsSnapshot = await getDocs(emotionsQuery);
-    emotionsSnapshot.forEach((doc) => {
-      data.emotions.push(doc.data() as FirestoreEmotionData);
-    });
-    
-    // 일기 데이터
-    const diariesRef = collection(db, FIRESTORE_COLLECTIONS.DIARIES);
-    const diariesQuery = query(
-      diariesRef,
-      where('userId', '==', userId),
-      orderBy('createdAt', 'desc')
-    );
-    const diariesSnapshot = await getDocs(diariesQuery);
-    diariesSnapshot.forEach((doc) => {
-      data.diaries.push(doc.data() as FirestoreDiaryData);
-    });
-    
-    // 프로필 데이터
-    const profileRef = doc(db, FIRESTORE_COLLECTIONS.USER_PROFILES, userId);
-    const profileSnap = await getDoc(profileRef);
-    if (profileSnap.exists()) {
-      data.profile = {
-        userId,
-        ...profileSnap.data(),
-      } as FirestoreUserProfile;
-    }
-    
-    // JSON으로 변환하여 Blob 생성
-    const jsonString = JSON.stringify(data, null, 2);
-    return new Blob([jsonString], { type: 'application/json' });
-  } catch (error) {
-    logError('exportUserData', error);
-    throw error;
-  }
-}
-
-/**
  * 모든 사용자 데이터 삭제
  * 
  * @returns {Promise<void>}
@@ -888,4 +825,619 @@ export async function deleteAllUserData(): Promise<void> {
     logError('deleteAllUserData', error);
     throw error;
   }
+}
+
+/**
+ * 타임라인 엔트리 생성/업데이트
+ *
+ * @param entry 타임라인 엔트리 데이터
+ * @param entryId 기존 엔트리 ID (업데이트 시)
+ * @returns {Promise<string>} 생성/업데이트된 엔트리 ID
+ */
+export async function upsertTimelineEntry(
+  entry: {
+    date: Date;
+    type: 'day' | 'night';
+    emotion: EmotionType;
+    intensity?: number;
+    summary?: string;
+    detail?: string;
+    nuanceTags?: string[];
+    conversationId?: string;
+    isRedacted?: boolean;
+  },
+  entryId?: string
+): Promise<string> {
+  try {
+    const userId = getCurrentUserId();
+
+    const timelineData: Omit<FirestoreTimelineEntry, 'id'> = {
+      userId,
+      date: Timestamp.fromDate(entry.date),
+      type: entry.type,
+      emotion: entry.emotion,
+      intensity: entry.intensity ?? 5,
+      summary: entry.summary ?? '',
+      detail: entry.detail ?? '',
+      nuanceTags: entry.nuanceTags ?? [],
+      ...(entry.conversationId && { conversationId: entry.conversationId }),
+    };
+
+    if (entryId) {
+      // 기존 엔트리 업데이트
+      const entryRef = doc(db, FIRESTORE_COLLECTIONS.TIMELINE, entryId);
+      await setDoc(entryRef, timelineData, { merge: true });
+      return entryId;
+    } else {
+      // 새 엔트리 생성
+      const timelineRef = collection(db, FIRESTORE_COLLECTIONS.TIMELINE);
+      const docRef = await addDoc(timelineRef, timelineData);
+      return docRef.id;
+    }
+  } catch (error) {
+    logError('upsertTimelineEntry', error);
+    throw error;
+  }
+}
+
+/**
+ * 타임라인 엔트리 삭제
+ *
+ * @param entryId 삭제할 타임라인 엔트리 ID
+ * @returns {Promise<void>}
+ */
+export async function deleteTimelineEntryById(entryId: string): Promise<void> {
+  try {
+    const userId = getCurrentUserId();
+    const entryRef = doc(db, FIRESTORE_COLLECTIONS.TIMELINE, entryId);
+
+    // 소유권 확인
+    const entrySnap = await getDoc(entryRef);
+    if (!entrySnap.exists()) {
+      return; // 이미 삭제됨
+    }
+
+    const entryData = entrySnap.data();
+    if (entryData.userId !== userId) {
+      throw new Error('Unauthorized: You can only delete your own timeline entries');
+    }
+
+    await deleteDoc(entryRef);
+  } catch (error) {
+    logError('deleteTimelineEntryById', error);
+    throw error;
+  }
+}
+
+/**
+ * conversationId로 타임라인 엔트리 찾기 및 삭제
+ *
+ * @param conversationId 대화 ID
+ * @returns {Promise<void>}
+ */
+export async function deleteTimelineEntryByConversationId(conversationId: string): Promise<void> {
+  try {
+    const userId = getCurrentUserId();
+
+    const timelineRef = collection(db, FIRESTORE_COLLECTIONS.TIMELINE);
+    const q = query(
+      timelineRef,
+      where('userId', '==', userId),
+      where('conversationId', '==', conversationId)
+    );
+
+    const snapshot = await getDocs(q);
+    const batch = writeBatch(db);
+
+    snapshot.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    if (!snapshot.empty) {
+      await batch.commit();
+    }
+  } catch (error) {
+    logError('deleteTimelineEntryByConversationId', error);
+    // 타임라인 삭제 실패는 무시 (대화 삭제는 성공해야 함)
+  }
+}
+
+/**
+ * 콘텐츠 Firestore 저장
+ *
+ * @param content 콘텐츠 데이터
+ * @returns {Promise<string>} 생성된 콘텐츠 ID
+ */
+export async function saveContentToFirestore(
+  content: {
+    type: 'poem' | 'meditation' | 'quote' | 'insight';
+    title: string;
+    body: string;
+    author: string;
+    tags: string[];
+    groundingLinks?: Array<{ title: string; url: string }>;
+  }
+): Promise<string> {
+  try {
+    const userId = getCurrentUserId();
+
+    const contentData: Omit<FirestoreContentData, 'id'> = {
+      userId,
+      type: content.type,
+      title: content.title,
+      body: content.body,
+      author: content.author,
+      tags: content.tags,
+      createdAt: serverTimestamp() as Timestamp,
+      ...(content.groundingLinks && { groundingLinks: content.groundingLinks }),
+    };
+
+    const contentsRef = collection(db, FIRESTORE_COLLECTIONS.CONTENTS);
+    const docRef = await addDoc(contentsRef, contentData);
+    return docRef.id;
+  } catch (error) {
+    logError('saveContentToFirestore', error);
+    throw error;
+  }
+}
+
+/**
+ * 사용자 콘텐츠 조회
+ *
+ * @param limitCount 조회할 최대 개수
+ * @returns {Promise<FirestoreContentData[]>}
+ */
+export async function getUserContents(limitCount: number = 50): Promise<FirestoreContentData[]> {
+  try {
+    const userId = getCurrentUserId();
+
+    const contentsRef = collection(db, FIRESTORE_COLLECTIONS.CONTENTS);
+    const q = query(
+      contentsRef,
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc'),
+      limit(limitCount)
+    );
+
+    const snapshot = await getDocs(q);
+    const contents: FirestoreContentData[] = [];
+
+    snapshot.forEach((doc) => {
+      contents.push({
+        id: doc.id,
+        ...doc.data(),
+      } as FirestoreContentData);
+    });
+
+    return contents;
+  } catch (error) {
+    logError('getUserContents', error);
+    return [];
+  }
+}
+
+/**
+ * 사용자 데이터 내보내기 (Blob 버전)
+ *
+ * @returns {Promise<Blob>} JSON 데이터 Blob
+ */
+export async function exportUserData(): Promise<Blob> {
+  try {
+    const userId = getCurrentUserId();
+
+    // 모든 사용자 데이터 수집
+    const data: {
+      conversations: FirestoreConversation[];
+      emotions: FirestoreEmotionData[];
+      diaries: FirestoreDiaryData[];
+      profile: FirestoreUserProfile | null;
+    } = {
+      conversations: [],
+      emotions: [],
+      diaries: [],
+      profile: null,
+    };
+
+    // 대화 데이터
+    const conversationsRef = collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS);
+    const conversationsQuery = query(
+      conversationsRef,
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc')
+    );
+    const conversationsSnapshot = await getDocs(conversationsQuery);
+    conversationsSnapshot.forEach((doc) => {
+      data.conversations.push({
+        id: doc.id,
+        ...doc.data(),
+      } as FirestoreConversation);
+    });
+
+    // 감정 데이터
+    const emotionsRef = collection(db, FIRESTORE_COLLECTIONS.EMOTIONS);
+    const emotionsQuery = query(
+      emotionsRef,
+      where('userId', '==', userId),
+      orderBy('timestamp', 'desc')
+    );
+    const emotionsSnapshot = await getDocs(emotionsQuery);
+    emotionsSnapshot.forEach((doc) => {
+      data.emotions.push(doc.data() as FirestoreEmotionData);
+    });
+
+    // 일기 데이터
+    const diariesRef = collection(db, FIRESTORE_COLLECTIONS.DIARIES);
+    const diariesQuery = query(
+      diariesRef,
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc')
+    );
+    const diariesSnapshot = await getDocs(diariesQuery);
+    diariesSnapshot.forEach((doc) => {
+      data.diaries.push(doc.data() as FirestoreDiaryData);
+    });
+
+    // 프로필 데이터
+    const profileRef = doc(db, FIRESTORE_COLLECTIONS.USER_PROFILES, userId);
+    const profileSnap = await getDoc(profileRef);
+    if (profileSnap.exists()) {
+      data.profile = {
+        userId,
+        ...profileSnap.data(),
+      } as FirestoreUserProfile;
+    }
+
+    // JSON으로 변환하여 Blob 생성
+    const jsonString = JSON.stringify(data, null, 2);
+    return new Blob([jsonString], { type: 'application/json' });
+  } catch (error) {
+    logError('exportUserData', error);
+    throw error;
+  }
+}
+
+/**
+ * 사용자 전체 데이터 내보내기 (GDPR 준수)
+ *
+ * 사용자의 모든 데이터를 JSON 형식으로 수집하여 반환
+ * (타임라인, 콘텐츠, 액션 로그 포함)
+ *
+ * @returns {Promise<object>} 사용자 데이터 객체
+ */
+export async function exportAllUserData(): Promise<{
+  exportedAt: string;
+  profile: object | null;
+  conversations: object[];
+  emotions: object[];
+  diaries: object[];
+  timeline: object[];
+  contents: object[];
+  actionLogs: object[];
+}> {
+  try {
+    const userId = getCurrentUserId();
+    const exportData: {
+      exportedAt: string;
+      profile: object | null;
+      conversations: object[];
+      emotions: object[];
+      diaries: object[];
+      timeline: object[];
+      contents: object[];
+      actionLogs: object[];
+    } = {
+      exportedAt: new Date().toISOString(),
+      profile: null,
+      conversations: [],
+      emotions: [],
+      diaries: [],
+      timeline: [],
+      contents: [],
+      actionLogs: [],
+    };
+
+    // 프로필 데이터
+    try {
+      const profileRef = doc(db, FIRESTORE_COLLECTIONS.USER_PROFILES, userId);
+      const profileSnap = await getDoc(profileRef);
+      if (profileSnap.exists()) {
+        exportData.profile = { id: profileSnap.id, ...profileSnap.data() };
+      }
+    } catch (err) {
+      console.warn('프로필 내보내기 실패:', err);
+    }
+
+    // 대화 데이터
+    try {
+      const conversationsRef = collection(db, FIRESTORE_COLLECTIONS.CONVERSATIONS);
+      const conversationsQuery = query(
+        conversationsRef,
+        where('userId', '==', userId),
+        orderBy('createdAt', 'desc')
+      );
+      const conversationsSnapshot = await getDocs(conversationsQuery);
+      conversationsSnapshot.forEach((doc) => {
+        exportData.conversations.push({ id: doc.id, ...doc.data() });
+      });
+    } catch (err) {
+      console.warn('대화 내보내기 실패:', err);
+    }
+
+    // 감정 데이터
+    try {
+      const emotionsRef = collection(db, FIRESTORE_COLLECTIONS.EMOTIONS);
+      const emotionsQuery = query(
+        emotionsRef,
+        where('userId', '==', userId),
+        orderBy('timestamp', 'desc')
+      );
+      const emotionsSnapshot = await getDocs(emotionsQuery);
+      emotionsSnapshot.forEach((doc) => {
+        exportData.emotions.push({ id: doc.id, ...doc.data() });
+      });
+    } catch (err) {
+      console.warn('감정 데이터 내보내기 실패:', err);
+    }
+
+    // 일기 데이터
+    try {
+      const diariesRef = collection(db, FIRESTORE_COLLECTIONS.DIARIES);
+      const diariesQuery = query(
+        diariesRef,
+        where('userId', '==', userId),
+        orderBy('createdAt', 'desc')
+      );
+      const diariesSnapshot = await getDocs(diariesQuery);
+      diariesSnapshot.forEach((doc) => {
+        exportData.diaries.push({ id: doc.id, ...doc.data() });
+      });
+    } catch (err) {
+      console.warn('일기 내보내기 실패:', err);
+    }
+
+    // 타임라인 데이터
+    try {
+      const timelineRef = collection(db, FIRESTORE_COLLECTIONS.TIMELINE);
+      const timelineQuery = query(
+        timelineRef,
+        where('userId', '==', userId),
+        orderBy('date', 'desc')
+      );
+      const timelineSnapshot = await getDocs(timelineQuery);
+      timelineSnapshot.forEach((doc) => {
+        exportData.timeline.push({ id: doc.id, ...doc.data() });
+      });
+    } catch (err) {
+      console.warn('타임라인 내보내기 실패:', err);
+    }
+
+    // 콘텐츠 데이터
+    try {
+      const contentsRef = collection(db, FIRESTORE_COLLECTIONS.CONTENTS);
+      const contentsQuery = query(
+        contentsRef,
+        where('userId', '==', userId),
+        orderBy('createdAt', 'desc')
+      );
+      const contentsSnapshot = await getDocs(contentsQuery);
+      contentsSnapshot.forEach((doc) => {
+        exportData.contents.push({ id: doc.id, ...doc.data() });
+      });
+    } catch (err) {
+      console.warn('콘텐츠 내보내기 실패:', err);
+    }
+
+    // 마이크로 액션 로그
+    try {
+      const actionLogsRef = collection(db, FIRESTORE_COLLECTIONS.MICRO_ACTION_LOGS);
+      const actionLogsQuery = query(
+        actionLogsRef,
+        where('userId', '==', userId),
+        orderBy('timestamp', 'desc')
+      );
+      const actionLogsSnapshot = await getDocs(actionLogsQuery);
+      actionLogsSnapshot.forEach((doc) => {
+        exportData.actionLogs.push({ id: doc.id, ...doc.data() });
+      });
+    } catch (err) {
+      console.warn('액션 로그 내보내기 실패:', err);
+    }
+
+    return exportData;
+  } catch (error) {
+    logError('exportAllUserData', error);
+    throw error;
+  }
+}
+
+// ============================================================================
+// 게이미피케이션 기능 (FEAT-004)
+// ============================================================================
+
+/**
+ * XP로부터 레벨 계산
+ * @param xp 현재 XP
+ * @returns 레벨 번호 (1-10)
+ */
+export function calculateLevelFromXP(xp: number): number {
+  for (let i = LEVEL_THRESHOLDS.length - 1; i >= 0; i--) {
+    if (xp >= LEVEL_THRESHOLDS[i]) {
+      return i + 1;
+    }
+  }
+  return 1;
+}
+
+/**
+ * 다음 레벨까지 필요한 XP 계산
+ * @param currentXP 현재 XP
+ * @returns { current: 현재 레벨 내 XP, required: 다음 레벨까지 필요한 총 XP, percent: 진행률 }
+ */
+export function getXPProgress(currentXP: number): {
+  current: number;
+  required: number;
+  percent: number;
+} {
+  const level = calculateLevelFromXP(currentXP);
+  const currentThreshold = LEVEL_THRESHOLDS[level - 1] || 0;
+  const nextThreshold = LEVEL_THRESHOLDS[level] || LEVEL_THRESHOLDS[LEVEL_THRESHOLDS.length - 1];
+
+  const current = currentXP - currentThreshold;
+  const required = nextThreshold - currentThreshold;
+  const percent = Math.min(100, (current / required) * 100);
+
+  return { current, required, percent };
+}
+
+/**
+ * 사용자 게이미피케이션 데이터 가져오기
+ * @returns {Promise<FirestoreGamificationData | null>}
+ */
+export async function getGamificationData(): Promise<FirestoreGamificationData | null> {
+  try {
+    const userId = getCurrentUserId();
+    const gamificationRef = doc(db, FIRESTORE_COLLECTIONS.GAMIFICATION, userId);
+    const gamificationSnap = await getDoc(gamificationRef);
+
+    if (!gamificationSnap.exists()) {
+      return null;
+    }
+
+    return {
+      id: gamificationSnap.id,
+      ...gamificationSnap.data(),
+    } as FirestoreGamificationData;
+  } catch (error) {
+    logError('getGamificationData', error);
+    return null;
+  }
+}
+
+/**
+ * 게이미피케이션 데이터 초기화 (신규 사용자)
+ * @returns {Promise<FirestoreGamificationData>}
+ */
+export async function initializeGamification(): Promise<FirestoreGamificationData> {
+  try {
+    const userId = getCurrentUserId();
+    const now = serverTimestamp();
+
+    const initialData: Omit<FirestoreGamificationData, 'id'> = {
+      userId,
+      xp: 0,
+      level: 1,
+      blossomCount: 0,
+      totalCheckIns: 0,
+      totalDiaries: 0,
+      totalMicroActions: 0,
+      createdAt: now as Timestamp,
+      updatedAt: now as Timestamp,
+    };
+
+    const gamificationRef = doc(db, FIRESTORE_COLLECTIONS.GAMIFICATION, userId);
+    await setDoc(gamificationRef, initialData);
+
+    return {
+      id: userId,
+      ...initialData,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now(),
+    };
+  } catch (error) {
+    logError('initializeGamification', error);
+    throw error;
+  }
+}
+
+/**
+ * XP 추가 및 레벨업 확인
+ * @param amount XP 양
+ * @param reason XP 획득 사유
+ * @returns {Promise<{ newXP: number; newLevel: number; leveledUp: boolean; blossomAdded: boolean }>}
+ */
+export async function addXP(
+  amount: number,
+  reason: 'checkin' | 'diary' | 'micro_action' | 'streak_bonus' | 'level_up'
+): Promise<{
+  newXP: number;
+  newLevel: number;
+  leveledUp: boolean;
+  blossomAdded: boolean;
+}> {
+  try {
+    const userId = getCurrentUserId();
+    const gamificationRef = doc(db, FIRESTORE_COLLECTIONS.GAMIFICATION, userId);
+
+    // 현재 데이터 가져오기
+    let gamificationSnap = await getDoc(gamificationRef);
+
+    // 데이터가 없으면 초기화
+    if (!gamificationSnap.exists()) {
+      await initializeGamification();
+      gamificationSnap = await getDoc(gamificationRef);
+    }
+
+    const currentData = gamificationSnap.data() as Omit<FirestoreGamificationData, 'id'>;
+    const oldLevel = currentData.level;
+    const newXP = currentData.xp + amount;
+    const newLevel = calculateLevelFromXP(newXP);
+    const leveledUp = newLevel > oldLevel;
+
+    // 벚꽃 추가 조건: 체크인 또는 일기 작성 시
+    const blossomAdded = reason === 'checkin' || reason === 'diary';
+
+    // 통계 업데이트
+    const updates: Partial<FirestoreGamificationData> = {
+      xp: newXP,
+      level: newLevel,
+      updatedAt: serverTimestamp() as Timestamp,
+      lastActivityDate: serverTimestamp() as Timestamp,
+    };
+
+    if (blossomAdded) {
+      updates.blossomCount = (currentData.blossomCount || 0) + 1;
+    }
+
+    // 이유별 카운터 업데이트
+    if (reason === 'checkin') {
+      updates.totalCheckIns = (currentData.totalCheckIns || 0) + 1;
+    } else if (reason === 'diary') {
+      updates.totalDiaries = (currentData.totalDiaries || 0) + 1;
+    } else if (reason === 'micro_action') {
+      updates.totalMicroActions = (currentData.totalMicroActions || 0) + 1;
+    }
+
+    await updateDoc(gamificationRef, updates);
+
+    // XP 로그 저장
+    const xpLogRef = collection(db, FIRESTORE_COLLECTIONS.XP_LOGS);
+    await addDoc(xpLogRef, {
+      userId,
+      amount,
+      reason,
+      timestamp: serverTimestamp(),
+    });
+
+    return {
+      newXP,
+      newLevel,
+      leveledUp,
+      blossomAdded,
+    };
+  } catch (error) {
+    logError('addXP', error);
+    throw error;
+  }
+}
+
+/**
+ * 게이미피케이션 데이터 가져오기 또는 초기화
+ * @returns {Promise<FirestoreGamificationData>}
+ */
+export async function getOrInitializeGamification(): Promise<FirestoreGamificationData> {
+  const data = await getGamificationData();
+  if (data) {
+    return data;
+  }
+  return initializeGamification();
 }

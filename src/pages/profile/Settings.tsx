@@ -9,19 +9,22 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { GlassCard, Button, LoadingSpinner } from '../../components/ui';
-import { Bell, Globe, Clock, Zap, Pause } from 'lucide-react';
-import { saveUserSettings, getUserSettings } from '../../services/firestore';
+import { Bell, Globe, Clock, Zap, Pause, Download, Loader2, Sparkles, Moon } from 'lucide-react';
+import { saveUserSettings, getUserSettings, exportAllUserData } from '../../services/firestore';
 import { FirestoreUserProfile } from '../../types/firestore';
 import { Timestamp } from 'firebase/firestore';
 import { motion } from 'framer-motion';
+import { useAppContext } from '../../contexts';
 
 /**
  * Settings 컴포넌트
  */
 export const Settings: React.FC = () => {
   const navigate = useNavigate();
+  const { mode } = useAppContext();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [exporting, setExporting] = useState(false);
   
   // 설정 상태
   const [reminderEnabled, setReminderEnabled] = useState(true);
@@ -103,6 +106,34 @@ export const Settings: React.FC = () => {
     await saveUserSettings({
       snoozeUntil: undefined,
     });
+  };
+
+  // 데이터 내보내기
+  const handleExportData = async () => {
+    try {
+      setExporting(true);
+      const data = await exportAllUserData();
+
+      // JSON 파일로 다운로드
+      const jsonStr = JSON.stringify(data, null, 2);
+      const blob = new Blob([jsonStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `maumlog_export_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      alert('데이터가 성공적으로 내보내졌습니다.');
+    } catch (error) {
+      console.error('데이터 내보내기 오류:', error);
+      alert('데이터 내보내기 중 오류가 발생했습니다.');
+    } finally {
+      setExporting(false);
+    }
   };
 
   if (loading) {
@@ -285,6 +316,66 @@ export const Settings: React.FC = () => {
             </select>
           </div>
         </GlassCard>
+
+        {/* 데이터 내보내기 */}
+        <GlassCard className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Download size={20} className="text-brand-primary" />
+              <div>
+                <h3 className="font-bold text-slate-800">데이터 내보내기</h3>
+                <p className="text-sm text-slate-600">나의 모든 데이터를 JSON 파일로 다운로드</p>
+              </div>
+            </div>
+            <Button
+              onClick={handleExportData}
+              variant="ghost"
+              disabled={exporting}
+              className="flex items-center gap-2"
+            >
+              {exporting ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" />
+                  내보내는 중...
+                </>
+              ) : (
+                '내보내기'
+              )}
+            </Button>
+          </div>
+        </GlassCard>
+
+        {/* 이스터에그 카드 - 나이트모드 전용 (리디자인) */}
+        {mode === 'night' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <GlassCard className="p-0 overflow-hidden relative group cursor-pointer border-purple-500/20 shadow-lg shadow-purple-900/10">
+              <button
+                onClick={() => navigate('/easter-egg/gate')}
+                className="w-full text-left p-6 relative z-10"
+              >
+                {/* 배경 효과 */}
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-pink-900/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors">
+                      <Moon size={18} className="text-purple-300" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-800 text-sm tracking-wide">Hidden Space</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">특별한 누군가를 위한 공간</p>
+                    </div>
+                  </div>
+                  <Sparkles size={16} className="text-purple-300 opacity-50 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </button>
+            </GlassCard>
+          </motion.div>
+        )}
 
         {/* 저장 버튼 */}
         <div className="pt-4">

@@ -1,0 +1,184 @@
+[
+  {
+    "screenId": "profile_main",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 901
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 8,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "profile_settings",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 1168
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 14,
+        "inputs": 1,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "profile_persona",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 1085
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 9,
+        "inputs": 3,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "profile_daynight",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 902
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 11,
+        "inputs": 2,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "profile_privacy",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 924
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 12,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "profile_privacy_policy",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 3013
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 10,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "profile_conversations",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 844
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 11,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  }
+]

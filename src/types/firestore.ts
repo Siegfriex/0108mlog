@@ -200,6 +200,62 @@ export interface FirestoreTimelineEntry {
 /**
  * Firestore 컬렉션 이름 상수
  */
+/**
+ * 게이미피케이션 데이터 (Firestore)
+ * XP 시스템, 레벨, 벚꽃 정원
+ */
+export interface FirestoreGamificationData {
+  id: string;
+  userId: string;
+  xp: number;
+  level: number;
+  blossomCount: number; // 벚꽃 개수
+  totalCheckIns: number; // 총 체크인 수
+  totalDiaries: number; // 총 일기 수
+  totalMicroActions: number; // 총 마이크로 액션 완료 수
+  lastActivityDate?: FirestoreTimestamp;
+  createdAt: FirestoreTimestamp;
+  updatedAt: FirestoreTimestamp;
+}
+
+/**
+ * XP 획득 로그 (Firestore)
+ */
+export interface FirestoreXPLog {
+  id: string;
+  userId: string;
+  amount: number;
+  reason: 'checkin' | 'diary' | 'micro_action' | 'streak_bonus' | 'level_up';
+  timestamp: FirestoreTimestamp;
+}
+
+/**
+ * XP 보상 설정
+ */
+export const XP_REWARDS = {
+  CHECKIN: 10,           // 감정 체크인 완료
+  DIARY: 15,             // 일기 작성 완료
+  MICRO_ACTION: 10,      // 마이크로 액션 완료
+  FIRST_CHECKIN: 20,     // 첫 체크인 보너스
+  WEEKLY_STREAK: 30,     // 주간 연속 기록 보너스 (강제 아님)
+} as const;
+
+/**
+ * 레벨별 XP 요구량
+ */
+export const LEVEL_THRESHOLDS = [
+  0,      // Level 1
+  100,    // Level 2
+  250,    // Level 3
+  500,    // Level 4
+  800,    // Level 5
+  1200,   // Level 6
+  1700,   // Level 7
+  2300,   // Level 8
+  3000,   // Level 9
+  4000,   // Level 10
+] as const;
+
 export const FIRESTORE_COLLECTIONS = {
   CONVERSATIONS: 'conversations',
   MESSAGES: 'messages',
@@ -212,4 +268,6 @@ export const FIRESTORE_COLLECTIONS = {
   MONTHLY_REPORTS: 'monthlyReports',
   CONTENTS: 'contents',
   TIMELINE: 'timeline',
+  GAMIFICATION: 'gamification',
+  XP_LOGS: 'xpLogs',
 } as const;

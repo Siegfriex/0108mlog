@@ -1,0 +1,174 @@
+[
+  {
+    "screenId": "chat_emotion_modal",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 844
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 14,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "chat_intensity",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 844
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 15,
+        "inputs": 1,
+        "links": 1
+      },
+      "targets": [
+        {
+          "label": "intensity_slider",
+          "selector": "[data-testid=\"intensity-slider\"]",
+          "rect": {
+            "x": 57,
+            "y": 532.25,
+            "width": 276,
+            "height": 12
+          },
+          "fontSize": "16px",
+          "lineHeight": "24px"
+        },
+        {
+          "label": "start_chat_btn"
+        }
+      ]
+    }
+  },
+  {
+    "screenId": "chat_started",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 844
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 10,
+        "inputs": 1,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "chat_user_sent",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 844
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 9,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "chat_ai_response",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 844
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 13,
+        "inputs": 1,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "chat_quick_chips",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 844
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 13,
+        "inputs": 1,
+        "links": 1
+      },
+      "targets": []
+    }
+  }
+]

@@ -40,3 +40,7 @@ export { AuthLoadingScreen } from './AuthLoadingScreen';
 export { PoemCard } from './PoemCard';
 export type { PoemCardProps } from './PoemCard';
 export { YouTubeCard } from './YouTubeCard';
+export { XPFeedback } from './XPFeedback';
+export type { XPFeedbackProps } from './XPFeedback';
+export { ReminderBadge } from './ReminderBadge';
+export type { ReminderBadgeProps } from './ReminderBadge';

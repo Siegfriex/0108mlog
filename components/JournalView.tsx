@@ -19,8 +19,9 @@ interface JournalViewProps {
   timelineData: TimelineEntry[];
 }
 
-// 목업 데이터 import: 중앙화된 목업 데이터 사용
-import { RESILIENCE_DATA } from '../src/mock/data';
+// Firestore 연동
+import { useAuthUser } from '../src/hooks/useAuthUser';
+import { useResilienceData } from '../src/hooks/useEmotionChartData';
 
 const SUGGESTED_TOOLS: TherapyTool[] = [
     {
@@ -55,8 +56,14 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedEmotionFilter, setSelectedEmotionFilter] = useState<EmotionType | null>(null);
 
+  // Auth 상태
+  const { userId } = useAuthUser();
+
+  // 회복력 데이터 (차트용)
+  const { resilienceData, currentScore, weeklyChange } = useResilienceData(userId ?? undefined);
+
   return (
-    <div className="h-full w-full relative overflow-hidden flex">
+    <div data-testid="timeline" className="h-full w-full relative overflow-hidden flex">
        {/* 
          Main Content: "The Growth Dashboard" (Youper Inspired)
          Focuses on "Here & Now" + "Growth", not just history.
@@ -168,11 +175,17 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
                       <h3 className="font-bold text-slate-700 flex items-center gap-2">
                           <Activity size={18} className="text-brand-primary" /> Resilience Score
                       </h3>
-                      <span className="text-xs font-bold text-brand-primary bg-brand-light px-2 py-1 rounded-md">+12% this week</span>
+                      <span className={`text-xs font-bold px-2 py-1 rounded-md ${
+                        weeklyChange >= 0
+                          ? 'text-brand-primary bg-brand-light'
+                          : 'text-red-500 bg-red-50'
+                      }`}>
+                        {weeklyChange >= 0 ? '+' : ''}{weeklyChange}% this week
+                      </span>
                   </div>
                   <div className="h-40 w-full bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden relative">
                       <ResponsiveContainer width="100%" height={160}>
-                          <AreaChart data={RESILIENCE_DATA}>
+                          <AreaChart data={resilienceData}>
                               <defs>
                                   <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
                                       <stop offset="5%" stopColor="#2A8E9E" stopOpacity={0.1}/>
@@ -180,18 +193,18 @@ export const JournalView: React.FC<JournalViewProps> = ({ timelineData }) => {
                                   </linearGradient>
                               </defs>
                               <YAxis hide domain={['dataMin - 10', 'dataMax + 10']} />
-                              <Area 
-                                  type="monotone" 
-                                  dataKey="score" 
-                                  stroke="#2A8E9E" 
-                                  strokeWidth={3} 
-                                  fill="url(#colorScore)" 
+                              <Area
+                                  type="monotone"
+                                  dataKey="score"
+                                  stroke="#2A8E9E"
+                                  strokeWidth={3}
+                                  fill="url(#colorScore)"
                                   animationDuration={2000}
                               />
                           </AreaChart>
                       </ResponsiveContainer>
                       <div className="absolute bottom-4 left-6">
-                          <span className="text-3xl font-bold text-slate-800">78</span>
+                          <span className="text-3xl font-bold text-slate-800">{currentScore}</span>
                           <span className="text-xs text-slate-400 font-medium ml-1">/ 100</span>
                       </div>
                   </div>

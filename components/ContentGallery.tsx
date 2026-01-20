@@ -1,5 +1,5 @@
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, Music, Quote, X, RefreshCw, MessageSquareQuote, 
@@ -18,15 +18,48 @@ interface ContentGalleryProps {
   persona: CoachPersona;
 }
 
-// 목업 데이터 import: 중앙화된 목업 데이터 사용
-import { MOCK_CONTENTS, MOODS, TREND_DATA } from '../src/mock/data';
+// Firestore 연동
+import { useRealtimeContents } from '../src/hooks/useRealtime';
+import { useAuthUser } from '../src/hooks/useAuthUser';
+import { saveContentToFirestore } from '../src/services/firestore';
+import { useEmotionTrendData } from '../src/hooks/useEmotionChartData';
+
+// 기분 태그 (로컬 상수로 유지)
+const MOODS = [
+  '지친 하루', '막막한 미래', '작은 기쁨', '휴식이 필요해', '불안한 마음',
+  '사랑받고 싶어', '영감이 필요해', '잠이 오지 않아', '누군가 그리워'
+];
 
 // 무한 루프 방지를 위한 최대 재시도 횟수
 const MAX_RETRIES = 3;
 
 export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
-  // 목업 데이터를 상태로 관리 (추후 API 연동 시 교체)
-  const [contents, setContents] = useState<(ContentData & { commentary?: string })[]>(MOCK_CONTENTS as (ContentData & { commentary?: string })[]);
+  // Auth 상태
+  const { userId } = useAuthUser();
+
+  // Firestore 실시간 콘텐츠 데이터
+  const { data: firestoreContents, loading: contentsLoading } = useRealtimeContents(userId ?? undefined);
+
+  // 감정 트렌드 데이터 (차트용)
+  const { trendData } = useEmotionTrendData(userId ?? undefined);
+
+  // 로컬 optimistic 업데이트용 상태
+  const [localContents, setLocalContents] = useState<(ContentData & { commentary?: string })[]>([]);
+
+  // 실제 표시될 콘텐츠: Firestore + 로컬 업데이트 병합
+  const contents = useMemo(() => {
+    const firestoreData = (firestoreContents || []).map(c => ({
+      ...c,
+      createdAt: c.createdAt,
+    })) as (ContentData & { commentary?: string })[];
+
+    // 로컬 콘텐츠 중 아직 Firestore에 없는 것만 추가
+    const mergedIds = new Set(firestoreData.map(c => c.id));
+    const uniqueLocal = localContents.filter(c => !mergedIds.has(c.id));
+
+    return [...uniqueLocal, ...firestoreData];
+  }, [firestoreContents, localContents]);
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedMood, setSelectedMood] = useState<string>('지친 하루');
@@ -48,8 +81,27 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
       const newContent = await generateHealingContent(selectedMood, persona);
 
       if (newContent) {
-        setContents(prev => append ? [...prev, newContent] : [newContent, ...prev]);
+        // Optimistic UI: 로컬에 즉시 추가
+        setLocalContents(prev => append ? [...prev, newContent] : [newContent, ...prev]);
         if (!append) setSelectedId(newContent.id);
+
+        // Firestore에 저장 (백그라운드)
+        try {
+          await saveContentToFirestore({
+            type: newContent.type,
+            title: newContent.title,
+            body: newContent.body,
+            author: newContent.author,
+            tags: newContent.tags,
+            groundingLinks: newContent.groundingLinks,
+          });
+          // 성공 시 로컬에서 제거 (Firestore 실시간 리스너가 추가함)
+          setLocalContents(prev => prev.filter(c => c.id !== newContent.id));
+        } catch (saveError) {
+          console.error('콘텐츠 저장 오류:', saveError);
+          // 저장 실패해도 로컬에는 유지
+        }
+
         // 성공 시 에러 상태 초기화
         setHasError(false);
         setRetryCount(0);
@@ -163,7 +215,7 @@ export const ContentGallery: React.FC<ContentGalleryProps> = ({ persona }) => {
 
                  <div className="h-48 mt-4">
                     <ResponsiveContainer width="100%" height={192}>
-                        <LineChart data={TREND_DATA}>
+                        <LineChart data={trendData}>
                             <defs>
                                 <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
                                     <stop offset="0%" stopColor="#818CF8" />

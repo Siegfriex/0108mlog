@@ -1,0 +1,79 @@
+{
+  "runId": "20260120-234038-r3",
+  "baseUrl": "https://iness-mlog.web.app",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "startedAt": "2026-01-20T15:01:59.834Z",
+  "version": "1.0",
+  "screens": [
+    {
+      "id": "chat_emotion_modal",
+      "name": "감정 선택 모달",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038-r3/chat/01-emotion-modal.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:02:09.481Z"
+    },
+    {
+      "id": "chat_intensity",
+      "name": "강도 슬라이더 노출",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038-r3/chat/02-intensity.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:02:18.717Z"
+    },
+    {
+      "id": "chat_started",
+      "name": "채팅 시작(인사 메시지)",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038-r3/chat/03-chat-initial.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:02:28.083Z"
+    },
+    {
+      "id": "chat_user_sent",
+      "name": "사용자 메시지 전송 직후(로딩/생각중 상태)",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038-r3/chat/04-user-message.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:02:38.864Z"
+    },
+    {
+      "id": "chat_ai_response",
+      "name": "AI 응답(또는 타임아웃 시 현재 상태)",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038-r3/chat/05-ai-response.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:03:02.346Z"
+    },
+    {
+      "id": "chat_quick_chips",
+      "name": "Quick Chips 노출(또는 타임아웃 시 현재 상태)",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038-r3/chat/06-quick-chips.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:03:27.712Z"
+    }
+  ],
+  "finishedAt": "2026-01-20T15:03:27.843Z"
+}

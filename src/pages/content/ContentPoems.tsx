@@ -88,6 +88,14 @@ export const ContentPoems: React.FC = () => {
                   snippet={poem.snippet}
                   source={poem.source}
                   reason={poem.reason}
+                  onClick={() => {
+                    navigate('/chat/bibliotherapy', {
+                      state: {
+                        content: poem,
+                        sessionType: 'poem',
+                      },
+                    });
+                  }}
                 />
               ))}
             </div>

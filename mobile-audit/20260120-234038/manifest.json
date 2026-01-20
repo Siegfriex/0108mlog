@@ -1,0 +1,353 @@
+{
+  "runId": "20260120-234038",
+  "baseUrl": "https://iness-mlog.web.app",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "startedAt": "2026-01-20T14:40:38.221Z",
+  "version": "1.0",
+  "screens": [
+    {
+      "id": "onboarding_welcome",
+      "name": "웰컴",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038/onboarding/01-welcome.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:40:47.427Z"
+    },
+    {
+      "id": "onboarding_permissions",
+      "name": "권한 설정",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038/onboarding/02-permissions.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:40:56.536Z"
+    },
+    {
+      "id": "onboarding_assessment_q1",
+      "name": "초기 평가 (Q1)",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038/onboarding/03-assessment-q1.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:41:06.391Z"
+    },
+    {
+      "id": "onboarding_goals",
+      "name": "목표 설정",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038/onboarding/04-goals.png",
+      "ok": false,
+      "error": "locator.click: Error: strict mode violation: getByRole('button', { name: '다음' }) resolved to 2 elements:\n    1) <button tabindex=\"0\" class=\"↵        relative overflow-hidden↵        px-8 py-4 rounded-full font-bold text-sm tracking-wide↵        flex items-center justify-center gap-2↵        transition-all duration-300↵        disabled:opacity-50 disabled:cursor-not-allowed↵        focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2↵        bg-brand-700 text-white shadow-xl shadow-brand-700/20 border border-transparent hover:bg-brand-800 hover:scale-[1.02] active:scale-[0.98]↵        w-full↵…>…</button> aka getByRole('button', { name: '다음' }).first()\n    2) <button tabindex=\"0\" class=\"↵        relative overflow-hidden↵        px-8 py-4 rounded-full font-bold text-sm tracking-wide↵        flex items-center justify-center gap-2↵        transition-all duration-300↵        disabled:opacity-50 disabled:cursor-not-allowed↵        focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2↵        bg-brand-700 text-white shadow-xl shadow-brand-700/20 border border-transparent hover:bg-brand-800 hover:scale-[1.02] active:scale-[0.98]↵        flex-1↵…>…</button> aka getByRole('button', { name: '다음' }).nth(1)\n\nCall log:\n  - waiting for getByRole('button', { name: '다음' })\n",
+      "capturedAt": null
+    },
+    {
+      "id": "onboarding_personalization",
+      "name": "개인화 설정",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038/onboarding/05-personalization.png",
+      "ok": false,
+      "error": "locator.click: Error: strict mode violation: getByRole('button', { name: '다음' }) resolved to 2 elements:\n    1) <button tabindex=\"0\" class=\"↵        relative overflow-hidden↵        px-8 py-4 rounded-full font-bold text-sm tracking-wide↵        flex items-center justify-center gap-2↵        transition-all duration-300↵        disabled:opacity-50 disabled:cursor-not-allowed↵        focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2↵        bg-brand-700 text-white shadow-xl shadow-brand-700/20 border border-transparent hover:bg-brand-800 hover:scale-[1.02] active:scale-[0.98]↵        w-full↵…>…</button> aka getByRole('button', { name: '다음' }).first()\n    2) <button tabindex=\"0\" class=\"↵        relative overflow-hidden↵        px-8 py-4 rounded-full font-bold text-sm tracking-wide↵        flex items-center justify-center gap-2↵        transition-all duration-300↵        disabled:opacity-50 disabled:cursor-not-allowed↵        focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2↵        bg-brand-700 text-white shadow-xl shadow-brand-700/20 border border-transparent hover:bg-brand-800 hover:scale-[1.02] active:scale-[0.98]↵        flex-1↵…>…</button> aka getByRole('button', { name: '다음' }).nth(1)\n\nCall log:\n  - waiting for getByRole('button', { name: '다음' })\n",
+      "capturedAt": null
+    },
+    {
+      "id": "onboarding_tutorial",
+      "name": "튜토리얼 가이드",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234038/onboarding/06-tutorial.png",
+      "ok": false,
+      "error": "locator.click: Error: strict mode violation: getByRole('button', { name: '다음' }) resolved to 2 elements:\n    1) <button tabindex=\"0\" class=\"↵        relative overflow-hidden↵        px-8 py-4 rounded-full font-bold text-sm tracking-wide↵        flex items-center justify-center gap-2↵        transition-all duration-300↵        disabled:opacity-50 disabled:cursor-not-allowed↵        focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2↵        bg-brand-700 text-white shadow-xl shadow-brand-700/20 border border-transparent hover:bg-brand-800 hover:scale-[1.02] active:scale-[0.98]↵        w-full↵…>…</button> aka getByRole('button', { name: '다음' }).first()\n    2) <button tabindex=\"0\" class=\"↵        relative overflow-hidden↵        px-8 py-4 rounded-full font-bold text-sm tracking-wide↵        flex items-center justify-center gap-2↵        transition-all duration-300↵        disabled:opacity-50 disabled:cursor-not-allowed↵        focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2↵        bg-brand-700 text-white shadow-xl shadow-brand-700/20 border border-transparent hover:bg-brand-800 hover:scale-[1.02] active:scale-[0.98]↵        flex-1↵…>…</button> aka getByRole('button', { name: '다음' }).nth(1)\n\nCall log:\n  - waiting for getByRole('button', { name: '다음' })\n",
+      "capturedAt": null
+    },
+    {
+      "id": "chat_emotion_modal",
+      "name": "감정 선택 모달",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038/chat/01-emotion-modal.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:41:52.437Z"
+    },
+    {
+      "id": "chat_intensity",
+      "name": "강도 슬라이더 노출",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038/chat/02-intensity.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:42:01.426Z"
+    },
+    {
+      "id": "chat_started",
+      "name": "채팅 시작(인사 메시지)",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038/chat/03-chat-initial.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:42:10.769Z"
+    },
+    {
+      "id": "chat_user_message",
+      "name": "사용자 메시지 전송 후",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038/chat/04-ai-response.png",
+      "ok": false,
+      "error": "page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"ai-message\"]') to be visible\n",
+      "capturedAt": null
+    },
+    {
+      "id": "chat_quick_chips",
+      "name": "Quick Chips 노출",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234038/chat/05-quick-chips.png",
+      "ok": false,
+      "error": "page.waitForSelector: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"quick-chip\"]') to be visible\n",
+      "capturedAt": null
+    },
+    {
+      "id": "journal_main",
+      "name": "기록 메인(타임라인)",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal",
+      "file": "mobile-audit/20260120-234038/journal/01-journal-main.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:43:10.329Z"
+    },
+    {
+      "id": "journal_search",
+      "name": "기록 검색",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal/search",
+      "file": "mobile-audit/20260120-234038/journal/02-journal-search.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:43:19.154Z"
+    },
+    {
+      "id": "journal_diary",
+      "name": "일기",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal/diary",
+      "file": "mobile-audit/20260120-234038/journal/03-journal-diary.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:43:28.147Z"
+    },
+    {
+      "id": "journal_journey",
+      "name": "여정 시각화",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal/journey",
+      "file": "mobile-audit/20260120-234038/journal/04-journal-journey.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:43:37.195Z"
+    },
+    {
+      "id": "reports_weekly",
+      "name": "주간 리포트",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/weekly",
+      "file": "mobile-audit/20260120-234038/reports/01-weekly.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:43:46.028Z"
+    },
+    {
+      "id": "reports_monthly",
+      "name": "월간 리포트",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/monthly",
+      "file": "mobile-audit/20260120-234038/reports/02-monthly.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:43:55.048Z"
+    },
+    {
+      "id": "reports_monthly_retro",
+      "name": "월간 회고록",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/monthly-retrospective",
+      "file": "mobile-audit/20260120-234038/reports/03-monthly-retrospective.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:44:04.037Z"
+    },
+    {
+      "id": "reports_monitor",
+      "name": "실시간 모니터",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/monitor",
+      "file": "mobile-audit/20260120-234038/reports/04-monitor.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:44:13.022Z"
+    },
+    {
+      "id": "content_main",
+      "name": "콘텐츠 메인",
+      "tab": "content",
+      "url": "https://iness-mlog.web.app/content",
+      "file": "mobile-audit/20260120-234038/content/01-content-main.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:44:21.994Z"
+    },
+    {
+      "id": "content_poems",
+      "name": "시/문학",
+      "tab": "content",
+      "url": "https://iness-mlog.web.app/content/poems",
+      "file": "mobile-audit/20260120-234038/content/02-poems.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:44:30.832Z"
+    },
+    {
+      "id": "content_meditations",
+      "name": "명상",
+      "tab": "content",
+      "url": "https://iness-mlog.web.app/content/meditations",
+      "file": "mobile-audit/20260120-234038/content/03-meditations.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:44:39.636Z"
+    },
+    {
+      "id": "content_music",
+      "name": "힐링 음악",
+      "tab": "content",
+      "url": "https://iness-mlog.web.app/content/music",
+      "file": "mobile-audit/20260120-234038/content/04-music.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:44:48.574Z"
+    },
+    {
+      "id": "content_immersion",
+      "name": "몰입",
+      "tab": "content",
+      "url": "https://iness-mlog.web.app/content/immersion",
+      "file": "mobile-audit/20260120-234038/content/05-immersion.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:44:57.539Z"
+    },
+    {
+      "id": "profile_main",
+      "name": "프로필 메인",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile",
+      "file": "mobile-audit/20260120-234038/profile/01-profile.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:45:06.363Z"
+    },
+    {
+      "id": "profile_settings",
+      "name": "설정",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/settings",
+      "file": "mobile-audit/20260120-234038/profile/02-settings.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:45:15.226Z"
+    },
+    {
+      "id": "profile_persona",
+      "name": "페르소나 설정",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/persona",
+      "file": "mobile-audit/20260120-234038/profile/03-persona.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:45:24.368Z"
+    },
+    {
+      "id": "profile_daynight",
+      "name": "Day/Night 설정",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/daynight",
+      "file": "mobile-audit/20260120-234038/profile/04-daynight.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:45:33.526Z"
+    },
+    {
+      "id": "profile_privacy",
+      "name": "개인정보",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/privacy",
+      "file": "mobile-audit/20260120-234038/profile/05-privacy.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:45:42.422Z"
+    },
+    {
+      "id": "profile_privacy_policy",
+      "name": "개인정보 처리방침",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/privacy/policy",
+      "file": "mobile-audit/20260120-234038/profile/06-privacy-policy.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:45:51.267Z"
+    },
+    {
+      "id": "profile_conversations",
+      "name": "대화 관리",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/conversations",
+      "file": "mobile-audit/20260120-234038/profile/07-conversations.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:46:00.298Z"
+    },
+    {
+      "id": "safety_main",
+      "name": "안전망 메인",
+      "tab": "safety",
+      "url": "https://iness-mlog.web.app/safety",
+      "file": "mobile-audit/20260120-234038/safety/01-safety.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:46:09.035Z"
+    },
+    {
+      "id": "safety_crisis",
+      "name": "위기 지원",
+      "tab": "safety",
+      "url": "https://iness-mlog.web.app/safety/crisis",
+      "file": "mobile-audit/20260120-234038/safety/02-crisis.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:46:17.843Z"
+    },
+    {
+      "id": "safety_tools",
+      "name": "대처 도구",
+      "tab": "safety",
+      "url": "https://iness-mlog.web.app/safety/tools",
+      "file": "mobile-audit/20260120-234038/safety/03-tools.png",
+      "ok": true,
+      "error": null,
+      "capturedAt": "2026-01-20T14:46:26.673Z"
+    }
+  ],
+  "finishedAt": "2026-01-20T14:46:26.810Z"
+}

@@ -1,0 +1,106 @@
+[
+  {
+    "screenId": "reports_weekly",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 3780
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 16,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "reports_monthly",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 3780
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 16,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "reports_monthly_retro",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 844
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 9,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "reports_monitor",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 844
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 8,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  }
+]

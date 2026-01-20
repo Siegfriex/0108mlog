@@ -1,0 +1,57 @@
+{
+  "runId": "20260120-234038-r4",
+  "baseUrl": "https://iness-mlog.web.app",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "startedAt": "2026-01-20T15:03:38.830Z",
+  "version": "1.0",
+  "screens": [
+    {
+      "id": "journal_main",
+      "name": "기록 메인(타임라인)",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal",
+      "file": "mobile-audit/20260120-234038-r4/journal/01-journal-main.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:03:48.063Z"
+    },
+    {
+      "id": "journal_search",
+      "name": "기록 검색",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal/search",
+      "file": "mobile-audit/20260120-234038-r4/journal/02-journal-search.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:03:56.798Z"
+    },
+    {
+      "id": "journal_diary",
+      "name": "일기",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal/diary",
+      "file": "mobile-audit/20260120-234038-r4/journal/03-journal-diary.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:04:05.561Z"
+    },
+    {
+      "id": "journal_journey",
+      "name": "여정 시각화",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal/journey",
+      "file": "mobile-audit/20260120-234038-r4/journal/04-journal-journey.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T15:04:14.321Z"
+    }
+  ],
+  "finishedAt": "2026-01-20T15:04:14.471Z"
+}

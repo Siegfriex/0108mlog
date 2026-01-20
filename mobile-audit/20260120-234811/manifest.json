@@ -1,0 +1,402 @@
+{
+  "runId": "20260120-234811",
+  "baseUrl": "https://iness-mlog.web.app",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "startedAt": "2026-01-20T14:48:11.807Z",
+  "version": "1.0",
+  "screens": [
+    {
+      "id": "onboarding_welcome",
+      "name": "웰컴",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234811/onboarding/01-welcome.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:48:21.005Z"
+    },
+    {
+      "id": "onboarding_permissions",
+      "name": "권한 설정",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234811/onboarding/02-permissions.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:48:30.124Z"
+    },
+    {
+      "id": "onboarding_assessment_q1",
+      "name": "초기 평가 (Q1)",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234811/onboarding/03-assessment-q1.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:48:40.008Z"
+    },
+    {
+      "id": "onboarding_goals",
+      "name": "목표 설정",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234811/onboarding/04-goals.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:48:54.525Z"
+    },
+    {
+      "id": "onboarding_personalization",
+      "name": "개인화 설정",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234811/onboarding/05-personalization.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:49:09.674Z"
+    },
+    {
+      "id": "onboarding_tutorial",
+      "name": "튜토리얼 가이드",
+      "tab": "onboarding",
+      "url": "https://iness-mlog.web.app/onboarding",
+      "file": "mobile-audit/20260120-234811/onboarding/06-tutorial.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:49:25.527Z"
+    },
+    {
+      "id": "chat_emotion_modal",
+      "name": "감정 선택 모달",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234811/chat/01-emotion-modal.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:49:35.551Z"
+    },
+    {
+      "id": "chat_intensity",
+      "name": "강도 슬라이더 노출",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234811/chat/02-intensity.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:49:44.602Z"
+    },
+    {
+      "id": "chat_started",
+      "name": "채팅 시작(인사 메시지)",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234811/chat/03-chat-initial.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:49:53.958Z"
+    },
+    {
+      "id": "chat_user_sent",
+      "name": "사용자 메시지 전송 직후(로딩/생각중 상태)",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234811/chat/04-user-message.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:50:04.722Z"
+    },
+    {
+      "id": "chat_ai_response",
+      "name": "AI 응답(또는 타임아웃 시 현재 상태)",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234811/chat/05-ai-response.png",
+      "ok": true,
+      "error": null,
+      "warnings": [
+        "page.waitForSelector: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"ai-message\"]') to be visible\n"
+      ],
+      "capturedAt": "2026-01-20T14:50:46.109Z"
+    },
+    {
+      "id": "chat_quick_chips",
+      "name": "Quick Chips 노출(또는 타임아웃 시 현재 상태)",
+      "tab": "chat",
+      "url": "https://iness-mlog.web.app/chat",
+      "file": "mobile-audit/20260120-234811/chat/06-quick-chips.png",
+      "ok": true,
+      "error": null,
+      "warnings": [
+        "page.waitForSelector: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator('[data-testid=\"quick-chip\"]') to be visible\n"
+      ],
+      "capturedAt": "2026-01-20T14:51:26.408Z"
+    },
+    {
+      "id": "journal_main",
+      "name": "기록 메인(타임라인)",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal",
+      "file": "mobile-audit/20260120-234811/journal/01-journal-main.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:51:35.364Z"
+    },
+    {
+      "id": "journal_search",
+      "name": "기록 검색",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal/search",
+      "file": "mobile-audit/20260120-234811/journal/02-journal-search.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:51:44.346Z"
+    },
+    {
+      "id": "journal_diary",
+      "name": "일기",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal/diary",
+      "file": "mobile-audit/20260120-234811/journal/03-journal-diary.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:51:53.392Z"
+    },
+    {
+      "id": "journal_journey",
+      "name": "여정 시각화",
+      "tab": "journal",
+      "url": "https://iness-mlog.web.app/journal/journey",
+      "file": "mobile-audit/20260120-234811/journal/04-journal-journey.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:52:02.498Z"
+    },
+    {
+      "id": "reports_weekly",
+      "name": "주간 리포트",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/weekly",
+      "file": "mobile-audit/20260120-234811/reports/01-weekly.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:52:11.573Z"
+    },
+    {
+      "id": "reports_monthly",
+      "name": "월간 리포트",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/monthly",
+      "file": "mobile-audit/20260120-234811/reports/02-monthly.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:52:20.428Z"
+    },
+    {
+      "id": "reports_monthly_retro",
+      "name": "월간 회고록",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/monthly-retrospective",
+      "file": "mobile-audit/20260120-234811/reports/03-monthly-retrospective.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:52:29.472Z"
+    },
+    {
+      "id": "reports_monitor",
+      "name": "실시간 모니터",
+      "tab": "reports",
+      "url": "https://iness-mlog.web.app/reports/monitor",
+      "file": "mobile-audit/20260120-234811/reports/04-monitor.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:52:38.479Z"
+    },
+    {
+      "id": "content_main",
+      "name": "콘텐츠 메인",
+      "tab": "content",
+      "url": "https://iness-mlog.web.app/content",
+      "file": "mobile-audit/20260120-234811/content/01-content-main.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:52:47.459Z"
+    },
+    {
+      "id": "content_poems",
+      "name": "시/문학",
+      "tab": "content",
+      "url": "https://iness-mlog.web.app/content/poems",
+      "file": "mobile-audit/20260120-234811/content/02-poems.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:52:56.298Z"
+    },
+    {
+      "id": "content_meditations",
+      "name": "명상",
+      "tab": "content",
+      "url": "https://iness-mlog.web.app/content/meditations",
+      "file": "mobile-audit/20260120-234811/content/03-meditations.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:53:05.227Z"
+    },
+    {
+      "id": "content_music",
+      "name": "힐링 음악",
+      "tab": "content",
+      "url": "https://iness-mlog.web.app/content/music",
+      "file": "mobile-audit/20260120-234811/content/04-music.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:53:14.142Z"
+    },
+    {
+      "id": "content_immersion",
+      "name": "몰입",
+      "tab": "content",
+      "url": "https://iness-mlog.web.app/content/immersion",
+      "file": "mobile-audit/20260120-234811/content/05-immersion.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:53:23.156Z"
+    },
+    {
+      "id": "profile_main",
+      "name": "프로필 메인",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile",
+      "file": "mobile-audit/20260120-234811/profile/01-profile.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:53:31.990Z"
+    },
+    {
+      "id": "profile_settings",
+      "name": "설정",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/settings",
+      "file": "mobile-audit/20260120-234811/profile/02-settings.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:53:40.904Z"
+    },
+    {
+      "id": "profile_persona",
+      "name": "페르소나 설정",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/persona",
+      "file": "mobile-audit/20260120-234811/profile/03-persona.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:53:49.982Z"
+    },
+    {
+      "id": "profile_daynight",
+      "name": "Day/Night 설정",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/daynight",
+      "file": "mobile-audit/20260120-234811/profile/04-daynight.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:53:58.938Z"
+    },
+    {
+      "id": "profile_privacy",
+      "name": "개인정보",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/privacy",
+      "file": "mobile-audit/20260120-234811/profile/05-privacy.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:54:08.009Z"
+    },
+    {
+      "id": "profile_privacy_policy",
+      "name": "개인정보 처리방침",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/privacy/policy",
+      "file": "mobile-audit/20260120-234811/profile/06-privacy-policy.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:54:16.873Z"
+    },
+    {
+      "id": "profile_conversations",
+      "name": "대화 관리",
+      "tab": "profile",
+      "url": "https://iness-mlog.web.app/profile/conversations",
+      "file": "mobile-audit/20260120-234811/profile/07-conversations.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:54:25.707Z"
+    },
+    {
+      "id": "safety_main",
+      "name": "안전망 메인",
+      "tab": "safety",
+      "url": "https://iness-mlog.web.app/safety",
+      "file": "mobile-audit/20260120-234811/safety/01-safety.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:54:34.531Z"
+    },
+    {
+      "id": "safety_crisis",
+      "name": "위기 지원",
+      "tab": "safety",
+      "url": "https://iness-mlog.web.app/safety/crisis",
+      "file": "mobile-audit/20260120-234811/safety/02-crisis.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:54:43.561Z"
+    },
+    {
+      "id": "safety_tools",
+      "name": "대처 도구",
+      "tab": "safety",
+      "url": "https://iness-mlog.web.app/safety/tools",
+      "file": "mobile-audit/20260120-234811/safety/03-tools.png",
+      "ok": true,
+      "error": null,
+      "warnings": [],
+      "capturedAt": "2026-01-20T14:54:52.400Z"
+    }
+  ],
+  "finishedAt": "2026-01-20T14:54:52.556Z"
+}

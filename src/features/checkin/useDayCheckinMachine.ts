@@ -34,7 +34,8 @@ import {
 } from './dayMachine';
 import { EmotionType, CoachPersona, TimelineEntry, MicroAction } from '../../../types';
 import { generateDayModeResponse, generateMicroAction } from '../../services/ai/gemini';
-import { saveConversation, saveEmotionEntry, saveMicroActionLog, getRecentEmotionEntries } from '../../services/firestore';
+import { saveConversation, saveEmotionEntry, saveMicroActionLog, getRecentEmotionEntries, addXP } from '../../services/firestore';
+import { XP_REWARDS } from '../../types/firestore';
 import { detectCrisis } from '../../services/crisisDetection';
 import { recommendActionsByEmotion } from '../../data/microActions';
 
@@ -46,13 +47,14 @@ export interface UseDayCheckinMachineOptions {
   onCrisisDetected?: () => void;
   onComplete?: (entry: TimelineEntry) => void;
   onEmotionChange?: (emotion: EmotionType | null) => void;
+  onXPGained?: (xpGained: number, leveledUp: boolean, newLevel: number) => void;
 }
 
 /**
  * Day 체크인 머신 훅
  */
 export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
-  const { persona, onCrisisDetected, onComplete, onEmotionChange } = options;
+  const { persona, onCrisisDetected, onComplete, onEmotionChange, onXPGained } = options;
   
   const [state, dispatch] = useReducer(dayCheckinReducer, initialDayCheckinState);
   const aiTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -227,6 +229,15 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
           conversationId: conversationId || undefined,
         });
 
+        // XP 부여 (게이미피케이션)
+        try {
+          const xpResult = await addXP(XP_REWARDS.CHECKIN, 'checkin');
+          onXPGained?.(XP_REWARDS.CHECKIN, xpResult.leveledUp, xpResult.newLevel);
+        } catch (xpError) {
+          console.warn('XP 부여 실패:', xpError);
+          // XP 부여 실패해도 체크인 성공으로 처리
+        }
+
         send({ type: 'SAVE_SUCCESS' });
 
         // TimelineEntry 생성 및 콜백
@@ -256,7 +267,7 @@ export function useDayCheckinMachine(options: UseDayCheckinMachineOptions) {
         }
       }
     }
-  }, [state, send, persona, onCrisisDetected, onComplete]);
+  }, [state, send, persona, onCrisisDetected, onComplete, onXPGained]);
 
   /**
    * 마이크로 액션 생성

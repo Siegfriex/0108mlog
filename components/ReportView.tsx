@@ -12,9 +12,12 @@ import { GlassCard, LoadingSpinner, Button } from '../src/components/ui';
 import { TimelineEntry, EmotionType } from '../types';
 import { generateMonthlyNarrative } from '../src/services/ai/gemini';
 
-// 목업 데이터 import: 중앙화된 목업 데이터 사용
-import { RADAR_DATA, AREA_DATA } from '../src/mock/data';
-import { SADNESS_ACTIVITIES, COMMUNITY_INSIGHTS } from '../src/mock/insightData';
+// Firestore 기반 차트 데이터 hooks
+import { useAuthUser } from '../src/hooks/useAuthUser';
+import { useRadarChartData, useAreaChartData, usePersonalizedInsights } from '../src/hooks/useEmotionChartData';
+
+// 정적 액티비티 추천 데이터 (감정별 맞춤 활동)
+import { SADNESS_ACTIVITIES } from '../src/mock/insightData';
 
 interface ReportViewProps {
   timelineData: TimelineEntry[];
@@ -26,6 +29,14 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
   const [loading, setLoading] = useState(false); // 초기 로딩을 false로 변경 (필요할 때만 로드)
   const [reportPeriod, setReportPeriod] = useState<'weekly' | 'monthly'>('monthly');
   const [narrativeLoaded, setNarrativeLoaded] = useState(false);
+
+  // Auth 상태
+  const { userId } = useAuthUser();
+
+  // Firestore 기반 차트 데이터
+  const { radarData } = useRadarChartData(userId ?? undefined);
+  const { areaData } = useAreaChartData(userId ?? undefined);
+  const { insights: communityInsights } = usePersonalizedInsights(userId ?? undefined);
 
   // 동적 파이 차트 데이터 계산
   const pieData = useMemo(() => {
@@ -193,7 +204,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
                      </div>
                      <div className="w-full h-full pt-16 pr-4 min-h-[300px]">
                         <ResponsiveContainer width="100%" height={300}>
-                            <AreaChart data={AREA_DATA} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                            <AreaChart data={areaData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="colorPositive" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#2A8E9E" stopOpacity={0.8}/>
@@ -241,7 +252,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
                     </div>
                     <div className="w-full h-full mt-4 min-h-[300px]">
                         <ResponsiveContainer width="100%" height={300}>
-                            <RadarChart cx="50%" cy="55%" outerRadius="70%" data={RADAR_DATA}>
+                            <RadarChart cx="50%" cy="55%" outerRadius="70%" data={radarData}>
                                 <PolarGrid stroke="#E2E8F0" />
                                 <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 'bold' }} />
                                 <PolarRadiusAxis angle={30} domain={[0, 150]} tick={false} axisLine={false} />
@@ -422,7 +433,7 @@ export const ReportView: React.FC<ReportViewProps> = ({ timelineData }) => {
                         나와 같은 기분을 가진 사람들은 무엇을 할까?
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {COMMUNITY_INSIGHTS.map((insight, index) => (
+                        {communityInsights.map((insight, index) => (
                             <motion.div
                                 key={insight.id}
                                 initial={{ opacity: 0, y: 20 }}

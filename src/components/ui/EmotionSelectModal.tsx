@@ -196,6 +196,7 @@ export const EmotionSelectModal: React.FC<EmotionSelectModalProps> = ({
                       </label>
                       <div className="relative px-2">
                         <input
+                          data-testid="intensity-slider"
                           type="range"
                           min="1"
                           max="10"

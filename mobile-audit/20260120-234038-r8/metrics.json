@@ -1,0 +1,80 @@
+[
+  {
+    "screenId": "safety_main",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 966
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 9,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "safety_crisis",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 966
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 9,
+        "inputs": 0,
+        "links": 4
+      },
+      "targets": []
+    }
+  },
+  {
+    "screenId": "safety_tools",
+    "metrics": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "x": 0,
+        "y": 0
+      },
+      "document": {
+        "scrollHeight": 966
+      },
+      "safeArea": {
+        "top": "0px",
+        "bottom": "0px"
+      },
+      "counts": {
+        "buttons": 11,
+        "inputs": 0,
+        "links": 1
+      },
+      "targets": []
+    }
+  }
+]

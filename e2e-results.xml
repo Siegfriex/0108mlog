@@ -1,0 +1,124 @@
+<testsuites id="" name="" tests="2" failures="2" skipped="0" errors="0" time="34.121244000000004">
+<testsuite name="tests\p0\feat-003-ai-persona.spec.ts" timestamp="2026-01-20T15:09:35.214Z" hostname="chromium" tests="2" failures="2" skipped="0" time="62.861" errors="0">
+<testcase name="FEAT-003: AI 페르소나 기반 대화 › 시나리오 3-1: 기본 페르소나 대화" classname="tests\p0\feat-003-ai-persona.spec.ts" time="31.435">
+<failure message="feat-003-ai-persona.spec.ts:11:3 시나리오 3-1: 기본 페르소나 대화" type="FAILURE">
+<![CDATA[  [chromium] › tests\p0\feat-003-ai-persona.spec.ts:11:3 › FEAT-003: AI 페르소나 기반 대화 › 시나리오 3-1: 기본 페르소나 대화 
+
+    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+
+      4 |
+      5 | test.describe('FEAT-003: AI 페르소나 기반 대화', () => {
+    > 6 |   test.beforeEach(async ({ page }) => {
+        |        ^
+      7 |     await ensureAuthenticated(page);
+      8 |     await skipOnboarding(page);
+      9 |   });
+        at C:\INEESm\e2e\tests\p0\feat-003-ai-persona.spec.ts:6:8
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+
+       at helpers\auth.ts:37
+
+      35 |     });
+      36 |     await page.reload();
+    > 37 |     await page.waitForLoadState('networkidle');
+         |                ^
+      38 |   }
+      39 | }
+      40 |
+        at skipOnboarding (C:\INEESm\e2e\helpers\auth.ts:37:16)
+        at C:\INEESm\e2e\tests\p0\feat-003-ai-persona.spec.ts:8:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\test-results\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\test-results\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\error-context.md]]
+
+[[ATTACHMENT|test-results\tests-p0-feat-003-ai-perso-577e2-나-기반-대화-시나리오-3-1-기본-페르소나-대화-chromium\trace.zip]]
+]]>
+</system-out>
+</testcase>
+<testcase name="FEAT-003: AI 페르소나 기반 대화 › 시나리오 3-2: 커스텀 페르소나 대화" classname="tests\p0\feat-003-ai-persona.spec.ts" time="31.426">
+<failure message="feat-003-ai-persona.spec.ts:39:3 시나리오 3-2: 커스텀 페르소나 대화" type="FAILURE">
+<![CDATA[  [chromium] › tests\p0\feat-003-ai-persona.spec.ts:39:3 › FEAT-003: AI 페르소나 기반 대화 › 시나리오 3-2: 커스텀 페르소나 대화 
+
+    Test timeout of 30000ms exceeded while running "beforeEach" hook.
+
+      4 |
+      5 | test.describe('FEAT-003: AI 페르소나 기반 대화', () => {
+    > 6 |   test.beforeEach(async ({ page }) => {
+        |        ^
+      7 |     await ensureAuthenticated(page);
+      8 |     await skipOnboarding(page);
+      9 |   });
+        at C:\INEESm\e2e\tests\p0\feat-003-ai-persona.spec.ts:6:8
+
+    Error: page.waitForLoadState: Test timeout of 30000ms exceeded.
+
+       at helpers\auth.ts:37
+
+      35 |     });
+      36 |     await page.reload();
+    > 37 |     await page.waitForLoadState('networkidle');
+         |                ^
+      38 |   }
+      39 | }
+      40 |
+        at skipOnboarding (C:\INEESm\e2e\helpers\auth.ts:37:16)
+        at C:\INEESm\e2e\tests\p0\feat-003-ai-persona.spec.ts:8:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\test-results\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\test-results\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\test-results\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    ..\test-results\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace ..\test-results\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|test-results\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|test-results\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\video.webm]]
+
+[[ATTACHMENT|test-results\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\error-context.md]]
+
+[[ATTACHMENT|test-results\tests-p0-feat-003-ai-perso-d2f56--기반-대화-시나리오-3-2-커스텀-페르소나-대화-chromium\trace.zip]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>
